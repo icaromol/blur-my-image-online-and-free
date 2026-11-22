@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 47 `Must` done · 41 in review · 4 in progress · 1 ready · 1 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+0 of 47 `Must` done · 40 in review · 5 in progress · 1 ready · 1 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -50,14 +50,14 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 Only items that block something. Questions with a default in force are in decisions.md and don't wait.
 
 - **Nothing waits on a question to Ícaro right now.** Tagline and privacy wording, Q-009 and Q-010 are decided (D-010, D-015, D-016); the WAF rule and the bypass revocation are done.
-- **Q-015:** three CodeRabbit findings that aren't plain corrections (release-please token, a size cap on the direct fetch, the tagline wording). Recommendations in decisions.md.
 - **Q-016:** three design choices in the brand kit.
-- **Q-017:** allow CC-BY-3.0 for development tools so the license check can use a maintained SPDX parser.- **BMI-050 (go public):** Ícaro said yes (D-013), order in D-018. The flip waits on `-aa`'s go to `-5b`, which waits on the verified history rewrite (D-015). Still his own actions later: Vercel 2FA and usage alerts (BMI-073), saved replies (BMI-070), the social preview upload, installing the CodeRabbit app after the flip, and the go to merge PR #2 after CodeRabbit's corrections.
 - **D-004 and D-006 to D-019** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
 
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- Ícaro's answers, relayed by `-aa`: D-025 (release-please: close and reopen the first release PR by hand, no new secret; the direct fetch gets a timeout **and a size cap**, 100 MB set by PM with the reason in BMI-077, error `too_large`; the tagline stays as approved) and D-026 (CC-BY-3.0 accepted for development tools only, so the prepared SPDX parser swap goes in with the dev-only rule explicit). Q-015 and Q-017 closed. BMI-077 is `In progress` again for the cap and the parser swap. Q-016 (brand kit) goes to him after he sees the kit in `.local/brand-preview/`.
 
 - Per `-aa`, from Ícaro: D-024, the Vercel pull-request comments are turned off (he flips the dashboard toggle; `-5b` deletes the comment on PR #2). CodeRabbit's review came out line by line, so the open-source plan covers it. **The brand kit (`d897bb6`, 29 files) stays out of PR #2** and gets a PR of its own after the merge, so that PR #2 stays under CodeRabbit's limit. For the PR comments: `-5b` posts, with text PM drafts into a file in `.local/`, answers only where we refuse or explain (the three of Q-015 and the `app.ts` finding); the rest are resolved by the commits. The draft waits for Ícaro's answer on Q-015.
 

@@ -20,16 +20,6 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
-### Q-017 — Accept CC-BY-3.0 for development tools, to use a maintained SPDX parser?
-
-PM chose a maintained parser for `scripts/check-licenses.mjs` (BMI-077). `spdx-expression-parse@5.0.0` (MIT, published 2026-07-16) brings two packages: `spdx-license-ids` (CC0-1.0, already allowed) and `spdx-exceptions@2.5.0`, a data package under **CC-BY-3.0**, which the development-dependency allowlist doesn't include, so the license check itself fails on it. A clean `pnpm install --frozen-lockfile`, `pnpm check`, the 275 tests and the build pass on a clean copy; no build script, `allowBuilds` untouched.
-
-Options: (a) add CC-BY-3.0 to the development-dependency allowlist only; the package is data, used only by the check, never shipped to the client or the Docker image, and the change is one visible line (total packages 148 to 151); (b) exempt `spdx-exceptions` by name, narrower but it creates an exception mechanism; (c) keep the hand-written evaluator already delivered (no dependency, no allowlist change; the reviewer found two small fixes in it).
-
-Recommendation: (a). It is a policy change (development tools may also use CC-BY-3.0, which asks for attribution only on redistribution), so it is Ícaro's, but the risk is nil for what ships, and the project's rule prefers the maintained library.
-
-Default in force: **(c)**: the hand-written evaluator stays, with the reviewer's two small fixes, and no policy changes; if he says (a), the worker swaps in the parser, which is already prepared.
-
 ### Q-016 — Three design choices in the brand kit (BMI-075)
 
 The designer's kit (`d897bb6`, approved by the opus reviewer) leaves three choices for Ícaro:
@@ -41,14 +31,6 @@ The designer's kit (`d897bb6`, approved by the opus reviewer) leaves three choic
 Recommendation: keep his original lettering for the logo itself, since it is his brand and D-022 lets the kit start from it, and use Liberation Sans Bold only for running text in the templates; accept the two-tone blue (a single blue can't meet contrast on both white and black); accept the dark tile with a blue bar for the icons. He looks at the rendered files in `brand/`, not at this text.
 
 Default in force: **the kit stays as committed and nothing from it reaches `public/` or `index.html`** until he answers.
-
-### Q-015 — Three CodeRabbit findings need Ícaro (credential, limit, wording)
-
-Of the 12 findings on PR #2 (BMI-077), nine are corrections inside what the README already promises. Three aren't, and PM doesn't decide them:
-
-1. **Release PRs and the required checks** (`.github/workflows/release-please.yml`). The `main` ruleset requires Verify, E2E (Chromium) and the Conventional Commits title; release-please opens its release PR with the default `GITHUB_TOKEN`, and a PR made by that token doesn't start those workflows, so the release PR would wait on checks that never run. Options: a fine-grained token or GitHub App token kept as a repo secret (creating it is Ícaro's action); closing and reopening the release PR by hand to trigger the checks, a common workaround that needs no secret; or letting a bypass actor merge release PRs, which weakens the ruleset. Recommendation: close and reopen by hand when the first release PR appears, no secret, and note it for the maintainer; revisit if releases become frequent. Default: the workflow stays as it is. No release exists before the merge of PR #2, so nothing waits.
-2. **A cap on the direct cross-origin fetch** (`src/input/url.ts`). The direct fetch has no timeout and no size cap, unlike the proxy. A timeout only prevents a stalled host from keeping the app loading forever, so it is a correction. A size cap would reject some images the app accepts today (large images are downscaled, per the README). Recommendation: a timeout of the same order as the proxy's, and no size cap. Default: timeout only. PM refined the timeout after the reviewer's finding (BMI-077): 10 s to the response headers plus a 60 s total cap, so a normal photo on a slow link isn't cut; still no size cap and no fallback to the proxy on a timeout.
-3. **The tagline wording** (`src/i18n/messages/en.json` and `pt-BR.json`, line 4). CodeRabbit suggests scoping "Image files never leave your device" to files the user opens, drops or pastes, like the README and the meta description, because a URL load goes through the proxy. The wording is the one Ícaro chose (D-010) and approved in `pt-BR` (D-010). The README, the meta description and the app's own notice already state the URL exception. Recommendation: keep his wording and answer the finding on the PR; the claim holds for the user's own files. Default: the taglines stay as approved.
 
 ### Q-012 — Allow `ossf/scorecard-action` in the Actions allowlist?
 
@@ -71,6 +53,20 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the project's main domain on 2026-11-22, per `-aa`; the earlier `https://blur-my-image.vercel.app` answers 307 to it (PM read both with a plain `GET`). The README, the repo website field and the bug form get it only when Ícaro says (D-016). Not blocking.
 
 ## Decisions
+
+### D-026 — CC-BY-3.0 accepted for development tools only, so the license check can use a maintained SPDX parser (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answer, closing Q-017: CC-BY-3.0 is accepted **for development tools only**, which lets `spdx-expression-parse` bring `spdx-exceptions` (a CC-BY-3.0 data package). Neither is shipped to the client or to the Docker image. The swap that was prepared goes in, and the dev-only rule is explicit in the check: a production dependency under CC-BY-3.0 still fails.
+**Why:** the project prefers the maintained library over a hand-written evaluator, and the allowance changes nothing in what ships.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-077 (the license check), `scripts/check-licenses.mjs`, `package.json` and `pnpm-lock.yaml` (lock files).
+
+### D-025 — Answers on the three CodeRabbit findings that needed Ícaro (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answers, closing Q-015: (1) **release-please**: the first release PR is closed and reopened by hand to start its checks; the workflow stays as it is and no new secret is created. (2) **Direct fetch**: it gets a timeout **and a size cap** (his choice, against PM's recommendation of a timeout only; his choice stands). PM sets the value, with a reason, in BMI-077, and the error uses the existing `too_large` i18n code in `en` and `pt-BR`. (3) **Tagline**: kept as he approved it (D-010); the PR answer says the README, the meta description and the app's own notice carry the exception for links.
+**Why:** each is his call: a credential, a limit that can refuse an image, and his own wording.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-077, PR #2 (answers only where we refuse or explain).
 
 ### D-024 — Turn off the Vercel pull-request comments (2026-11-22)
 

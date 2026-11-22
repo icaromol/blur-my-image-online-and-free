@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 47 `Must` done, 41 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-076, after the merge), 1 blocked (BMI-073, on Ícaro's own actions). Also BMI-074 (`Should`, `Done`) and BMI-075 (`Should`, `Review`).
+Progress: 0 of 47 `Must` done, 40 in review, 5 in progress (BMI-003, 050, 066, 070, 077), 1 ready (BMI-076, after the merge), 1 blocked (BMI-073, on Ícaro's own actions). Also BMI-074 (`Should`, `Done`) and BMI-075 (`Should`, `Review`).
 
 ### E1. Foundation
 
@@ -101,7 +101,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-051 | README status line and content match what shipped | Must | S | Review | BMI-040 |
 | BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
 | BMI-076 | Scorecard and dependency-review workflows (split out of BMI-050's post-flip list): `.github/workflows/`, actions pinned by SHA, in a PR of their own after the merge of PR #2 | Must | S | Ready | the merge of PR #2 |
-| BMI-077 | Address CodeRabbit's findings on PR #2: nine corrections in the ui, server and quality lanes; three need Ícaro (Q-015) | Must | M | Review | the CodeRabbit review of PR #2 |
+| BMI-077 | Address CodeRabbit's findings on PR #2: nine corrections in the ui, server and quality lanes; Ícaro's three answers added (D-025, D-026) | Must | M | In progress | the CodeRabbit review of PR #2 |
 
 ## Later (post-v1)
 
@@ -299,7 +299,7 @@ Corrections inside what the README already promises (no scope change):
 - [ ] **Major**, quality lane: `scripts/check-licenses.mjs` drops parentheses when it evaluates a license expression, so `(MIT OR Apache-2.0) AND GPL-3.0-only` passes on `MIT`. Keep the grouping and operator precedence (CodeRabbit suggests a parser such as `spdx-expression-parse`; check the project's dependencies first) and add a test that rejects that expression.
   - Delivered by the quality lane, in the opus reviewer's hands (2026-11-22, per `-75`): a hand-written SPDX evaluator of about 40 lines (grouping, `AND` before `OR`, `WITH` counted as the base license, a malformed expression fails closed) and 21 new tests in `check-licenses.test.ts` at the repo root; `(MIT OR Apache-2.0) AND GPL-3.0-only` is rejected; the real tree still passes (49 production, 148 total). It also turns lower-case `or` and `and` into errors.
   - **PM's decision:** use a maintained SPDX parser instead of the hand-written one, under the project's rule to prefer a mature library and to write from scratch only for an explicit reason (CLAUDE.md, principles 5 and 6), and because this is a license-policy gate. `spdx-expression-parse` isn't in the tree, so it becomes a direct dev dependency: pick a version published at least 7 days ago, check that a clean `pnpm install --frozen-lockfile` still passes (no build script, `allowBuilds` untouched), keep the 21 tests as the specification, and keep only the small evaluation of the allowlist over the parsed expression. `package.json` and `pnpm-lock.yaml` are lock files: the dispatcher takes the lock for it. The parser decides about lower-case operators.
-  - **Blocked on a policy question (Q-017):** the parser (`spdx-expression-parse@5.0.0`, MIT) brings `spdx-exceptions@2.5.0`, a data package under CC-BY-3.0 that the development allowlist doesn't include, so the license check fails on it. The worker prepared the swap (clean frozen install, 275 tests, check and build pass on a clean copy) and didn't touch the allowlist. Until Ícaro answers, the default is the hand-written evaluator already delivered, with the reviewer's two small fixes.
+  - Was blocked on a policy question (Q-017), answered by D-026: CC-BY-3.0 is accepted for development tools only; the prepared parser swap goes in (see below).
 - [ ] **Major**, ui lane: `src/ui/editor.ts` around line 106 (outside the diff): a slower, older image load can replace the current one. A load that is no longer the latest is dropped.
 - [ ] **Minor**, ui lane: `src/ui/editor.ts` line 178: the download reads the file name after the encode `await`; another load can change it meanwhile, so the name can belong to another image. Read it before the await.
 - [ ] **Minor**, ui lane: `src/ui/editor.ts` line 189 (outside the diff): the export format is read after encoding starts; snapshot it before.
@@ -315,7 +315,11 @@ Corrections inside what the README already promises (no scope change):
 
 All nine corrections are committed on the branch, each approved by the opus reviewer (2026-11-22; PM confirmed the commits exist; the gate of the ui commit is check, 280 tests, e2e 36/36 and size): quality `c946bc6` (the hand-written license evaluator; the parser version waits in `.local/spdx-parser/` for Q-017), server `c974801` (redirect-hop and `ALLOWED_ORIGINS` tests, the `app.ts` comment), ui `aa1ce76` (the three `editor.ts` fixes, `i18n/index.ts`, `decode.ts`, the two-phase timeout in `url.ts`, `LanguageSelect.vue` and their tests). `Review` until PR #2 merges; the PR still needs an answer on each CodeRabbit comment.
 
-Needs Ícaro, none started (Q-015): the release-please token, a size cap on the direct fetch, and the tagline wording.
+Decided by Ícaro (D-025, D-026; relayed by `-aa`), now part of this item:
+- [ ] **Size cap on the direct fetch** (`src/input/url.ts`, ui lane): **100 MB, 104,857,600 bytes**, on top of the timeouts already there. Why this number: the cap exists to refuse an absurd download, not an image the app opens today. The editor has no size limit on local files and downscales anything above the GPU's `MAX_TEXTURE_SIZE`, so a normal phone photo (3 to 12 MB), a high-resolution JPEG or a large PNG screenshot (up to about 60 MB) must pass; 100 MB is about 23 times the proxy's `MAX_BYTES` (4,400,000, a limit that exists for Vercel's response rules, and which the direct path doesn't share) and well above those files. On the 60 s total timeout, a 100 MB body also needs about 13 Mbit/s to finish, so a slow link hits the timeout first, which is coherent. When the response declares a `Content-Length` above the cap it is refused before any body is read; without one, the body is counted as it streams and aborted at the cap. The error is the existing `too_large` code, already translated in `en` and `pt-BR`. Tests: a declared size above the cap, an undeclared body that passes it, one just under it that loads, and the timeout case still valid.
+- [ ] **License check with a maintained SPDX parser** (quality lane): the prepared swap to `spdx-expression-parse` (and `spdx-exceptions`, CC-BY-3.0) goes in; the rule "CC-BY-3.0 only for development tools" is explicit in `scripts/check-licenses.mjs` and tested (a production dependency under CC-BY-3.0 fails). `package.json` and `pnpm-lock.yaml` are lock files; a clean `pnpm install --frozen-lockfile` is checked on a clean copy before the commit.
+- [x] **release-please**: the first release PR is closed and reopened by hand to start its checks; no secret, workflow unchanged. Noted for the maintainer, nothing to build.
+- [x] **Tagline**: unchanged, as Ícaro approved it; the PR answer explains.
 
 The checks (Verify, E2E Chromium, Conventional Commits title) must be green after the fixes. Who answers each CodeRabbit comment on the PR is for `-aa` to name: `-5b` doesn't answer PR comments today, and the lanes don't run GitHub actions. Each answer says what was fixed, or why not.
 
