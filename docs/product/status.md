@@ -56,6 +56,8 @@ Only items that block something. Questions with a default in force are in decisi
 
 ### 2026-11-22 (new PM session, handoff)
 
+- **PR #2 checks at the head `eda9ec4` (per `-5b`):** Verify and E2E (Chromium) still running; Conventional Commits title, the workflow audit (zizmor), CodeRabbit (status success) and Vercel green; Dependency audit, E2E (Firefox, WebKit) and Docker skipped (they run on `main` only). **CodeRabbit's fourth round did not run:** "Review rate limited", the free plan had no reviews available, and the next window opened about 27 minutes after 21:44. No new finding and no new inline comment since round 3. Each push spends a review slot, so docs-only commits wait for the next push that has to happen anyway.
+
 - **Pushed:** `-5b` pushed the feature branch in a fast-forward (`eda9ec4` at the origin; `main` untouched at `39f8999`; the tree is clean; no text in the README or `docs/hosting.md` says there is no usage alert). CodeRabbit's fourth round on PR #2 is what runs now. **Not done:** the Actions allowlist change for the scorecard (D-030) was blocked in `-5b`'s environment; Ícaro allows it directly in that session or sets it in the repository's Actions settings (the pin and the list to preserve are in D-030).
 
 - **D-030 (Ícaro, relayed by `-aa`):** the `pt-BR` rate-limit message is approved as proposed (the pre-merge read is done), and `ossf/scorecard-action` is allowed (Q-012 closed); `-5b` applies the allowlist setting, the workflow comes after the merge in BMI-076. Left before the merge of PR #2 on the product side: the push of the local commits (authorized to `-5b`), CodeRabbit's fourth round, the checked replies and green checks; `-aa` says when.
