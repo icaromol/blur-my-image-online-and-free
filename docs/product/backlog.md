@@ -177,13 +177,13 @@ Two more things from the report. A "Protection Bypass for Automation" secret was
 
 The OG image is approved by the opus reviewer and verified by the dispatcher (marketing's action 5). It is rendered by `node marketing/social/render.mjs marketing/social/posts/og-image.json` into `marketing/social/out/` (git-ignored). The 1280x640 render is for GitHub's social preview only (uploaded by hand by Ícaro).
 
-- [ ] `index.html` has `og:title`, `og:description`, `og:image`, `og:url`, `og:type` and `twitter:card` (`summary_large_image`). `og:url` and `og:image` are absolute on `https://blur-my-image.vercel.app`.
-- [ ] `og:description` is the privacy sentence from D-010, the same as the README and the meta description.
-- [ ] The 1200x630 PNG (`og-image-og-1200x630.png`) is copied to `public/` (for example `public/og-image.png`) and committed by `-5b`; the page serves it.
-- [ ] `pnpm check`, unit tests, e2e and `pnpm size` still pass; no file contains the Vercel preview URL.
-- [ ] The CSP in `security-headers.ts` is not loosened; the image is only fetched by crawlers, not by the app.
+- [x] `index.html` has `og:title`, `og:description`, `og:image`, `og:url`, `og:type` and `twitter:card` (`summary_large_image`). `og:url` and `og:image` are absolute on `https://blur-my-image.vercel.app`.
+- [x] `og:description` is the privacy sentence from D-010, the same as the README and the meta description.
+- [x] The 1200x630 PNG (`og-image-og-1200x630.png`) is copied to `public/` (for example `public/og-image.png`) and committed by `-5b`; the page serves it.
+- [x] `pnpm check`, unit tests, e2e and `pnpm size` still pass; no file contains the Vercel preview URL.
+- [x] The CSP in `security-headers.ts` is not loosened; the image is only fetched by crawlers, not by the app.
 
-Done by `-cc` and approved by the opus reviewer, 2026-11-22 (commit requested from `-5b`; ticked when its id arrives): nine tags in `index.html` (`og:type`, `og:url`, `og:title`, `og:description`, `og:image`, `og:image:width`, `og:image:height`, `og:image:alt`, `twitter:card`), `public/og-image.png` 1200x630, check, 229 tests and size green, no preview URL or team slug in the repo.
+Done by `-cc` and approved by the opus reviewer, 2026-11-22; committed locally as `fa822b8` (`index.html` and `public/og-image.png`; PM confirmed the nine tags and the file, not yet pushed): nine tags in `index.html` (`og:type`, `og:url`, `og:title`, `og:description`, `og:image`, `og:image:width`, `og:image:height`, `og:image:alt`, `twitter:card`), `public/og-image.png` 1200x630, check, 229 tests and size green, no preview URL or team slug in the repo.
 
 Added after the reviewer's two notes, for after the first production deploy that serves the final build:
 - [ ] A real link unfurl is checked (Facebook Sharing Debugger, LinkedIn Post Inspector or a Slack message, by Ícaro): the image shows. The `vercel.json` CORP `same-origin` header applies to the PNG; crawlers fetch server-side and shouldn't be affected, but that is an assumption until tested. If one fails, the fix is a header rule giving `/og-image.png` CORP `cross-origin`, nothing else loosened.
