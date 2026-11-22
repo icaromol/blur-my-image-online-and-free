@@ -49,7 +49,7 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 
 Only items that block something. Questions with a default in force are in decisions.md and don't wait.
 
-- **en/pt-BR tagline differ** since `bbb060c`: `pt-BR` says "…ou como quiser. Ela nunca sai do seu navegador.", `en` still says "…or only the parts you paint… your device". The git-owner session is asking Ícaro whether `en` follows. PM doesn't touch `en.json`.
+- **en/pt-BR tagline differ** since `bbb060c`: `pt-BR` says "…ou como quiser. Ela nunca sai do seu navegador.", `en` still says "…or only the parts you paint… your device". The git-owner session is asking Ícaro whether `en` follows. PM doesn't touch `en.json`. The same question now covers the README and `index.html` sentence: "Images you open, drop or paste never leave your device" is ambiguous because opening a link goes through the proxy; the reviewer's smaller alternative is "Image files you open, drop or paste never leave your device". The tagline and the privacy sentence need one answer from him (BMI-051, BMI-003).
 - **BMI-050 (go public)** still needs: BMI-051 (README and docs match what shipped), PR #1 merged, and Ícaro's direct go. Q-003 and the `CLAUDE.md` question are closed (D-007, D-008).
 - **D-004, D-006, D-007, D-008, D-009** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
 
