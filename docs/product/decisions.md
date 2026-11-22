@@ -20,14 +20,6 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
-### Q-011 — Where do the two logos come from?
-
-Ícaro added two raster logos in `brand/source/` (a stacked and a horizontal version, off-white background, visible compression artifacts), untracked. The mark is a block of grey pixels fading into a black block, followed by the wordmark "Blur My Image" in a heavy geometric sans. Neither the author nor the wordmark's typeface is recorded, and the repo goes public.
-
-Recommendation: Ícaro says where each came from (drawn by him, a generator, a commissioned designer, a font) and whether it may be published under the repo's MIT license. Whatever the answer, the brand kit redraws the wordmark in a free font (SIL OFL) instead of tracing the raster letters, and redraws the pixel mark as plain geometry.
-
-Default in force: **the raw PNGs are never committed** (git history is permanent) and the wordmark is redrawn in an OFL font; the work doesn't wait for the answer, only the claim "this is the logo's origin" does.
-
 ### Q-006 — Do the Docker image and server bundle need license notices?
 
 Audit finding C: `dist-server/node.js` bundles hono, `@hono/node-server`, ipaddr.js and undici, and the Dockerfile ships it, but only the client build emits `licenses.md`.
@@ -41,6 +33,13 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the project's main domain on 2026-11-22, per `-aa`; the earlier `https://blur-my-image.vercel.app` answers 307 to it (PM read both with a plain `GET`). The README, the repo website field and the bug form get it only when Ícaro says (D-016). Not blocking.
 
 ## Decisions
+
+### D-022 — The logos are Ícaro's and may be published under MIT (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answer ("licença minha", PM did not hear it directly), closing Q-011: the two logos are his and may be published under the repo's MIT license. He didn't name the tool they came from, so the record says only "created by Ícaro". The brand kit may start from the shape of his symbol and from his wordmark; redrawing the wordmark in a free font (SIL OFL) for a clean vector is the designer's call, not required by license.
+**Why:** it settles whether the raster logos can be redrawn and published.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-075 (criteria loosened accordingly), `brand/README.md`. PM did not check the wordmark's typeface; if it comes from a commercial font, that font's own license is a separate matter from the logo's.
 
 ### D-021 — Old commit hashes stay reachable: risk accepted; the e-mail toggles are on (2026-11-22)
 

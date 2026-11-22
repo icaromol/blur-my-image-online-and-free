@@ -159,16 +159,16 @@ Added as a `Should` verification of work already in `Review` (BMI-067, BMI-001).
 
 As the maintainer, I want one visual identity (minimalist, black and white, blue as the accent) so that the repo, the link preview and the posts look like one product.
 
-Requested by Ícaro (D-020, relayed by `-aa`) and confirmed as described by him (D-021). Lane: marketing, with the designer. Source: the two raw logos in `brand/source/` (stacked 1254x1254, horizontal 1983x793): raster, off-white background, compression artifacts. Q-011 (where the logos come from) is open; it doesn't block the work.
+Requested by Ícaro (D-020, relayed by `-aa`) and confirmed as described by him (D-021). Lane: marketing, with the designer. Source: the two raw logos in `brand/source/` (stacked 1254x1254, horizontal 1983x793): raster, off-white background, compression artifacts. The logos are Ícaro's and may be published under MIT (D-022).
 
-- [ ] Vector logos as SVG: the pixel-block mark (grey blocks fading into the black block) plus the wordmark "Blur My Image", in black, in white (reverse) and with the blue accent, each in stacked and horizontal versions. The mark is redrawn as plain geometry; the wordmark is redrawn in a free font (SIL OFL), not traced from the raster letters, unless Ícaro states that the raster wordmark is his to publish (Q-011).
+- [ ] Vector logos as SVG: the pixel-block mark (grey blocks fading into the black block) plus the wordmark "Blur My Image", in black, in white (reverse) and with the blue accent, each in stacked and horizontal versions. The symbol may keep the shape of Ícaro's mark; the wordmark may start from his wordmark, or be redrawn in a free font (SIL OFL) for a clean vector, the designer's call (D-022: the logos are his and may be published under MIT).
 - [ ] A minimal palette: black, white, greys and one blue accent. Every foreground and background pair actually used has its WCAG AA contrast checked and written down. The tokens live in one file.
 - [ ] Favicon: an SVG and PNG sizes, produced under `brand/`. Putting them in `public/` and linking them from `index.html` is a small follow-up for the ui lane (`-cc`), because both belong to that lane.
 - [ ] The OG image base and `marketing/social/templates/brand.css` use the new tokens, replacing the provisional CSS. The OG image stays 1200x630 and readable at small sizes, and the new render is reviewed before it replaces the committed `public/og-image.png`.
 - [ ] A short `brand/README.md`: when to use each logo, clear space, minimum size, what not to do, where the tokens are.
 - [ ] `src/**` is not touched. Applying the identity in the app is a separate ui-lane item, groomed later with Ícaro, who decides the app's theme.
 - [ ] The raw PNGs (about 1.9 MB) are never committed; only the SVGs and the final derived files are, and `brand/source/` is git-ignored so a stray `git add` can't take it (`-5b` adds the ignore rule). Git history is permanent.
-- [ ] Origin of the logos recorded in `brand/README.md` once Ícaro tells it (Q-011); until then it says "origin not recorded".
+- [ ] `brand/README.md` records the origin as "created by Ícaro", published under MIT (D-022), and no tool or typeface name unless he gives one.
 - [ ] The no-ai-slop rules apply to all text; the kit is reviewed by the opus reviewer before the commit list goes to `-5b`. No commit before that list.
 
 ### BMI-003 — Deploy to Vercel

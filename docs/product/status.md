@@ -57,7 +57,9 @@ Only items that block something. Questions with a default in force are in decisi
 
 ### 2026-11-22 (new PM session, handoff)
 
-- D-021 (Ícaro, relayed by `-aa`): he accepts that the pre-rewrite commits stay reachable by full hash until GitHub's garbage collection (no Support request, no new repo); his two GitHub e-mail toggles ("Keep my email addresses private", "Block command line pushes that expose my email") are on (a screenshot sent to `-aa`; PM hasn't seen it); BMI-075 and E8 are confirmed as described. Q-011 (origin of the logos) is with him and blocks nothing.
+- D-022 (Ícaro, relayed by `-aa`): the two logos are his and may be published under MIT; Q-011 closed. BMI-075 may start from the shape of his symbol and from his wordmark; a free-font redraw is optional. The record says only "created by Ícaro".
+
+- D-021 (Ícaro, relayed by `-aa`): he accepts that the pre-rewrite commits stay reachable by full hash until GitHub's garbage collection (no Support request, no new repo); his two GitHub e-mail toggles ("Keep my email addresses private", "Block command line pushes that expose my email") are on (a screenshot sent to `-aa`; PM hasn't seen it); BMI-075 and E8 are confirmed as described. Q-011 was answered the next hour: D-022.
 
 - D-020 (Ícaro's request, relayed by `-aa`): a visual identity, minimalist, black and white with blue as the accent. New epic E8 and BMI-075 (`Should`, `Ready`, marketing lane with the designer): vector logos, a minimal palette, favicon, OG base, marketing CSS and a guide; the app theme is a later ui item. Q-011 asks where the two logos come from (a decision for him; the raw PNGs are never committed and the wordmark is redrawn in an OFL font meanwhile).
 
