@@ -1,0 +1,85 @@
+{
+  "app": {
+    "title": "Blur My Image",
+    "tagline": "Blur all of an image or just the parts you paint. It never leaves your device.",
+    "dropOverlay": "Drop the image to open it"
+  },
+  "language": {
+    "label": "Language"
+  },
+  "input": {
+    "region": "Open an image",
+    "choose": "Choose an image",
+    "chooseAnother": "Open another image",
+    "hint": "or drop it anywhere, or paste it with Ctrl+V",
+    "fileLabel": "Image file",
+    "urlLabel": "Image URL",
+    "urlPlaceholder": "Paste an image link",
+    "load": "Load",
+    "loading": "Loading…"
+  },
+  "toolbar": {
+    "effect": "Effect",
+    "intensity": "Intensity",
+    "angle": "Angle",
+    "apply": "Apply",
+    "blurEntire": "Blur entire image",
+    "brush": "Brush",
+    "brushTitle": "Brush ({key})",
+    "eraser": "Eraser",
+    "eraserTitle": "Eraser ({key})",
+    "brushSize": "Brush size",
+    "brushSizeValue": "{size} px",
+    "brushSizeTitle": "Smaller {smaller} / larger {larger}",
+    "angleValue": "{angle}°",
+    "undo": "Undo",
+    "undoTitle": "Undo ({shortcut})",
+    "redo": "Redo",
+    "redoTitle": "Redo ({shortcut})"
+  },
+  "effects": {
+    "gaussian": {
+      "label": "Gaussian"
+    },
+    "pixelate": {
+      "label": "Pixelate",
+      "warning": "Pixelated text can sometimes be recovered. For passwords or document numbers, use a high intensity."
+    },
+    "motion": {
+      "label": "Motion"
+    }
+  },
+  "export": {
+    "legend": "Export",
+    "format": "Format",
+    "download": "Download",
+    "hint": "Original resolution. No metadata, no watermark."
+  },
+  "notice": {
+    "downscaled": "This image is {width} × {height} px, larger than your graphics card can handle ({max} px per side). It was scaled down to {scaledWidth} × {scaledHeight} px, and the download will be that size."
+  },
+  "errors": {
+    "decode_failed": "This file isn't an image your browser can open.",
+    "file_not_image": "That file isn't an image.",
+    "invalid_link": "Enter an http or https link to an image.",
+    "webgl_unavailable": "Your browser couldn't start WebGL, which this app needs to render effects.",
+    "export_failed": "The image couldn't be exported.",
+    "load_failed": "The image couldn't be loaded from that link.",
+    "invalid_url": "That link isn't a valid web address.",
+    "forbidden_origin": "This site isn't allowed to load images through the proxy.",
+    "unsupported_protocol": "Only http and https links can be loaded.",
+    "unsupported_port": "Only links on standard web ports can be loaded.",
+    "blocked_address": "That link points to a private or local address, which can't be loaded.",
+    "upstream_status": "The site didn't return the image. Check that the link opens in your browser.",
+    "upstream_unreachable": "The site couldn't be reached.",
+    "not_an_image": "That link doesn't point to an image.",
+    "too_large": "That image is too large to load by link. Download it and open the file instead.",
+    "timeout": "The site took too long to respond.",
+    "too_many_redirects": "The link redirects too many times.",
+    "bad_redirect": "The link redirects somewhere invalid.",
+    "credentials_not_allowed": "Links that contain a username or password can't be loaded.",
+    "not_found": "The image service couldn't be found. Try again later.",
+    "internal_error": "The image service ran into a problem. Try again later.",
+    "unknown": "Something went wrong. Try again."
+  }
+}

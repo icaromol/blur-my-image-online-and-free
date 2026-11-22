@@ -1,18 +1,22 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, shallowRef } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from "vue";
+import { errorKey, useTranslation } from "../i18n";
 import { readClipboard } from "../input/clipboard";
 import EditorCanvas from "./EditorCanvas.vue";
 import EffectControls from "./EffectControls.vue";
 import ExportControls from "./ExportControls.vue";
 import { useEditor } from "./editor";
 import ImageInput from "./ImageInput.vue";
+import LanguageSelect from "./LanguageSelect.vue";
 import { commandFor } from "./shortcuts";
 import ToolControls from "./ToolControls.vue";
 
+const { t, n } = useTranslation();
 const editor = useEditor();
 const { settings, tool, brushSize, format, hasImage, loading, error, notice, canUndo, canRedo } = editor;
 const canvas = shallowRef<HTMLCanvasElement | null>(null);
 const dragging = ref(false);
+const errorText = computed(() => (error.value ? t(errorKey(error.value)) : ""));
 let dragDepth = 0;
 
 function openFile(file: File) {
@@ -82,7 +86,7 @@ function onDrop(event: DragEvent) {
   dragging.value = false;
   const file = Array.from(event.dataTransfer?.files ?? []).find((f) => f.type.startsWith("image/"));
   if (file) openFile(file);
-  else error.value = "That file isn't an image.";
+  else error.value = "file_not_image";
 }
 
 onMounted(async () => {
@@ -109,8 +113,11 @@ onBeforeUnmount(() => {
 <template>
   <div class="layout" :class="{ editing: hasImage }">
     <header class="header">
-      <h1>Blur My Image</h1>
-      <p class="tagline">Blur all of an image or just the parts you paint. It never leaves your device.</p>
+      <div class="title">
+        <h1>{{ t("app.title") }}</h1>
+        <LanguageSelect />
+      </div>
+      <p class="tagline">{{ t("app.tagline") }}</p>
     </header>
 
     <aside class="controls">
@@ -142,8 +149,18 @@ onBeforeUnmount(() => {
     </aside>
 
     <main class="stage">
-      <p v-if="error" role="alert" class="message error">{{ error }}</p>
-      <p v-if="notice" role="status" class="message notice">{{ notice }}</p>
+      <p v-if="error" role="alert" class="message error">{{ errorText }}</p>
+      <p v-if="notice" role="status" class="message notice">
+        {{
+          t("notice.downscaled", {
+            width: n(notice.original.width),
+            height: n(notice.original.height),
+            max: n(notice.max),
+            scaledWidth: n(notice.scaled.width),
+            scaledHeight: n(notice.scaled.height),
+          })
+        }}
+      </p>
       <EditorCanvas
         v-if="canvas"
         v-show="hasImage"
@@ -155,7 +172,7 @@ onBeforeUnmount(() => {
       />
     </main>
 
-    <div v-if="dragging" class="drop-overlay" aria-hidden="true">Drop the image to open it</div>
+    <div v-if="dragging" class="drop-overlay" aria-hidden="true">{{ t("app.dropOverlay") }}</div>
   </div>
 </template>
 
@@ -166,6 +183,13 @@ onBeforeUnmount(() => {
   max-width: 1400px;
   margin: 0 auto;
   padding: 16px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .header h1 {

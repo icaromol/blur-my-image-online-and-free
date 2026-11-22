@@ -1,0 +1,85 @@
+{
+  "app": {
+    "title": "Blur My Image",
+    "tagline": "Desfoque a imagem inteira ou só as partes que você pintar. Ela nunca sai do seu dispositivo.",
+    "dropOverlay": "Solte a imagem para abri-la"
+  },
+  "language": {
+    "label": "Idioma"
+  },
+  "input": {
+    "region": "Abrir uma imagem",
+    "choose": "Escolher uma imagem",
+    "chooseAnother": "Abrir outra imagem",
+    "hint": "ou solte em qualquer lugar da página, ou cole com Ctrl+V",
+    "fileLabel": "Arquivo de imagem",
+    "urlLabel": "URL da imagem",
+    "urlPlaceholder": "Cole o link de uma imagem",
+    "load": "Carregar",
+    "loading": "Carregando…"
+  },
+  "toolbar": {
+    "effect": "Efeito",
+    "intensity": "Intensidade",
+    "angle": "Ângulo",
+    "apply": "Aplicar",
+    "blurEntire": "Desfocar a imagem inteira",
+    "brush": "Pincel",
+    "brushTitle": "Pincel ({key})",
+    "eraser": "Borracha",
+    "eraserTitle": "Borracha ({key})",
+    "brushSize": "Tamanho do pincel",
+    "brushSizeValue": "{size} px",
+    "brushSizeTitle": "Menor {smaller} / maior {larger}",
+    "angleValue": "{angle}°",
+    "undo": "Desfazer",
+    "undoTitle": "Desfazer ({shortcut})",
+    "redo": "Refazer",
+    "redoTitle": "Refazer ({shortcut})"
+  },
+  "effects": {
+    "gaussian": {
+      "label": "Gaussiano"
+    },
+    "pixelate": {
+      "label": "Pixelizar",
+      "warning": "Texto pixelizado às vezes pode ser recuperado. Para senhas ou números de documentos, use uma intensidade alta."
+    },
+    "motion": {
+      "label": "Movimento"
+    }
+  },
+  "export": {
+    "legend": "Exportar",
+    "format": "Formato",
+    "download": "Baixar",
+    "hint": "Resolução original. Sem metadados, sem marca d'água."
+  },
+  "notice": {
+    "downscaled": "Esta imagem tem {width} × {height} px, maior do que sua placa de vídeo consegue processar ({max} px por lado). Ela foi reduzida para {scaledWidth} × {scaledHeight} px, e o arquivo baixado terá esse tamanho."
+  },
+  "errors": {
+    "decode_failed": "Este arquivo não é uma imagem que o seu navegador consiga abrir.",
+    "file_not_image": "Esse arquivo não é uma imagem.",
+    "invalid_link": "Digite um link http ou https que leve a uma imagem.",
+    "webgl_unavailable": "Seu navegador não conseguiu iniciar o WebGL, que o app precisa para aplicar os efeitos.",
+    "export_failed": "Não foi possível exportar a imagem.",
+    "load_failed": "Não foi possível carregar a imagem desse link.",
+    "invalid_url": "Esse link não é um endereço web válido.",
+    "forbidden_origin": "Este site não tem permissão para carregar imagens pelo proxy.",
+    "unsupported_protocol": "Só é possível carregar links http e https.",
+    "unsupported_port": "Só é possível carregar links que usam as portas web padrão.",
+    "blocked_address": "Esse link aponta para um endereço privado ou local, que não pode ser carregado.",
+    "upstream_status": "O site não devolveu a imagem. Confira se o link abre no seu navegador.",
+    "upstream_unreachable": "Não foi possível acessar o site.",
+    "not_an_image": "Esse link não leva a uma imagem.",
+    "too_large": "Essa imagem é grande demais para carregar por link. Baixe o arquivo e abra-o aqui.",
+    "timeout": "O site demorou demais para responder.",
+    "too_many_redirects": "O link redireciona vezes demais.",
+    "bad_redirect": "O link redireciona para um lugar inválido.",
+    "credentials_not_allowed": "Não é possível carregar links que contêm usuário ou senha.",
+    "not_found": "Não foi possível encontrar o serviço de imagens. Tente de novo mais tarde.",
+    "internal_error": "O serviço de imagens teve um problema. Tente de novo mais tarde.",
+    "unknown": "Algo deu errado. Tente de novo."
+  }
+}

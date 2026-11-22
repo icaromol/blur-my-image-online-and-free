@@ -1,3 +1,5 @@
+import { CodedError } from "../errors";
+
 export const exportFormats = {
   png: { label: "PNG", mime: "image/png", extension: "png" },
   jpg: { label: "JPG", mime: "image/jpeg", extension: "jpg" },
@@ -16,7 +18,8 @@ function toBlob(
 ): Promise<Blob> {
   return new Promise((resolve, reject) => {
     canvas.toBlob(
-      (blob) => (blob ? resolve(blob) : reject(new Error("Export failed"))),
+      (blob) =>
+        blob ? resolve(blob) : reject(new CodedError("export_failed")),
       type,
       quality,
     );
@@ -25,7 +28,7 @@ function toBlob(
 
 function context2d(canvas: HTMLCanvasElement): CanvasRenderingContext2D {
   const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Export failed");
+  if (!ctx) throw new CodedError("export_failed");
   return ctx;
 }
 

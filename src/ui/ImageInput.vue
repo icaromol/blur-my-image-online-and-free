@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from "vue";
+import { useTranslation } from "../i18n";
 import { parseImageUrl } from "../input/url";
 
 defineProps<{ compact: boolean; loading: boolean }>();
-const emit = defineEmits<{ file: [file: File]; url: [url: URL]; invalid: [message: string] }>();
+const emit = defineEmits<{ file: [file: File]; url: [url: URL]; invalid: [code: string] }>();
 
+const { t } = useTranslation();
 const picker = useTemplateRef<HTMLInputElement>("picker");
 const link = ref("");
 
@@ -18,7 +20,7 @@ function onPick(event: Event) {
 function onSubmit() {
   const url = parseImageUrl(link.value);
   if (!url) {
-    emit("invalid", "Enter an http or https link to an image.");
+    emit("invalid", "invalid_link");
     return;
   }
   emit("url", url);
@@ -27,33 +29,33 @@ function onSubmit() {
 </script>
 
 <template>
-  <section class="input" :class="{ compact }" aria-label="Open an image">
+  <section class="input" :class="{ compact }"   :aria-label="t('input.region')">
     <button type="button" class="drop-zone" @click="picker?.click()">
-      <span class="drop-title">{{ compact ? "Open another image" : "Choose an image" }}</span>
-      <span v-if="!compact" class="drop-hint">or drop it anywhere, or paste it with Ctrl+V</span>
+      <span class="drop-title">{{ compact ? t("input.chooseAnother") : t("input.choose") }}</span>
+      <span v-if="!compact" class="drop-hint">{{ t("input.hint") }}</span>
     </button>
     <input
       ref="picker"
       type="file"
       accept="image/*"
       class="visually-hidden"
-      aria-label="Image file"
+      :aria-label="t('input.fileLabel')"
       tabindex="-1"
       @change="onPick"
     />
 
     <form class="url-form" @submit.prevent="onSubmit">
-      <label class="visually-hidden" for="image-url">Image URL</label>
+      <label class="visually-hidden" for="image-url">{{ t("input.urlLabel") }}</label>
       <input
         id="image-url"
         v-model="link"
         type="url"
         inputmode="url"
-        placeholder="Paste an image link"
+        :placeholder="t('input.urlPlaceholder')"
         autocomplete="off"
         :disabled="loading"
       />
-      <button type="submit" :disabled="loading || !link.trim()">{{ loading ? "Loading…" : "Load" }}</button>
+      <button type="submit" :disabled="loading || !link.trim()">{{ loading ? t("input.loading") : t("input.load") }}</button>
     </form>
   </section>
 </template>

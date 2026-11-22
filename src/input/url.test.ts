@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { fetchImage, ImageUrlError, parseImageUrl } from "./url";
+import { CodedError } from "../errors";
+import { fetchImage, parseImageUrl } from "./url";
 
 const PROXY = "https://app.test/api/image";
 const target = new URL("https://images.test/cat.png");
@@ -42,9 +43,9 @@ describe("fetchImage", () => {
 
   it("doesn't use the proxy when the site answered with an error", async () => {
     const fetcher = vi.fn(async () => new Response("", { status: 404 }));
-    await expect(fetchImage(target, PROXY, fetcher)).rejects.toThrow(
-      ImageUrlError,
-    );
+    await expect(fetchImage(target, PROXY, fetcher)).rejects.toMatchObject({
+      code: "upstream_status",
+    });
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
 
@@ -53,19 +54,44 @@ describe("fetchImage", () => {
       async () =>
         new Response("<html>", { headers: { "content-type": "text/html" } }),
     );
-    await expect(fetchImage(target, PROXY, fetcher)).rejects.toThrow(
-      "doesn't point to an image",
-    );
+    await expect(fetchImage(target, PROXY, fetcher)).rejects.toMatchObject({
+      code: "not_an_image",
+    });
   });
 
-  it("turns proxy error codes into readable messages", async () => {
+  it("passes the proxy error code through", async () => {
     const fetcher = vi.fn(async (input: RequestInfo | URL) => {
       if (String(input).startsWith(PROXY))
         return Response.json({ error: "blocked_address" }, { status: 403 });
       throw new TypeError("Failed to fetch");
     });
-    await expect(fetchImage(target, PROXY, fetcher)).rejects.toThrow(
-      "private or local address",
+    await expect(fetchImage(target, PROXY, fetcher)).rejects.toMatchObject({
+      code: "blocked_address",
+    });
+  });
+
+  it("passes unknown proxy codes through for the UI to map", async () => {
+    const fetcher = vi.fn(async (input: RequestInfo | URL) => {
+      if (String(input).startsWith(PROXY))
+        return Response.json({ error: "constructor" }, { status: 400 });
+      throw new TypeError("Failed to fetch");
+    });
+    await expect(fetchImage(target, PROXY, fetcher)).rejects.toMatchObject({
+      code: "constructor",
+    });
+    await expect(fetchImage(target, PROXY, fetcher)).rejects.toBeInstanceOf(
+      CodedError,
     );
+  });
+
+  it("reports a refused port", async () => {
+    const fetcher = vi.fn(async (input: RequestInfo | URL) => {
+      if (String(input).startsWith(PROXY))
+        return Response.json({ error: "unsupported_port" }, { status: 400 });
+      throw new TypeError("Failed to fetch");
+    });
+    await expect(fetchImage(target, PROXY, fetcher)).rejects.toMatchObject({
+      code: "unsupported_port",
+    });
   });
 });

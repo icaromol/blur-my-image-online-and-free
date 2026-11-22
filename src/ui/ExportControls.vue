@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { type ExportFormat, exportFormats } from "../export/encode";
+import { useTranslation } from "../i18n";
 
+const { t } = useTranslation();
 defineProps<{ disabled: boolean }>();
 defineEmits<{ download: [] }>();
 
@@ -10,14 +12,14 @@ const formatIds = Object.keys(exportFormats) as ExportFormat[];
 
 <template>
   <fieldset class="group">
-    <legend>Export</legend>
+    <legend>{{ t("export.legend") }}</legend>
     <div class="row">
-      <label class="visually-hidden" for="export-format">Format</label>
+      <label class="visually-hidden" for="export-format">{{ t("export.format") }}</label>
       <select id="export-format" v-model="format">
         <option v-for="id in formatIds" :key="id" :value="id">{{ exportFormats[id].label }}</option>
       </select>
-      <button type="button" class="primary grow" :disabled="disabled" @click="$emit('download')">Download</button>
+      <button type="button" class="primary grow" :disabled="disabled" @click="$emit('download')">{{ t("export.download") }}</button>
     </div>
-    <p class="hint">Original resolution. No metadata, no watermark.</p>
+    <p class="hint">{{ t("export.hint") }}</p>
   </fieldset>
 </template>

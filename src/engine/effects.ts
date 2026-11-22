@@ -11,9 +11,8 @@ export interface EffectSettings {
 }
 
 export interface EffectDefinition {
-  label: string;
   hasAngle: boolean;
-  warning?: string;
+  hasWarning?: boolean;
   createFilter(settings: EffectSettings, size: ImageSize): Filter;
 }
 
@@ -40,7 +39,6 @@ export function pixelateBlockSize(
 
 export const effects = {
   gaussian: {
-    label: "Gaussian",
     hasAngle: false,
     createFilter(settings, size) {
       const filter = new BlurFilter({
@@ -52,10 +50,8 @@ export const effects = {
     },
   },
   pixelate: {
-    label: "Pixelate",
     hasAngle: false,
-    warning:
-      "Pixelated text can sometimes be recovered. For passwords or document numbers, use a high intensity.",
+    hasWarning: true,
     createFilter(settings, size) {
       const filter = new PixelateFilter(pixelateBlockSize(settings, size));
       filter.padding = 0;
@@ -63,7 +59,6 @@ export const effects = {
     },
   },
   motion: {
-    label: "Motion",
     hasAngle: true,
     createFilter(settings, size) {
       const length = scaledLength(settings.intensity, size, MOTION_MAX_LENGTH);

@@ -6,7 +6,9 @@ import {
   type Stroke,
   toOperations,
 } from "../engine/history";
+import type { ImageSize } from "../engine/intensity";
 import { Renderer } from "../engine/renderer";
+import { errorCode } from "../errors";
 import { downloadBlob, exportFileName } from "../export/download";
 import {
   type ExportFormat,
@@ -21,11 +23,13 @@ export type Tool = "brush" | "eraser";
 export const MIN_BRUSH = 4;
 export const MAX_BRUSH = 400;
 
-const PROXY_URL = import.meta.env.VITE_PROXY_URL || "/api/image";
-
-function message(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+export interface DownscaleNotice {
+  original: ImageSize;
+  scaled: ImageSize;
+  max: number;
 }
+
+const PROXY_URL = import.meta.env.VITE_PROXY_URL || "/api/image";
 
 function fileNameFromUrl(url: URL): string {
   return decodeURIComponent(url.pathname.split("/").pop() ?? "") || "image";
@@ -50,7 +54,7 @@ export function useEditor() {
   const hasImage = ref(false);
   const loading = ref(false);
   const error = ref("");
-  const notice = ref("");
+  const notice = ref<DownscaleNotice | null>(null);
 
   const canUndo = computed(() => revision.value >= 0 && history.canUndo);
   const canRedo = computed(() => revision.value >= 0 && history.canRedo);
@@ -63,8 +67,7 @@ export function useEditor() {
       renderer.value = await Renderer.create();
       return renderer.value.canvas;
     } catch {
-      error.value =
-        "Your browser couldn't start WebGL, which this app needs to render effects.";
+      error.value = "webgl_unavailable";
       return null;
     }
   }
@@ -88,16 +91,17 @@ export function useEditor() {
     const instance = renderer.value;
     if (!instance) return;
     error.value = "";
-    notice.value = "";
+    notice.value = null;
     try {
       const max = instance.maxTextureSize;
       const { bitmap, originalSize } = await decodeImage(blob, max);
       instance.setImage(bitmap);
       if (originalSize) {
-        notice.value =
-          `This image is ${originalSize.width} × ${originalSize.height} px, larger than your graphics card ` +
-          `can handle (${max} px per side). It was scaled down to ${bitmap.width} × ${bitmap.height} px, ` +
-          "and the download will be that size.";
+        notice.value = {
+          original: originalSize,
+          scaled: { width: bitmap.width, height: bitmap.height },
+          max,
+        };
       }
       history.clear();
       activeStroke = null;
@@ -105,7 +109,7 @@ export function useEditor() {
       hasImage.value = true;
       commit();
     } catch (e) {
-      error.value = message(e);
+      error.value = errorCode(e);
     }
   }
 
@@ -115,7 +119,7 @@ export function useEditor() {
     try {
       await open(await fetchImage(url, PROXY_URL), fileNameFromUrl(url));
     } catch (e) {
-      error.value = message(e);
+      error.value = errorCode(e);
     } finally {
       loading.value = false;
     }
@@ -177,7 +181,7 @@ export function useEditor() {
         exportFileName(fileName.value, exportFormats[format.value].extension),
       );
     } catch (e) {
-      error.value = message(e);
+      error.value = errorCode(e);
     }
   }
 

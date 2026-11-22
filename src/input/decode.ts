@@ -1,4 +1,5 @@
 import type { ImageSize } from "../engine/intensity";
+import { CodedError } from "../errors";
 
 export interface DecodedImage {
   bitmap: ImageBitmap;
@@ -24,7 +25,7 @@ export async function decodeImage(
   try {
     bitmap = await createImageBitmap(blob);
   } catch {
-    throw new Error("This file isn't an image your browser can open.");
+    throw new CodedError("decode_failed");
   }
   const original = { width: bitmap.width, height: bitmap.height };
   const fitted = fitWithin(original, maxSide);
