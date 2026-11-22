@@ -4,42 +4,42 @@ Newest first. Each decision says what was decided, why, who decided and what it 
 
 ## Open questions
 
+Each question carries a recommendation and the default in force, so work doesn't wait on an answer. Ícaro overrides by saying so; no reply needed to keep the default.
+
 ### Q-001 — Localized URLs for SEO?
 
-Should Portuguese pages live under their own URL (`/pt-br/`, with `hreflang` tags and prerendered landing pages per locale), or does the app only detect the language in the browser?
+Default in force: **detection only** (built in BMI-041). `resolveLocale()` can take a URL source in front of it later.
 
-- **Detection only:** simplest. Google indexes one English version; Brazilian searches ("desfocar imagem online") land on English pages.
-- **URL per locale:** Portuguese landing pages can rank in Brazil. Needs prerendering per locale and a route prefix.
+Options: detection only, or a URL per locale (`/pt-br/`, `hreflang`, prerendered landing pages) so Portuguese pages can rank in Brazil.
 
-PM recommendation: build detection now (BMI-041) with `resolveLocale()` designed so a URL source can sit in front of it, and decide this with the SEO work before launch. Nothing in v1 gets harder either way.
-
-Needs: Ícaro. Input from `seo-specialist`.
+Recommendation: decide together with the SEO work before launch (BMI-050), with `seo-specialist` sizing the prerender cost. Nothing in v1 gets harder either way.
 
 ### Q-002 — Marketing in Portuguese?
 
-The marketing skill says public copy is English-only. With the app in `pt-BR`, do we also write Portuguese copy, landing pages and community posts for Brazil?
+Default in force: **English only**, as the marketing skill says. The app itself is bilingual.
 
-Needs: Ícaro. Input from `marketing-strategist`.
+Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
-### Q-003 — Contact address for the code of conduct and SECURITY.md
+### Q-003 — Contact address for the code of conduct
 
-A dedicated alias is recommended, the same one for both. Until chosen, files keep the `<CONDUCT_CONTACT>` placeholder, which blocks BMI-050.
+`SECURITY.md` needs **no email**: it already points to GitHub's private vulnerability reporting, which works once the repo is public. Only `CODE_OF_CONDUCT.md` needs a contact, still the `<CONDUCT_CONTACT>` placeholder, which blocks BMI-050.
 
-Needs: Ícaro.
+GitHub doesn't give a repo an inbox. The `ID+user@users.noreply.github.com` address only hides the sender on commits and can't receive mail, so it can't be used here.
 
-### Q-004 — When does production deploy?
-
-On every merge to `main` (recommended in the community report) or only on release tags.
-
-Needs: Ícaro. Affects BMI-003 and BMI-071.
+Recommendation: create one dedicated free mailbox for the project (a separate account, not Ícaro's personal or work address) and use it as the conduct contact. Replace the placeholder with it. Creating the mailbox is Ícaro's action.
 
 ### Q-005 — Hosted URL
 
-The repo website field, README and bug-report form need the production URL. Not known yet.
-
-Needs: Ícaro, after BMI-003.
+The URL doesn't exist yet. Checked 2026-11-22 through the Vercel MCP: the Vercel account has one team and no project for this repo. Creating the project in BMI-003 produces the `*.vercel.app` URL. Then the README, the repo website field and the bug form get it. Not blocking before BMI-003. See [../tooling.md](../tooling.md).
 
 ## Decisions
+
+### D-005 — Production deploys on every merge to `main` (2026-11-22)
+
+**Decision:** production deploys automatically when a PR is squash-merged to `main`, through Vercel's Git integration. Release tags (release-please, BMI-071) only version and changelog; they don't gate deploys.
+**Why:** one maintainer, squash-only merges and CI that must pass before merge make `main` always releasable. Gating on tags adds a manual step with no review benefit. The security report also wants deploys through the Git integration, so no deploy token sits in GitHub.
+**Decided by:** PM, from the community report's recommendation, resolving the former Q-004. Reversible; Ícaro can overrule.
+**Affects:** BMI-003, BMI-071.
 
 ### D-004 — Quality, security and community standards package (2026-11-22)
 

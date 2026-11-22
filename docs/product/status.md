@@ -48,13 +48,17 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 
 ## Blocked / waiting on Ícaro
 
-- **D-004** was relayed by the git-owner session. Please confirm it directly (especially the single-key shortcut change).
-- **Q-003** contact address, **Q-004** deploy on every merge to `main`?, **Q-005** hosted URL: see decisions.md.
-- **Q-001** Localized URLs for SEO? Not blocking now; needed before launch.
-- **Q-002** Portuguese marketing? Not blocking development.
-- **BMI-042** needs Ícaro to review the `pt-BR` strings before it's `Done`.
+Only items that block something. Questions with a default in force are in decisions.md and don't wait.
+
+- **BMI-042 → Done:** Ícaro is correcting `src/i18n/messages/pt-BR.json`. PM doesn't touch the file and won't ask again.
+- **Q-003:** a project mailbox for the code of conduct. Blocks BMI-050 only. Recommendation in decisions.md.
+- **D-004** was relayed by the git-owner session, not heard directly. Stays in force unless Ícaro objects.
 
 ## Log
+
+### 2026-11-22 (answers from Ícaro)
+
+- D-005 (production deploys on every merge to `main`) recorded; Q-004 closed. Q-001, Q-002, Q-003 now carry a recommendation and a default. Q-005: no Vercel project exists yet. New `docs/tooling.md` lists the MCP servers and how we use them.
 
 ### 2026-11-22 (i18n committed)
 

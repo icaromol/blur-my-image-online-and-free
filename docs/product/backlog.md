@@ -16,7 +16,7 @@ Progress: 0 of 44 `Must` done, 28 in review, 4 in progress.
 | --- | --- | --- | --- | --- | --- |
 | BMI-001 | Scaffold: Vue 3 + Vite + TS, Biome, Vitest, Playwright, husky pre-commit | Must | M | Review | |
 | BMI-002 | CI: check, unit, e2e, Docker build on every PR; Dependabot | Must | S | In progress | BMI-001 |
-| BMI-003 | Deploy to Vercel Hobby (static site + `/api/image` function) | Must | S | Idea | BMI-001, BMI-014 |
+| BMI-003 | Deploy to Vercel Hobby (static site + `/api/image` function); Git integration, production on every merge to `main` (D-005); no Vercel project exists yet | Must | S | Idea | BMI-001, BMI-014 |
 | BMI-004 | Docker image (static site + proxy on Node) built in CI as the exit path | Must | S | Review | BMI-014 |
 
 ### E2. Input
@@ -83,7 +83,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-069 | README honesty and sync: privacy and proxy text says Vercel's request log keeps the image URL, IP and user agent for 1 hour; shortcut focus rule; contributing links; layout tree; new scripts | Must | S | Idea | BMI-068 |
 | BMI-070 | Community files: `CONTRIBUTING.md`, issue forms, PR template, labels, merge settings, saved replies | Must | M | In progress | |
 | BMI-071 | Releases: release-please config and workflow, Conventional Commits check on the PR title | Must | S | Review | BMI-002 |
-| BMI-072 | `CODE_OF_CONDUCT.md` (Contributor Covenant 3.0) and `SECURITY.md`, contact kept as placeholder until Q-003 is answered | Must | S | Review | |
+| BMI-072 | `CODE_OF_CONDUCT.md` (Contributor Covenant 3.0) and `SECURITY.md`, `SECURITY.md` uses GitHub private reporting (no email); the code of conduct keeps a placeholder contact until a project mailbox exists (Q-003) | Must | S | Review | |
 | BMI-073 | Manual platform settings checklist for Ícaro (GitHub Actions and security, Vercel 2FA, WAF rate-limit rule, toolbar and analytics off, env vars) | Must | S | Idea | BMI-003 |
 
 ### E6. Launch readiness
