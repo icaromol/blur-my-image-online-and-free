@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 48 `Must` done, 43 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-076, after the merge), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 and BMI-081 (`Should`, `Review`).
+Progress: 0 of 48 `Must` done, 43 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-076, after the merge), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 and BMI-081 (`Should`, `Review`), BMI-082 (`Should`, `Ready`, after the merge) and BMI-083 (`Should`, `Idea`).
 
 ### E1. Foundation
 
@@ -106,6 +106,8 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-079 | Privacy notice under the link field (his wording, `en` and `pt-BR`), associated with the field for assistive tech, with unit and e2e tests; README privacy text states it | Must | S | Review | |
 | BMI-080 | Document that the 30 requests per 60 s rate limit exists only on Vercel (WAF) and that anyone running Node or Docker must put their own limit in front; record the WAF test result in the docs | Should | S | Review | |
 | BMI-081 | The Vercel WAF deny comes back as plain text "Forbidden", not the proxy's JSON: see how the front reacts, propose a "too many requests" message with an i18n code, and note that a shared IP (school, carrier NAT) can hit the limit | Should | S | Review | |
+| BMI-082 | Hosted-only metrics (Vercel Web Analytics and Speed Insights): off by default in the code, a build-time flag in the hosted project only, lazy, no image data, CSP and privacy e2e changed on purpose, honest README and app line; spec [specs/hosted-analytics.md](specs/hosted-analytics.md); a PR of its own after the merge of PR #2 | Should | M | Ready | the merge of PR #2 |
+| BMI-083 | Funding: `.github/FUNDING.yml` with GitHub Sponsors or Open Collective (Ícaro opens the account), a line in the README; nothing on the hosted site and no third-party script; whether a donate button on the site fits Hobby is a separate question (see the item) | Should | S | Idea | |
 
 ## Later (post-v1)
 
@@ -138,7 +140,7 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-137 | Image loading by link on phones: the real ceiling is decoding memory, not the 100 MiB cap (a compressed file of tens of MB can exceed 100 megapixels, over 400 MB as RGBA, and end in `decode_failed`; a body just under the cap sits whole in a Blob, kept in RAM on iOS Safari and able to reload the tab); a lower or device-aware cap, or a clearer message when decoding fails on a very large file | Quality | Idea |
 | BMI-135 | Playwright config: don't silently reuse another process's server on port 4173 outside CI (`reuseExistingServer`); no evidence yet that this caused the 2026-11-22 failure (BMI-074) | Quality | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-082`; later effects `BMI-109`, features `BMI-127`, other later `BMI-138`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-084`; later effects `BMI-109`, features `BMI-127`, other later `BMI-138`.
 
 ---
 
@@ -368,14 +370,33 @@ When the WAF denies, Vercel answers with plain text "Forbidden", not the proxy's
 
 Delivered by `-cc` and verified by the dispatcher (2026-11-22, per `-75`; not committed yet, with the opus reviewer; PM hasn't read the code): `src/input/url.ts` turns a proxy answer with status 429, or with the header `x-vercel-mitigated: deny`, into the error `rate_limited`, checked before the body is read; a plain-text 403 without that header stays `load_failed`, so the app never says "too many requests" by mistake; the proxy's own JSON 403 with its code works as before; nothing changes in `server/` or in the proxy's contract. Proposed messages, for Ícaro to correct the `pt-BR` before the merge: `en` "Too many requests from your network right now. Try again in about a minute."; `pt-BR` "Muitas solicitações vindas da sua rede agora. Tente de novo em cerca de um minuto." Gate: check clean, 303 tests, e2e 42/42, size 43.69 of 45 kB initial (1.31 kB of room) and 192.8 of 195 kB. The quality lane writes the shared-address sentence in `docs/hosting.md` in one pass with the usage-alert sentence of BMI-073.
 
-Committed (2026-11-22, local on the feature branch): `3aa1445` (`url.ts`, `url.test.ts`, `en.json`, `pt-BR.json`, `e2e/input.spec.ts`) and `a9f8966` (README and `docs/hosting.md`: the shared-address sentence, and that the app recognizes the block only when the proxy is on the same origin). Gate on the last state, per `-75`: check clean in 105 files, 303 tests, e2e 42/42, size 43.69 of 45 kB initial (1.31 kB of room) and 192.8 of 195 kB. The reviewer's decisions: the `429` branch stays (the proxy never returns 429; Vercel Hobby denies with a 403 plus the header because a 429 opens an upgrade notice; a limiter of one's own usually answers 429 or 503); a `x-vercel-mitigated` header with another value (such as `challenge`, from attack or bot modes) stays `load_failed`, so the app never says "too many requests" falsely; the recognition holds only with the proxy on the same origin, which is documented. Two optional observations not applied, no urgency: cancel the response body in the block branch (as `readDirect` does) and rewrite the "plain text" comment in `url.ts` near line 96. The `pt-BR` text still needs Ícaro's eyes before the merge (the reviewer's variation: "Tente de novo daqui a um minuto"). `Review` until PR #2 merges.
+Committed (2026-11-22, local on the feature branch): `3aa1445` (`url.ts`, `url.test.ts`, `en.json`, `pt-BR.json`, `e2e/input.spec.ts`) and `a9f8966` (README and `docs/hosting.md`: the shared-address sentence, and that the app recognizes the block only when the proxy is on the same origin). Gate on the last state, per `-75`: check clean in 105 files, 303 tests, e2e 42/42, size 43.69 of 45 kB initial (1.31 kB of room) and 192.8 of 195 kB. The reviewer's decisions: the `429` branch stays (the proxy never returns 429; Vercel Hobby denies with a 403 plus the header because a 429 opens an upgrade notice; a limiter of one's own usually answers 429 or 503); a `x-vercel-mitigated` header with another value (such as `challenge`, from attack or bot modes) stays `load_failed`, so the app never says "too many requests" falsely; the recognition holds only with the proxy on the same origin, which is documented. Two optional observations not applied, no urgency: cancel the response body in the block branch (as `readDirect` does) and rewrite the "plain text" comment in `url.ts` near line 96. The `pt-BR` text is approved by Ícaro as proposed (D-030, relayed by `-aa`); the reviewer's variation is not used. `Review` until PR #2 merges.
+
+### BMI-082 — Hosted-only metrics
+
+Spec: [specs/hosted-analytics.md](specs/hosted-analytics.md). Decided by Ícaro (D-029, relayed). Ui lane with the quality lane for the tests; after the merge of PR #2, in a PR of its own; `package.json` and `pnpm-lock.yaml` are lock files if a package is added.
+
+- [ ] Before any code: an experiment on a preview with the flag on settles whether Speed Insights sets cookies and which request paths the scripts use (a read of `Set-Cookie`, `document.cookie` and the network list); the result is written into the spec.
+- [ ] The analytics code is behind a build-time flag set only in the hosted project, loaded through a dynamic `import()`, and the default build, the Docker image and Vite preview contain none of it (checked on the bundle).
+- [ ] `beforeSend` strips query strings; no custom events; no image data.
+- [ ] `security-headers.ts` and `vercel.json` stay in sync; a test pins the strict policy for the default build and the one for the hosted build.
+- [ ] `e2e/privacy.spec.ts` passes unchanged against the default build; a second case lists the exact extra requests allowed on the hosted build.
+- [ ] README (privacy section and line 80, which changes unless the experiment shows no cookies), the app's one-line notice (`en` and `pt-BR`, shown to Ícaro) and `docs/hosting.md` say what is true; the key-parity test, check, unit and e2e tests and `pnpm size` pass.
+
+### BMI-083 — Funding
+
+Decided by Ícaro (D-029, relayed): sponsorship and donations first, no ads, no third-party script on the site. Research (PM, 2026-11-22; Vercel's Terms, section 4, and the Hobby and fair use pages): the Hobby plan is for "your personal or non-commercial use"; the Terms don't define commercial use and don't mention donations, sponsorships or ads, and the fair-use page's examples didn't load in the fetch, so **whether a donate button on the hosted site fits Hobby is not confirmed**. A funding link on the GitHub repository (`FUNDING.yml`, the Sponsor button) doesn't touch the Vercel site at all, so it needs no answer from Vercel. Not `Ready`: Ícaro opens the account first.
+
+- [ ] Ícaro opens GitHub Sponsors or an Open Collective page (his action, and his choice which).
+- [ ] `.github/FUNDING.yml` points to it; the README gets one line; nothing is added to the site or the app.
+- [ ] A donate button or link inside the hosted app is decided separately, after someone asks Vercel support whether donations fit Hobby, or the site moves to Pro or to the Docker route; any revenue beyond donations needs Pro or another host.
 
 ### BMI-076 — Scorecard and dependency-review workflows
 
 Split out of BMI-050's post-flip list (same scope, now trackable; the `Must` count goes from 45 to 46). Quality lane, in a PR of its own after the merge of PR #2: `main` takes changes only through PRs, the workflows need the code on `main`, and PR #2 shouldn't grow. Not assignable before that merge.
 
 - [ ] A dependency-review workflow on pull requests, using `actions/dependency-review-action` (a GitHub action, allowed), pinned by full SHA, `permissions` minimal, `persist-credentials: false`, timeout, concurrency, like the existing workflows.
-- [ ] A scorecard workflow with `ossf/scorecard-action`, pinned by SHA, only once Ícaro adds it to the Actions allowlist (Q-012); until then the item is half done on purpose.
+- [ ] A scorecard workflow with `ossf/scorecard-action`, pinned by SHA. Ícaro allowed the action (D-030); `-5b` applies the allowlist setting, then the workflow is written after the merge of PR #2, in a PR of its own with the dependency-review workflow.
 - [ ] Both pass the existing workflow audit (zizmor) and appear as checks without being added to the required ones unless Ícaro says.
 
 ### BMI-050 — Go-public checklist

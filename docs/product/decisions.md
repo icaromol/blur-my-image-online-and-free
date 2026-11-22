@@ -20,28 +20,6 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
-### Q-018 — Page-view metrics on the hosted site (Speed Insights, analytics)
-
-Ícaro didn't confirm that Speed Insights and analytics are off. Per `-aa`: he wants metrics on the **hosted** site (Vercel's measurement), nothing of it in the open-source code, and he may keep the project running with it in the future. Nothing changes in Vercel or in the code until he decides (his and `-aa`'s call).
-
-Where the current promise lives (PM checked): `README.md` line 80, "No analytics cookies, no tracking pixels"; `docs/tooling.md` and BMI-003, which say to keep the Vercel Toolbar, Web Analytics and Speed Insights off because they inject third-party scripts, against the privacy promise; and `e2e/privacy.spec.ts`, which proves the page makes no third-party requests and sets no cookies. The first point of that list came from the security report, not from D-000, whatever the label.
-
-Facts `-aa` checked (relayed): the Vercel Hobby plan is for personal, non-commercial use (fair use), so any revenue, an ad or a paid plan, needs Pro or another host (the Docker image is the tested way out); Web Analytics has no cookies, serves its script from the site's own domain, allows 50,000 events a month on Hobby and pauses when that is exceeded; the sources disagree about cookies in Speed Insights, which is not confirmed. PM adds, unchecked: Web Analytics usually needs a script tag or a package in the page, so keeping it out of the open-source code may need a build-time switch for the hosted build only; someone checks the documentation before any plan is made.
-
-Options: (a) keep everything off, as promised today; (b) Web Analytics only on the hosted deployment, with the README's privacy text, the CSP and `e2e/privacy.spec.ts` changed on purpose and a line in the app saying the host counts page views without cookies; (c) a privacy-friendly analytics service of another company, which is a third-party script and the same changes plus a processor to name; (d) server-side numbers only (the proxy's request counts from Vercel's runtime logs and the WAF), with no script in the page.
-
-Recommendation: (a) until the launch decision, then (b) if he wants page-view numbers, only on the hosted build, with the privacy text honest about it. (d) is a free source for the proxy's usage in the meantime. Whatever he picks, turning any of these on is his decision plus an update of the README, the CSP and the privacy test.
-
-Default in force: **everything stays off** and nothing changes in the code or in Vercel.
-
-### Q-012 — Allow `ossf/scorecard-action` in the Actions allowlist?
-
-The post-flip checklist (BMI-050) asked for a scorecard workflow and a dependency-review workflow, and neither exists. The repo's Actions allowlist has GitHub's own actions and a short list of third-party ones (pnpm/action-setup, release-please-action, zizmor-action, action-semantic-pull-request). `actions/dependency-review-action` is GitHub's, so it's allowed; `ossf/scorecard-action` is third-party and isn't.
-
-Recommendation: add `ossf/scorecard-action` to the allowlist, pinned by SHA like the others: it's the OpenSSF project's own action, it's read-mostly, and it publishes the badge that BMI-131 would later want. The dependency-review workflow doesn't wait for this.
-
-Default in force: **only the dependency-review workflow is written; scorecard waits for his yes.** Adding to an allowlist is a GitHub setting, so it needs his go.
-
 ### Q-006 — Do the Docker image and server bundle need license notices?
 
 Audit finding C: `dist-server/node.js` bundles hono, `@hono/node-server`, ipaddr.js and undici, and the Dockerfile ships it, but only the client build emits `licenses.md`.
@@ -55,6 +33,20 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the project's main domain on 2026-11-22, per `-aa`; the earlier `https://blur-my-image.vercel.app` answers 307 to it (PM read both with a plain `GET`). The README, the repo website field and the bug form get it only when Ícaro says (D-016). Not blocking.
 
 ## Decisions
+
+### D-030 — The rate-limit message in `pt-BR` is approved; `ossf/scorecard-action` is allowed (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answers: (1) the `pt-BR` text of the rate-limit message is approved as proposed, "Muitas solicitações vindas da sua rede agora. Tente de novo em cerca de um minuto." (`en`: "Too many requests from your network right now. Try again in about a minute."), so the pre-merge read of it is done. (2) Closes Q-012: `ossf/scorecard-action` is added to the Actions allowlist, pinned by SHA like the others; `-5b` applies the setting, and the scorecard workflow is written after the merge, in a PR of its own with the dependency-review workflow (BMI-076).
+**Why:** the message and the allowlist were the last two answers waiting on him; the scorecard action is the OpenSSF project's own.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-081 (the `pt-BR` read is done), BMI-076 (the scorecard half no longer waits), the repo's Actions settings.
+
+### D-029 — Hosted-only metrics, and sponsorship and donations first (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answers, closing Q-018: (1) Vercel Web Analytics and Speed Insights go on the **hosted deployment only**: nothing in the open-source code path, nothing in the Docker image, off by default in the code. His conditions: the README and the privacy text say what is true (the hosted site counts visits and speed, never images); the README's line 80, "No analytics cookies, no tracking pixels", stays only if Vercel's documentation confirms that Speed Insights uses no cookies, otherwise the sentence changes; the CSP and `e2e/privacy.spec.ts` change on purpose and keep proving that the open-source and Docker builds make no third-party request; one line in the app says it; PM checks whether a package or only a script is needed (the JavaScript budget has 1.31 kB of room). It is specified in `specs/hosted-analytics.md` and built after the merge of PR #2, in a PR of its own; nothing of it enters PR #2. (2) Monetization: **sponsorship and donations first**, GitHub Sponsors or Open Collective with no third-party script on the site; **no ads**.
+**Why:** he wants numbers from the hosted site without touching the code people clone, and a way to fund the project that doesn't track anyone.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-082 (the metrics), BMI-083 (funding), README line 80, `docs/tooling.md`, BMI-003's "keep them off" line, `e2e/privacy.spec.ts`, `security-headers.ts`.
 
 ### D-028 — A privacy notice next to the link field; the rate limit and the WAF finding (2026-11-22)
 
