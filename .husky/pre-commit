@@ -1,1 +1,6 @@
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: gitleaks is not installed. Install it with 'mise use -g gitleaks@8.30.1' or 'brew install gitleaks'." >&2
+  exit 1
+fi
+gitleaks git --pre-commit --staged --redact --verbose --no-banner
 pnpm check
