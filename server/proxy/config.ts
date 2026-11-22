@@ -17,6 +17,21 @@ function positiveInt(value: string | undefined, fallback: number): number {
   return parsed;
 }
 
+function parseOrigins(value: string | undefined): string[] {
+  const origins = (value ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+  for (const origin of origins) {
+    if (!URL.canParse(origin) || new URL(origin).origin !== origin) {
+      throw new Error(
+        `ALLOWED_ORIGINS entry is not a bare origin: "${origin}"`,
+      );
+    }
+  }
+  return origins;
+}
+
 export function loadConfig(
   env: Record<string, string | undefined>,
 ): ProxyConfig {
@@ -24,9 +39,6 @@ export function loadConfig(
     maxBytes: positiveInt(env.MAX_BYTES, DEFAULT_MAX_BYTES),
     maxRedirects: 3,
     timeoutMs: positiveInt(env.PROXY_TIMEOUT_MS, 10_000),
-    allowedOrigins: (env.ALLOWED_ORIGINS ?? "")
-      .split(",")
-      .map((origin) => origin.trim())
-      .filter(Boolean),
+    allowedOrigins: parseOrigins(env.ALLOWED_ORIGINS),
   };
 }

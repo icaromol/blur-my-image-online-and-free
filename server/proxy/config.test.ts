@@ -1,0 +1,21 @@
+import { describe, expect, it } from "vitest";
+import { loadConfig } from "./config.js";
+
+describe("loadConfig ALLOWED_ORIGINS", () => {
+  it("parses a comma-separated list of bare origins", () => {
+    expect(
+      loadConfig({
+        ALLOWED_ORIGINS: "https://a.example, http://localhost:5173",
+      }).allowedOrigins,
+    ).toEqual(["https://a.example", "http://localhost:5173"]);
+  });
+
+  it.each([
+    "null",
+    "https://a.example/path",
+    "https://a.example/",
+    "a.example",
+  ])("throws for %j", (entry) => {
+    expect(() => loadConfig({ ALLOWED_ORIGINS: entry })).toThrow();
+  });
+});

@@ -1,40 +1,12 @@
 import dns from "node:dns";
-import { isIP, type LookupFunction } from "node:net";
-import ipaddr from "ipaddr.js";
+import type { LookupFunction } from "node:net";
 import { Agent, fetch as undiciFetch } from "undici";
-
-export class BlockedTargetError extends Error {
-  constructor(
-    readonly reason: "protocol" | "address",
-    detail: string,
-  ) {
-    super(
-      reason === "protocol"
-        ? `Unsupported protocol ${detail}`
-        : `Non-public address ${detail}`,
-    );
-  }
-}
-
-export function isPublicAddress(address: string): boolean {
-  if (!ipaddr.isValid(address)) return false;
-  let parsed = ipaddr.parse(address);
-  if (parsed instanceof ipaddr.IPv6 && parsed.isIPv4MappedAddress()) {
-    parsed = parsed.toIPv4Address();
-  }
-  return parsed.range() === "unicast";
-}
-
-export function assertPublicUrl(url: URL): void {
-  if (url.protocol !== "http:" && url.protocol !== "https:") {
-    throw new BlockedTargetError("protocol", url.protocol);
-  }
-  const host = url.hostname.replace(/^\[(.*)\]$/, "$1");
-  // IP literals never go through the DNS lookup below, so they are checked here.
-  if (isIP(host) !== 0 && !isPublicAddress(host)) {
-    throw new BlockedTargetError("address", host);
-  }
-}
+import {
+  assertPublicUrl,
+  BlockedTargetError,
+  isPublicAddress,
+} from "./address.js";
+import type { Fetch } from "./app.js";
 
 export const publicOnlyLookup: LookupFunction = (
   hostname,
@@ -49,7 +21,7 @@ export const publicOnlyLookup: LookupFunction = (
     const blocked = addresses.find((entry) => !isPublicAddress(entry.address));
     if (blocked || addresses.length === 0) {
       callback(
-        new BlockedTargetError("address", blocked?.address ?? hostname),
+        new BlockedTargetError("resolved", blocked?.address ?? hostname),
         "",
         0,
       );
@@ -66,11 +38,6 @@ export const publicOnlyLookup: LookupFunction = (
 // Checking inside the socket's own DNS lookup pins the connection to the
 // address that passed, so a second DNS answer (rebinding) can't swap it.
 const publicOnlyAgent = new Agent({ connect: { lookup: publicOnlyLookup } });
-
-export type Fetch = (
-  url: URL,
-  init: { redirect: "manual"; signal: AbortSignal },
-) => Promise<Response>;
 
 export const publicOnlyFetch: Fetch = async (url, init) => {
   assertPublicUrl(url);

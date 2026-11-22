@@ -2,7 +2,7 @@ import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { createProxyApp } from "../proxy/app.js";
 import { loadConfig } from "../proxy/config.js";
-import { publicOnlyFetch } from "../proxy/ssrf.js";
+import { publicOnlyFetch } from "../proxy/node-fetch.js";
 
 const app = createProxyApp({
   config: loadConfig(process.env),
