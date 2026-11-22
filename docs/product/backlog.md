@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 45 `Must` done, 39 in review, 3 in progress, 0 ready, 3 idea (BMI-003, 050, 073). Also BMI-074 (`Should`, `Ready`).
+Progress: 0 of 45 `Must` done, 40 in review, 2 in progress (BMI-066, 070), 0 ready, 3 idea (BMI-003, 050, 073). Also BMI-074 (`Should`, `In progress`).
 
 ### E1. Foundation
 
@@ -85,14 +85,14 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-071 | Releases: release-please config and workflow, Conventional Commits check on the PR title | Must | S | Review | BMI-002 |
 | BMI-072 | `CODE_OF_CONDUCT.md` (Contributor Covenant 3.0) and `SECURITY.md`; `SECURITY.md` uses GitHub private reporting (no email); the code of conduct contact is set (D-007, edit waiting for the git owner's commit) | Must | S | Review | |
 | BMI-073 | Manual platform settings checklist for Ícaro (GitHub Actions and security, Vercel 2FA, WAF rate-limit rule, toolbar and analytics off, env vars); each README or hosting claim that only the platform can make true is checked or reworded: 1-hour request-log retention, the 4.5 MB body limit, the rate-limit rule and usage alerts | Must | S | Idea | BMI-003 |
-| BMI-074 | Find the cause of the unexplained Chromium e2e failure of 2026-11-22: repeat the suite, capture the report and trace, fix the cause or show N green runs | Should | S | Ready | BMI-067 |
+| BMI-074 | Find the cause of the unexplained Chromium e2e failure of 2026-11-22: repeat the suite, capture the report and trace, fix the cause or show N green runs | Should | S | In progress | BMI-067 |
 
 ### E6. Launch readiness
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
 | BMI-050 | Go-public checklist (see details): audit, README matches what shipped, merge PR #1, flip public, then GitHub protections | Must | M | Idea | all v1 items, BMI-070 to BMI-073 |
-| BMI-051 | README status line and content match what shipped | Must | S | In progress | BMI-040 |
+| BMI-051 | README status line and content match what shipped | Must | S | Review | BMI-040 |
 | BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
 
 ## Later (post-v1)
@@ -255,18 +255,24 @@ Split out of BMI-050 so a worker can do the read-only part. It doesn't depend on
 
 ### BMI-051 — README and docs match what shipped
 
+Committed as `5117278` (`README.md`, `docs/hosting.md`, `index.html`), verified by the dispatcher and approved by the opus reviewer; PM spot-checked README lines 3, 30 and `index.html` line 6 and found no "open source" wording left in README or hosting.md. `Review` until PR #1 merges to `main`.
+
+Follow-ups that don't hold `Review`:
+- The privacy sentence in `README.md` line 3 and `index.html` line 6 is the provisional wording; the final wording follows Ícaro's tagline answer, and `en.json` and `pt-BR.json` were left untouched on purpose.
+- `README.md` line 99 says the export renders "at full resolution", which reads oddly beside the downscale exception on line 30. The reviewer suggests "at the loaded image's resolution". Small; goes to the quality lane with the final privacy wording.
+
 From the pre-flip audit ([audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md), findings A, B, D, E). Owner lane: quality (`README.md`, `docs/hosting.md`). Nothing here changes behavior.
 
-- [ ] The status line says pre-release (v1 built and under review, not deployed) and no longer "planning, nothing implemented". It keeps marketing in its pre-launch posture: no "try it now" until BMI-003 gives a live URL. The live wording is set at go-public (BMI-050).
-- [ ] The proxy portability sentence says `app.ts` is platform-neutral, Vercel and Node ship, and Cloudflare would need its own fetch and entry.
-- [ ] The export text says the format is chosen from a list (PNG, JPG, JPEG, WebP) and the file is named `<name>-blurred.<ext>`.
-- [ ] "Adding a language" mentions the `SUPPORTED_LOCALES` entry as well as the message file.
-- [ ] The Motion description matches the code (a local edge-clamped filter, not stock pixi-filters).
-- [ ] The pre-commit description says Biome and `vue-tsc` on staged files.
-- [ ] The Docker-build-in-CI claim is conditional on `ci.yml` and on `main`, or `ci.yml` is committed first.
-- [ ] `docs/hosting.md` matches the code: `export const GET` in `api/image.ts`, `PROXY_TIMEOUT_MS`, a fixed 3 redirects, Worker entry and DoH resolver marked deferred.
-- [ ] The privacy claim in `README.md` line 3 and in the `index.html` meta description carries the URL-proxy exception: the reviewer's suggested wording is "Images you open, drop or paste never leave your device." Final wording follows Ícaro's answer on the en / pt-BR tagline (open, see status.md); this item doesn't decide it. `index.html` is outside the quality lane's owned paths, so the dispatcher coordinates it with whoever holds that file.
-- [ ] `docs/hosting.md` line 43 ("For a free open source tool") makes an open-source claim in a tracked doc while the repo is private. Reword it neutrally, or leave it for the go-public step; the rule is that no public-facing text says "open source" before BMI-050 flips the repo. Found by the reviewer, 2026-11-22.
-- [ ] The export sentence in `README.md` line 30 ("Export it at the original resolution") says that the original resolution is kept, which isn't true for an image downscaled to the GPU limit (README line 101, the `downscaled` message). It states the exception.
-- [ ] Privacy wording: "Images you open, drop or paste never leave your device" is ambiguous, because opening a link goes through the proxy. The reviewer's smaller alternative is "Image files you open, drop or paste never leave your device". The same sentence in `src/i18n/messages/en.json` line 4 ("It never leaves your device") and `pt-BR.json` line 4 has no exception either. Wording and tagline are Ícaro's call, so the worker applies whatever he picks to the README and `index.html`; it doesn't edit the `en.json` or `pt-BR.json` taglines.
-- [ ] Out of scope here: claims only Vercel can make true (see BMI-073).
+- [x] The status line says pre-release (v1 built and under review, not deployed) and no longer "planning, nothing implemented". It keeps marketing in its pre-launch posture: no "try it now" until BMI-003 gives a live URL. The live wording is set at go-public (BMI-050).
+- [x] The proxy portability sentence says `app.ts` is platform-neutral, Vercel and Node ship, and Cloudflare would need its own fetch and entry.
+- [x] The export text says the format is chosen from a list (PNG, JPG, JPEG, WebP) and the file is named `<name>-blurred.<ext>`.
+- [x] "Adding a language" mentions the `SUPPORTED_LOCALES` entry as well as the message file.
+- [x] The Motion description matches the code (a local edge-clamped filter, not stock pixi-filters).
+- [x] The pre-commit description says Biome and `vue-tsc` on staged files.
+- [x] The Docker-build-in-CI claim is conditional on `ci.yml` and on `main`, or `ci.yml` is committed first.
+- [x] `docs/hosting.md` matches the code: `export const GET` in `api/image.ts`, `PROXY_TIMEOUT_MS`, a fixed 3 redirects, Worker entry and DoH resolver marked deferred.
+- [x] The privacy claim in `README.md` line 3 and in the `index.html` meta description carries the URL-proxy exception: the reviewer's suggested wording is "Images you open, drop or paste never leave your device." Final wording follows Ícaro's answer on the en / pt-BR tagline (open, see status.md); this item doesn't decide it. `index.html` is outside the quality lane's owned paths, so the dispatcher coordinates it with whoever holds that file.
+- [x] `docs/hosting.md` line 43 ("For a free open source tool") makes an open-source claim in a tracked doc while the repo is private. Reword it neutrally, or leave it for the go-public step; the rule is that no public-facing text says "open source" before BMI-050 flips the repo. Found by the reviewer, 2026-11-22.
+- [x] The export sentence in `README.md` line 30 ("Export it at the original resolution") says that the original resolution is kept, which isn't true for an image downscaled to the GPU limit (README line 101, the `downscaled` message). It states the exception.
+- [x] Privacy wording: "Images you open, drop or paste never leave your device" is ambiguous, because opening a link goes through the proxy. The reviewer's smaller alternative is "Image files you open, drop or paste never leave your device". The same sentence in `src/i18n/messages/en.json` line 4 ("It never leaves your device") and `pt-BR.json` line 4 has no exception either. Wording and tagline are Ícaro's call, so the worker applies whatever he picks to the README and `index.html`; it doesn't edit the `en.json` or `pt-BR.json` taglines.
+- [x] Out of scope here: claims only Vercel can make true (see BMI-073).

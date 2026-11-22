@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 45 `Must` done · 39 in review · 3 in progress · 0 ready · 0 blocked. Plus BMI-074 (`Should`, `Ready`): unexplained e2e failure. Full list in [backlog.md](backlog.md).
+0 of 45 `Must` done · 40 in review · 2 in progress · 0 ready · 0 blocked. Plus BMI-074 (`Should`, `In progress`): unexplained e2e failure. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -56,6 +56,8 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- BMI-051 → `Review` (`5117278`, verified by the dispatcher, approved by the reviewer; PM spot-checked the README, hosting and `index.html` lines). BMI-074 is `In progress` in the quality lane; nobody runs e2e or a preview on port 4173 meanwhile. Follow-ups: final privacy wording (Ícaro) and `README.md` line 99 wording.
 
 - BMI-074 added (`Should`, `Ready`, quality lane) at the orchestrator's request: the cause of the first failing local e2e run is unknown, and the item repeats the suite with the trace captured. It is a verification of work in `Review`; Ícaro can veto the addition. `a3840a9` committed the D-009 docs.
 
