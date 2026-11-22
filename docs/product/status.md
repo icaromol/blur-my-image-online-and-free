@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 47 `Must` done · 41 in review · 4 in progress · 1 ready · 1 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+0 of 47 `Must` done · 40 in review · 5 in progress · 1 ready · 1 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -55,6 +55,8 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- **CodeRabbit rounds 2 and 3 finished** (per `-5b`): the third, on `5f671ed`, found one new Minor finding, in `src/i18n/index.ts`: a stale locale load can win over the latest choice (the reviewer had spotted the same race and it wasn't tracked). A correction inside the README's scope, added to BMI-077, which is `In progress` again for it (ui lane, tests, no lock files, size budget still to pass). Everything else is answered or fixed.
 
 - Incident, repaired (`-5b`, around 18:03 to 18:06): running `pnpm check` in temporary worktrees whose `node_modules` was a symlink made pnpm re-point the shared `node_modules` at the worktrees; removing them broke biome and other modules for a few minutes, and the pre-commit hook failed meanwhile. `-5b` repaired it with a forced frozen install and removed only the broken links: 0 broken links, none pointing to `/tmp`, `pnpm check` clean, 293 tests passing; `package.json` and the lockfile were not touched. Rule added to `team.md`: temporary worktrees get their own `node_modules`, never a symlink to the shared one. A lane that saw a biome or module-not-found failure in that window can rerun.
 

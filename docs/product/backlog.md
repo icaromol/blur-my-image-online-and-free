@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 47 `Must` done, 41 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-076, after the merge), 1 blocked (BMI-073, on Ícaro's own actions). Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`) and BMI-078 (`Should`, `Idea`).
+Progress: 0 of 47 `Must` done, 40 in review, 5 in progress (BMI-003, 050, 066, 070, 077), 1 ready (BMI-076, after the merge), 1 blocked (BMI-073, on Ícaro's own actions). Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`) and BMI-078 (`Should`, `Idea`).
 
 ### E1. Foundation
 
@@ -102,7 +102,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-051 | README status line and content match what shipped | Must | S | Review | BMI-040 |
 | BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
 | BMI-076 | Scorecard and dependency-review workflows (split out of BMI-050's post-flip list): `.github/workflows/`, actions pinned by SHA, in a PR of their own after the merge of PR #2 | Must | S | Ready | the merge of PR #2 |
-| BMI-077 | Address CodeRabbit's findings on PR #2: nine corrections in the ui, server and quality lanes; Ícaro's three answers added (D-025, D-026) | Must | M | Review | the CodeRabbit review of PR #2 |
+| BMI-077 | Address CodeRabbit's findings on PR #2: nine corrections in the ui, server and quality lanes; Ícaro's three answers added (D-025, D-026); a locale-race fix added after round 3 | Must | M | In progress | the CodeRabbit review of PR #2 |
 
 ## Later (post-v1)
 
@@ -327,6 +327,8 @@ Decided by Ícaro (D-025, D-026; relayed by `-aa`), now part of this item:
 
 The checks (Verify, E2E Chromium, Conventional Commits title) must be green after the fixes. Who answers each CodeRabbit comment on the PR is for `-aa` to name: `-5b` doesn't answer PR comments today, and the lanes don't run GitHub actions. Each answer says what was fixed, or why not.
 
+Added after CodeRabbit's third round (2026-11-22, per `-5b` and `-75`; PM didn't read the comment): one new finding, Minor, and no other. The race was already noticed by the opus reviewer when it approved the ui commit (a slow first load of `pt-BR` can finish after the user picked `en`; only on the first `pt-BR` load; it didn't block then and was not tracked).
+- [ ] **Minor**, ui lane: `src/i18n/index.ts` around line 36: stale locale loads must not win. If a language switch is still loading and the user picks another, the older load can finish last and apply its locale, page title and saved preference while the select shows the newer choice. `setLocale` keeps a counter of the latest selection and returns `false` for a superseded one, so `chooseLocale` doesn't persist it and `LanguageSelect.vue` returns to the active locale. Tests: in `set-locale.test.ts`, a slow load overtaken by a fast one (the last choice wins, and it is the saved preference), plus the existing failed-load case; one e2e case in `e2e/i18n.spec.ts` if it can be made stable (not required). No lock files; the initial JavaScript budget has 1.5 kB of room, and `pnpm size` still has to pass.
 ### BMI-076 — Scorecard and dependency-review workflows
 
 Split out of BMI-050's post-flip list (same scope, now trackable; the `Must` count goes from 45 to 46). Quality lane, in a PR of its own after the merge of PR #2: `main` takes changes only through PRs, the workflows need the code on `main`, and PR #2 shouldn't grow. Not assignable before that merge.
