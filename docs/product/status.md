@@ -45,4 +45,6 @@ In order, once the items above are merged. This is build order, not a scope cut:
 
 - PM set up: backlog, status, decisions and the i18n spec in `docs/product/`, PM skill in `.claude/skills/pm/`.
 - D-001: i18n with `en` + `pt-BR` enters v1, built before more UI. D-002: vue-i18n.
-- Scaffold, proxy, Docker, file picker, gaussian and PNG export exist on `feat/scaffold-and-proxy`, staged, not committed yet → `Review`.
+- Scaffold, proxy, Docker, file picker, gaussian and PNG export exist on `feat/scaffold-and-proxy` → `Review`. Draft PR #1.
+- PM docs committed as `0008a01` on `feat/scaffold-and-proxy` (lands on `main` with PR #1).
+- BMI-002: the CI draft is being updated with the quality checks another agent is finishing; the git-owner session will report when it's in.
