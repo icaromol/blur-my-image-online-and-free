@@ -55,6 +55,10 @@ Only items that block something. Questions with a default in force are in decisi
 
 ## Log
 
+### 2026-11-22 (dispatcher)
+
+- Added the `dispatcher` agent (`.claude/agents/dispatcher.md`), the five-lane team (`docs/product/team.md`) and its board (`docs/product/dispatch.md`). Not started and not tested: it spawns workers and sets its own recurring trigger when run with `claude --agent dispatcher`.
+
 ### 2026-11-22 (pt-BR reviewed)
 
 - Ícaro corrected two `pt-BR` strings, committed as `bbb060c`. BMI-042's review condition is met; the item stays `Review` until PR #1 merges to `main`.
