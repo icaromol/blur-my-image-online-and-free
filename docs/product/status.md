@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 44 `Must` done · 28 in review · 4 in progress · 0 blocked. Full list in [backlog.md](backlog.md).
+0 of 44 `Must` done · 36 in review · 4 in progress · 0 blocked. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -13,7 +13,7 @@ Updated: 2026-11-22
 | ID | Item | Owner | Status |
 | --- | --- | --- | --- |
 | BMI-001, 004, 010, 014, 020, 021, 030 | Scaffold, proxy, Docker, file picker, gaussian, PNG export (branch `feat/scaffold-and-proxy`) | git-owner session | Review |
-| BMI-002 | CI + Dependabot | git-owner session | Ready |
+| BMI-002 | CI + Dependabot | git-owner session | In progress, on hold until `pnpm size` is green |
 | BMI-040 | i18n foundation | git-owner session committed `ba6343f` | Review |
 | BMI-041 | Locale resolution + switcher | same commit | Review |
 | BMI-042 | Translate existing UI (now ~5 components + effect and export labels; re-size to M) | same commit | Review |
@@ -54,6 +54,11 @@ Only items that block something. Questions with a default in force are in decisi
 - **D-004** was relayed by the git-owner session, not heard directly. Stays in force unless Ícaro objects.
 
 ## Log
+
+### 2026-11-22 (E7 landed)
+
+- Git-owner session committed the frontend standards package (`533f624`), Node entry headers (`6bea2a7`) and the layout doc (`120f89b`). BMI-060, 062, 063, 064, 065, 067, 068, 069 → `Review`; BMI-061 `In progress`.
+- `pnpm size` is red (43.21 kB against 35 kB initial JS). D-006: Ícaro chose to precompile the i18n messages. BMI-002 waits for it.
 
 ### 2026-11-22 (dispatcher)
 
