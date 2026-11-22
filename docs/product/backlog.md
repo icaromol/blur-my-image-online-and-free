@@ -206,7 +206,8 @@ User stories and acceptance criteria are in [specs/i18n.md](specs/i18n.md), requ
 
 Community files are in. Left is GitHub settings, which `-5b` applies now (D-011): labels, squash-only merges, delete branch on merge, suggest updating PR branches.
 
-- [ ] Labels created; squash-only merges and delete-branch-on-merge on; "suggest updating PR branches" on. Read back with `gh api` or `gh repo view` and reported.
+- [x] Labels created; squash-only merges, delete-branch-on-merge and "suggest updating PR branches" are on. `-5b` read them back with `gh api` and found them already applied (labels: accepted, accessibility, bug, documentation, duplicate, effect, enhancement, good first issue, help wanted, needs-info, needs-triage, out-of-scope).
+- [ ] The default squash commit message is the pull request title only (`squash_merge_commit_message` is `PR_BODY` today; the title-only value is `BLANK`). It is in the approved community package ("default message 'Pull request title'", D-004) and `CONTRIBUTING.md` already tells contributors the PR title becomes the commit on `main`; release-please and the title check depend on it. Applied by `-5b` with `gh api`, then read back.
 - [ ] Saved replies added by Ícaro by hand (a per-user setting, not available through the repo API).
 
 ### BMI-050 — Go-public checklist

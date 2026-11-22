@@ -57,6 +57,8 @@ Only items that block something. Questions with a default in force are in decisi
 
 ### 2026-11-22 (new PM session, handoff)
 
+- BMI-070 (D-011): `-5b` read the GitHub settings back and found squash-only, delete branch on merge, update branch and the labels already applied. One setting from the approved community package was still off: the default squash message (PR body instead of the PR title); added to BMI-070 and handed to `-5b`. Saved replies stay Ícaro's.
+
 - Ícaro's go-ahead, relayed by `-aa`: D-011 (apply the BMI-070 GitHub settings, `-5b`), D-012 (BMI-003 `Ready`, `-f2` creates and deploys the Vercel project) and D-013 (go public is a yes, with CodeRabbit on PR #1 before the merge: pre-flip checks, flip, protections, CodeRabbit app, PR out of draft, corrections, merge). BMI-050 → `In progress` with the new order. The flip waits for `-aa`'s go to `-5b` and for Q-008 (origin and license of three skills under `.claude/`, in the history since the initial commit). Merging PR #1 starts the first production deploy once BMI-003 is done (D-005).
 
 - BMI-051's marketing criterion closed: `cb39247` and `ad82c2e` align the marketing text with D-010. BMI-051 has nothing open except the merge of PR #1. No item is `Ready` for any lane; BMI-066 waits for 2026-11-28.
