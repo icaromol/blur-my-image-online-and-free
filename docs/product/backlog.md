@@ -2,13 +2,13 @@
 
 Single source of truth for work items. Statuses, priority and size are defined in `.claude/skills/pm/SKILL.md`. Current iteration and log live in [status.md](status.md); decisions in [decisions.md](decisions.md).
 
-Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (PR #1, draft): the first slice. `In progress` means the code exists in the shared working tree but isn't committed, so nothing there is verified or `Review` yet.
+Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (PR #1, draft, not merged). `Review` means committed on that branch, not merged to `main`.
 
 ## Milestone v1
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 30 `Must` done, 7 in review, 14 in progress (uncommitted).
+Progress: 0 of 44 `Must` done, 21 in review, 5 in progress (i18n).
 
 ### E1. Foundation
 
@@ -24,11 +24,11 @@ Progress: 0 of 30 `Must` done, 7 in review, 14 in progress (uncommitted).
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
 | BMI-010 | Load via file picker | Must | S | Review | BMI-001 |
-| BMI-011 | Load via drag and drop anywhere on the page | Must | S | In progress | BMI-010 |
-| BMI-012 | Load via paste (`Ctrl/Cmd+V` with an image on the clipboard) | Must | S | In progress | BMI-010 |
-| BMI-013 | Load via URL field and via pasting a copied link; direct CORS first, proxy fallback | Must | M | In progress | BMI-014 |
+| BMI-011 | Load via drag and drop anywhere on the page | Must | S | Review | BMI-010 |
+| BMI-012 | Load via paste (`Ctrl/Cmd+V` with an image on the clipboard) | Must | S | Review | BMI-010 |
+| BMI-013 | Load via URL field and via pasting a copied link; direct CORS first, proxy fallback | Must | M | Review | BMI-014 |
 | BMI-014 | URL proxy `/api/image`: Hono, SSRF checks per redirect, `image/*` only, `MAX_BYTES`, timeout, cross-site rejection | Must | M | Review | |
-| BMI-015 | Large images: read `MAX_TEXTURE_SIZE`, downscale to fit, tell the user before editing | Must | S | In progress | BMI-010 |
+| BMI-015 | Large images: read `MAX_TEXTURE_SIZE`, downscale to fit, tell the user before editing | Must | S | Review | BMI-010 |
 
 ### E3. Effects and editing
 
@@ -36,22 +36,22 @@ Progress: 0 of 30 `Must` done, 7 in review, 14 in progress (uncommitted).
 | --- | --- | --- | --- | --- | --- |
 | BMI-020 | Operation list + PixiJS renderer, whole-image operations | Must | M | Review | BMI-001 |
 | BMI-021 | Gaussian effect, intensity 1–100 relative to the image's shorter side | Must | S | Review | BMI-020 |
-| BMI-022 | Pixelate effect + "blur is not redaction" warning next to it | Must | S | In progress | BMI-020 |
-| BMI-023 | Motion effect + angle control (0–180°) | Must | S | In progress | BMI-020 |
-| BMI-024 | Effect selector in the toolbar | Must | S | In progress | BMI-022 |
-| BMI-025 | Brush: paint the current effect + intensity as a mask; strokes with the same setting don't compound; `B` shortcut | Must | L | In progress | BMI-020 |
-| BMI-026 | Eraser: restore original pixels; `E` shortcut | Must | M | In progress | BMI-025 |
-| BMI-027 | Brush size from toolbar and `[` / `]` | Must | S | In progress | BMI-025 |
-| BMI-028 | Undo / redo as a pointer in the operation list; `Ctrl/Cmd+Z`, `Ctrl/Cmd+Shift+Z` | Must | M | In progress | BMI-020 |
+| BMI-022 | Pixelate effect + "blur is not redaction" warning next to it | Must | S | Review | BMI-020 |
+| BMI-023 | Motion effect + angle control (0–180°) | Must | S | Review | BMI-020 |
+| BMI-024 | Effect selector in the toolbar | Must | S | Review | BMI-022 |
+| BMI-025 | Brush: paint the current effect + intensity as a mask; strokes with the same setting don't compound; `B` shortcut | Must | L | Review | BMI-020 |
+| BMI-026 | Eraser: restore original pixels; `E` shortcut | Must | M | Review | BMI-025 |
+| BMI-027 | Brush size from toolbar and `[` / `]` | Must | S | Review | BMI-025 |
+| BMI-028 | Undo / redo as a pointer in the operation list; `Ctrl/Cmd+Z`, `Ctrl/Cmd+Shift+Z` | Must | M | Review | BMI-020 |
 
 ### E4. Export
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
 | BMI-030 | Export PNG at original resolution | Must | S | Review | BMI-020 |
-| BMI-031 | Export JPG / JPEG (user picks extension), transparency flattened on white, quality 0.92 | Must | S | In progress | BMI-030 |
-| BMI-032 | Export WebP; feature-detect Safari's silent PNG fallback and lazy-load `@jsquash/webp` | Must | M | In progress | BMI-030 |
-| BMI-033 | Export guarantees: output equals preview at full resolution, no EXIF in any format (e2e) | Must | S | In progress | BMI-031, BMI-032 |
+| BMI-031 | Export JPG / JPEG (user picks extension), transparency flattened on white, quality 0.92 | Must | S | Review | BMI-030 |
+| BMI-032 | Export WebP; feature-detect Safari's silent PNG fallback and lazy-load `@jsquash/webp` | Must | M | Review | BMI-030 |
+| BMI-033 | Export guarantees: output equals preview at full resolution, no EXIF in any format (e2e) | Must | S | Review | BMI-031, BMI-032 |
 
 ### E5. Internationalization — spec: [specs/i18n.md](specs/i18n.md)
 
@@ -59,17 +59,38 @@ Built before any more UI work so new screens are born translated (D-001).
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
-| BMI-040 | i18n foundation: vue-i18n, `src/i18n/`, typed keys, lazy-loaded locales, key-parity test | Must | M | Ready | BMI-001 |
-| BMI-041 | Locale resolution (saved → browser → `en`), switcher, `<html lang>`, persisted choice | Must | S | Ready | BMI-040 |
-| BMI-042 | Translate the existing UI to `pt-BR`; effect labels from message keys | Must | S | Ready | BMI-040 |
-| BMI-043 | Errors as codes: client and proxy codes mapped to translated messages | Must | S | Ready | BMI-040 |
-| BMI-044 | Locale-aware number formatting and plurals | Must | S | Ready | BMI-040 |
+| BMI-040 | i18n foundation: vue-i18n, `src/i18n/`, typed keys, lazy-loaded locales, key-parity test | Must | M | In progress | BMI-001 |
+| BMI-041 | Locale resolution (saved → browser → `en`), switcher, `<html lang>`, persisted choice | Must | S | In progress | BMI-040 |
+| BMI-042 | Translate the existing UI to `pt-BR`; effect labels from message keys | Must | S | In progress | BMI-040 |
+| BMI-043 | Errors as codes: client and proxy codes mapped to translated messages | Must | S | In progress | BMI-040 |
+| BMI-044 | Locale-aware number formatting and plurals | Must | S | In progress | BMI-040 |
+
+### E7. Quality, security and community — source: D-004 (`.local/standards/`, not committed)
+
+Approved package from three research reports (quality and CI, security baseline, community and governance). The reports were written against commit `5eae8fc` and the code has moved; each item is re-checked against current files when picked up. Re-check item details in the reports, not here.
+
+| ID | Item | Priority | Size | Status | Depends on |
+| --- | --- | --- | --- | --- | --- |
+| BMI-060 | Quality bar: stricter tsconfig flags, Biome rules and per-folder import boundaries, kebab-case file names, coverage thresholds on `src/engine` and `server/proxy`, `docs/quality.md` linked from README | Must | M | Idea | BMI-001 |
+| BMI-061 | Performance budget: lazy-load the engine so initial JS stays ≤ 35 kB brotli, `size-limit` in CI, WebP encoder only via `import()` | Must | S | Idea | BMI-040, BMI-002 |
+| BMI-062 | Proxy hardening A: one middleware sets `no-store`, `nosniff`, CORP, `Referrer-Policy`, sandbox CSP on every response; image type allowlist with file-signature check, mismatch → 415 | Must | M | Idea | BMI-014 |
+| BMI-063 | Proxy hardening B: default ports only, reject URL credentials, block `::/96`, fixed outbound headers, validate `ALLOWED_ORIGINS` at startup | Must | M | Idea | BMI-014 |
+| BMI-064 | Proxy platform: `maxDuration: 15`, Docker base image pinned by digest, shared `security-headers.ts` on static responses, split `ssrf.ts` into pure `address.ts` + Node-only `node-fetch.ts` | Must | M | Idea | BMI-062 |
+| BMI-065 | Page security headers and CSP: `pixi.js/unsafe-eval`, single `security-headers.ts`, Vite preview and Vercel config, Playwright runs under the real CSP, remote fetch with `credentials: "omit"` and no referrer | Must | M | Idea | BMI-003, BMI-064 |
+| BMI-066 | Supply chain: `pnpm-workspace.yaml` safety settings, Dependabot cooldown, CI `pnpm audit`, license and dist checks, `security.yml` | Must | S | Idea | BMI-002 |
+| BMI-067 | Privacy tests: e2e (same-origin requests only, no cookies, no CSP violations), EXIF/GPS sentinel check on PNG/JPG/WebP including the jsquash path, proxy privacy test | Must | M | Idea | BMI-033, BMI-062 |
+| BMI-068 | Accessibility: axe e2e at WCAG 2.2 AA; single-key shortcuts (`B`, `E`, `[`, `]`) only while the canvas has focus; a click without drag paints one dab | Must | M | Idea | BMI-025 |
+| BMI-069 | README honesty and sync: privacy and proxy text says Vercel's request log keeps the image URL, IP and user agent for 1 hour; shortcut focus rule; contributing links; layout tree; new scripts | Must | S | Idea | BMI-068 |
+| BMI-070 | Community files: `CONTRIBUTING.md`, issue forms, PR template, labels, merge settings, saved replies | Must | M | Idea | |
+| BMI-071 | Releases: release-please config and workflow, Conventional Commits check on the PR title | Must | S | Idea | BMI-002 |
+| BMI-072 | `CODE_OF_CONDUCT.md` (Contributor Covenant 3.0) and `SECURITY.md`, contact kept as placeholder until Q-003 is answered | Must | S | Idea | |
+| BMI-073 | Manual platform settings checklist for Ícaro (GitHub Actions and security, Vercel 2FA, WAF rate-limit rule, toolbar and analytics off, env vars) | Must | S | Idea | BMI-003 |
 
 ### E6. Launch readiness
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
-| BMI-050 | Pre-release audit (secrets, history, license, README accuracy) and make the repo public | Must | S | Idea | all v1 items |
+| BMI-050 | Go-public checklist (see details): audit, replace placeholders, decide CLAUDE.md and `.claude/`, flip public, then GitHub protections | Must | M | Idea | all v1 items, BMI-070 to BMI-073 |
 | BMI-051 | README status line and content match what shipped | Must | S | Idea | all v1 items |
 
 ## Later (post-v1)
@@ -94,8 +115,12 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-124 | HEIC input outside Safari | Feature | Idea |
 | BMI-125 | Tiled rendering above `MAX_TEXTURE_SIZE` | Feature | Idea |
 | BMI-126 | Copy result to clipboard | Feature | Idea |
+| BMI-130 | Property tests (fast-check) for URL and IP parsing | Quality | Idea |
+| BMI-131 | OpenSSF badge, signed commits, Trusted Types, COEP | Security | Idea |
+| BMI-132 | App version in the UI and in the bug form | Community | Idea |
+| BMI-133 | `GOVERNANCE.md`, `CODEOWNERS`, second admin, Discussions, interaction limits, area labels | Community | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-052`; later effects `BMI-109`, features `BMI-127`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-052`, `BMI-074`; later effects `BMI-109`, features `BMI-127`, other later `BMI-134`.
 
 ---
 
@@ -111,7 +136,14 @@ As a maintainer, I want every PR checked automatically so that a broken build ne
 - [ ] Dependabot for npm and GitHub Actions, weekly.
 - [ ] `main` branch protection requires the workflow to pass.
 
-Note: a draft of the workflow and Dependabot config is waiting in the git-owner session's scratchpad.
+Expanded by D-004 (design in `.local/standards/quality.md`, CI design section):
+
+- [ ] Job **Verify** on every PR and `main`: frozen install, check, coverage, build, build:server, size, `pnpm audit --audit-level=high`, license and dist checks.
+- [ ] Job **E2E (Chromium)** on every PR; Firefox and WebKit, and the Docker build with a smoke test, on `main` only.
+- [ ] Workflows: `contents: read`, `persist-credentials: false`, actions pinned by full SHA, timeouts, concurrency cancel.
+- [ ] Required checks on `main` can't be enforced while the repo is private on the Free plan: the ruleset is part of BMI-050.
+
+The git-owner session owns the CI draft and reports when it lands.
 
 ### BMI-011 — Drag and drop
 
@@ -134,3 +166,17 @@ As a user, I want to paste a screenshot with `Ctrl/Cmd+V` so that I skip saving 
 ### BMI-040 to BMI-044 — i18n
 
 User stories and acceptance criteria are in [specs/i18n.md](specs/i18n.md), requirements R1 to R5.
+
+
+### BMI-050 — Go-public checklist
+
+Ordered, from `.local/standards/community.md` and `security.md` (D-004). Every line needs Ícaro's go before the repo flips.
+
+Before the flip:
+- [ ] Full-history gitleaks re-run is clean.
+- [ ] `SECURITY.md` and `CODE_OF_CONDUCT.md` committed with a real contact (Q-003) instead of `<CONDUCT_CONTACT>`.
+- [ ] **Decide what happens to `CLAUDE.md` and `.claude/`** (mandatory item; brandkit, design-taste-frontend and no-ai-slop have no stated origin or license).
+- [ ] Third-party license notices in the bundle; README status line and contributing links updated (BMI-051).
+- [ ] Repo description, topics, social preview image; 3 to 5 good first issues.
+
+At the flip, in order: flip public → private vulnerability reporting, push protection, CodeQL default → ruleset on `main` (no force push or deletion, PR required, required checks, linear history) → fork PR workflows need approval → scorecard and dependency-review workflows → confirm Vercel Git fork protection.

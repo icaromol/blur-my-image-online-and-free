@@ -21,7 +21,45 @@ The marketing skill says public copy is English-only. With the app in `pt-BR`, d
 
 Needs: Ícaro. Input from `marketing-strategist`.
 
+### Q-003 — Contact address for the code of conduct and SECURITY.md
+
+A dedicated alias is recommended, the same one for both. Until chosen, files keep the `<CONDUCT_CONTACT>` placeholder, which blocks BMI-050.
+
+Needs: Ícaro.
+
+### Q-004 — When does production deploy?
+
+On every merge to `main` (recommended in the community report) or only on release tags.
+
+Needs: Ícaro. Affects BMI-003 and BMI-071.
+
+### Q-005 — Hosted URL
+
+The repo website field, README and bug-report form need the production URL. Not known yet.
+
+Needs: Ícaro, after BMI-003.
+
 ## Decisions
+
+### D-004 — Quality, security and community standards package (2026-11-22)
+
+**Decision**, as relayed by the git-owner session from `.local/standards/decisions.md` (Ícaro's answers; PM has not heard them directly, confirmation requested):
+1. The proxy stays `GET /api/image?url=…`. No switch to POST. The README privacy text becomes honest: our code logs nothing, but Vercel's runtime log keeps the request path including the image URL, client IP and user agent for 1 hour on Hobby.
+2. Single-key shortcuts (`B`, `E`, `[`, `]`) work only while the image canvas has focus (WCAG 2.1.4). `Ctrl/Cmd` shortcuts stay global. The README says so.
+3. `CLAUDE.md` and `.claude/`: no change now. Deciding is a mandatory item on the go-public checklist.
+4. The rest of the three reports is approved: community files, quality bar, CI, security headers and CSP, supply-chain settings, proxy fixes, privacy tests. Response targets: 7 days for issues and conduct reports, 7 days to acknowledge security reports.
+5. License stays MIT. v1 scope is the full README; nothing is cut without Ícaro's direct yes.
+
+**Why:** hardening and standards before the repo goes public, without changing the product's three-step scope.
+**Decided by:** Ícaro, per the git-owner session.
+**Affects:** backlog epic E7 (BMI-060 to BMI-073), BMI-002 (expanded), BMI-050 (go-public checklist), README shortcuts and privacy text. Item 2 changes a behavior the README currently describes as global: the README is updated in BMI-069.
+
+### D-003 — i18n sequencing after the editor was built first (2026-11-22)
+
+**Decision:** the editor UI was committed (`bdcccbe`) before i18n existed, with English strings hard-coded. Ícaro agreed to build i18n now over the existing UI: BMI-040 to BMI-044 in one pass, then every later story ships its `pt-BR` strings from the start.
+**Why:** the committed UI is small enough to translate in one change, and the parity test (BMI-040) stops it from regressing.
+**Decided by:** Ícaro ("ok prossiga, estou de acordo").
+**Affects:** BMI-040 to BMI-044. Not answered by this decision: whether other sessions must pause adding UI strings meanwhile.
 
 ### D-002 — vue-i18n for internationalization (2026-11-22)
 
