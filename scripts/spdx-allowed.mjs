@@ -1,47 +1,55 @@
-const OPERATORS = new Set(["(", ")", "AND", "OR", "WITH"]);
+import parse from "spdx-expression-parse";
 
-// SPDX expressions: AND binds tighter than OR, parentheses group, operators are uppercase.
-// `X WITH exception` counts as X. An expression passes when the whole of it is allowed;
-// a malformed one throws, so the check fails closed.
+const PERMISSIVE = [
+  "0BSD",
+  "Apache-2.0",
+  "BlueOak-1.0.0",
+  "BSD-2-Clause",
+  "BSD-3-Clause",
+  "CC0-1.0",
+  "ISC",
+  "MIT",
+  "Unlicense",
+];
+export const PROD_ALLOWED = new Set(PERMISSIVE);
+// spdx-expression-parse pulls in spdx-exceptions (CC-BY-3.0, data only); dev tooling only.
+export const DEV_ALLOWED = new Set([...PERMISSIVE, "MPL-2.0", "CC-BY-3.0"]);
+
+// An expression passes when the whole of it is allowed: OR needs one allowed side, AND
+// needs both. `X WITH exception` counts as X. A malformed or unknown expression makes
+// the parser throw, so the check fails closed.
 export function isAllowed(expression, allowed) {
-  const tokens = expression.match(/[()]|[^\s()]+/g) ?? [];
-  let position = 0;
-
-  const fail = (message) => {
-    throw new SyntaxError(`${message} in "${expression}"`);
+  const allows = (node) => {
+    if (node.conjunction === "and")
+      return allows(node.left) && allows(node.right);
+    if (node.conjunction === "or")
+      return allows(node.left) || allows(node.right);
+    return !node.plus && allowed.has(node.license);
   };
-  const accept = (token) => tokens[position] === token && ++position > 0;
-  const identifier = (message) => {
-    const token = tokens[position];
-    if (token === undefined || OPERATORS.has(token)) fail(message);
-    position++;
-    return token;
-  };
-
-  function parseOr() {
-    let result = parseAnd();
-    while (accept("OR")) result = parseAnd() || result;
-    return result;
+  let tree;
+  try {
+    tree = parse(expression);
+  } catch (error) {
+    throw new SyntaxError(
+      `Invalid license expression "${expression}" (${error.message})`,
+    );
   }
+  return allows(tree);
+}
 
-  function parseAnd() {
-    let result = parseTerm();
-    while (accept("AND")) result = parseTerm() && result;
-    return result;
+function problem(license, allowed) {
+  try {
+    return isAllowed(license, allowed) ? null : license;
+  } catch (error) {
+    return `${license}  (${error.message})`;
   }
+}
 
-  function parseTerm() {
-    if (accept("(")) {
-      const result = parseOr();
-      if (!accept(")")) fail("Unbalanced parenthesis");
-      return result;
-    }
-    const id = identifier("Expected a license");
-    if (accept("WITH")) identifier("Expected an exception after WITH");
-    return allowed.has(id);
-  }
-
-  const result = parseOr();
-  if (position < tokens.length) fail(`Unexpected "${tokens[position]}"`);
-  return result;
+export function violations(byLicense, allowed) {
+  return Object.entries(byLicense).flatMap(([license, packages]) => {
+    const reason = problem(license, allowed);
+    return reason
+      ? packages.map((p) => `${p.name}@${p.versions.join(",")}  ${reason}`)
+      : [];
+  });
 }

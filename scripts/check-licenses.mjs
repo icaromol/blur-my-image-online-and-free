@@ -1,21 +1,7 @@
 // Fails when an installed dependency has a license outside the allowlist.
-// Shipped (prod) dependencies must be permissive; dev tooling may also use MPL-2.0.
+// Shipped (prod) dependencies must be permissive; dev tooling may also use MPL-2.0 and CC-BY-3.0 (see spdx-allowed.mjs).
 import { spawnSync } from "node:child_process";
-import { isAllowed } from "./spdx-allowed.mjs";
-
-const PERMISSIVE = [
-  "0BSD",
-  "Apache-2.0",
-  "BlueOak-1.0.0",
-  "BSD-2-Clause",
-  "BSD-3-Clause",
-  "CC0-1.0",
-  "ISC",
-  "MIT",
-  "Unlicense",
-];
-const PROD_ALLOWED = new Set(PERMISSIVE);
-const DEV_ALLOWED = new Set([...PERMISSIVE, "MPL-2.0"]);
+import { DEV_ALLOWED, PROD_ALLOWED, violations } from "./spdx-allowed.mjs";
 
 function listLicenses(scopeFlags) {
   const result = spawnSync(
@@ -32,23 +18,6 @@ function listLicenses(scopeFlags) {
   }
   // Shape: { "<license>": [{ name, versions, ... }] }
   return JSON.parse(result.stdout);
-}
-
-function problem(license, allowed) {
-  try {
-    return isAllowed(license, allowed) ? null : license;
-  } catch (error) {
-    return `${license}  (${error.message})`;
-  }
-}
-
-function violations(byLicense, allowed) {
-  return Object.entries(byLicense).flatMap(([license, packages]) => {
-    const reason = problem(license, allowed);
-    return reason
-      ? packages.map((p) => `${p.name}@${p.versions.join(",")}  ${reason}`)
-      : [];
-  });
 }
 
 const prodLicenses = listLicenses(["--prod"]);
