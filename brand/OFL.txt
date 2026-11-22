@@ -1,10 +1,10 @@
-Font used for the wordmark: Liberation Sans Bold, version 2.1.5
-(font file LiberationSans-Bold.ttf, Debian package fonts-liberation 1:2.1.5-3,
-upstream https://github.com/liberationfonts). Also used as live text in the
-social templates: Liberation Sans Regular and Bold, Liberation Mono Regular, all 2.1.5.
+Fonts used for running text in the social templates and the OG image:
+Liberation Sans Regular and Bold and Liberation Mono Regular, version 2.1.5
+(Debian package fonts-liberation 1:2.1.5-3, upstream https://github.com/liberationfonts).
+The font files are not included in this repository.
 
-The letters in brand/logos/*.svg are outlines taken from that font. The font
-files themselves are not included in this repository.
+The logo letters in brand/logos/*.svg are not set in this font. They are the
+maintainer's own lettering, vectorized (see brand/README.md).
 
 Copyright and license text as shipped with the package
 (/usr/share/doc/fonts-liberation/copyright, section "Files: *"):

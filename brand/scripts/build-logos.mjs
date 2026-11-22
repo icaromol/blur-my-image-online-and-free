@@ -1,8 +1,7 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "@playwright/test";
-import { contourToPath, loadFont } from "./ttf-outlines.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const logosDir = join(here, "..", "logos");
@@ -10,8 +9,9 @@ const faviconDir = join(here, "..", "favicon");
 mkdirSync(logosDir, { recursive: true });
 mkdirSync(faviconDir, { recursive: true });
 
-const FONT = "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf";
-const font = loadFont(FONT);
+const wordmarks = JSON.parse(
+  readFileSync(join(here, "wordmark-paths.json"), "utf8"),
+);
 
 const BLACK = "#0f1115";
 const WHITE = "#ffffff";
@@ -56,74 +56,42 @@ function markShapes(x, y, u, v) {
   return `<g shape-rendering="crispEdges">${rects.join("")}</g>`;
 }
 
-const TRACKING = -0.02;
-const SPACE = 0.24;
-
-function wordPath(text, x, baseline, size, fill) {
-  const scale = size / font.unitsPerEm;
-  let pen = x;
-  let d = "";
-  for (const ch of text) {
-    const g = font.glyphIndex(ch.codePointAt(0));
-    if (ch !== " ") {
-      for (const c of font.contours(g)) {
-        d += contourToPath(c, pen, baseline, scale, fmt);
-      }
-      pen += font.advance(g) * scale + TRACKING * size;
-    } else {
-      pen += SPACE * size;
-    }
-  }
-  return { d, end: pen - TRACKING * size, fill };
+function svg(minX, minY, w, h, body, label = "Blur My Image") {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${fmt(minX)} ${fmt(minY)} ${fmt(w)} ${fmt(h)}" role="img" aria-label="${label}"><title>${label}</title>${body}</svg>\n`;
 }
 
-function svg(w, h, body, label = "Blur My Image") {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${fmt(w)} ${fmt(h)}" role="img" aria-label="${label}"><title>${label}</title>${body}</svg>\n`;
-}
-
-const SIZE = 100;
-const CAP = (font.capHeight / font.unitsPerEm) * SIZE;
-
-function horizontal(v) {
-  const u = Math.round((CAP * 1.5) / 5);
-  const markW = 5 * u;
-  const gap = u * 1.5;
-  const top = 0;
-  const baseline = top + CAP;
-  const word = wordPath("Blur My Image", markW + gap, baseline, SIZE, v.ink);
-  const descender = 0.21 * SIZE;
-  const h = Math.max(baseline + descender, top + 5 * u);
-  const w = word.end;
+function lockup(kind, v) {
+  const w = wordmarks[kind];
+  const u = Math.round(w.markSize / 5);
+  const markX = w.markRightFromOrigin - 5 * u;
+  const markY = w.markTopFromOrigin;
+  const minX = Math.min(0, markX);
+  const minY = Math.min(0, markY);
+  const maxX = Math.max(w.width, markX + 5 * u);
+  const maxY = Math.max(w.height, markY + 5 * u);
   return svg(
-    w,
-    h,
-    `${markShapes(0, top, u, v)}<path fill="${v.ink}" d="${word.d}"/>`,
+    minX,
+    minY,
+    maxX - minX,
+    maxY - minY,
+    `${markShapes(markX, markY, u, v)}<path fill="${v.ink}" d="${w.d}"/>`,
   );
-}
-
-function stacked(v) {
-  const pitch = SIZE * 0.88;
-  const u = Math.round((CAP + pitch * 0.9) / 5);
-  const markW = 5 * u;
-  const gap = u * 1.1;
-  const x = markW + gap;
-  const lines = ["Blur", "My", "Image"].map((t, i) =>
-    wordPath(t, x, CAP + i * pitch, SIZE, v.ink),
-  );
-  const w = Math.max(...lines.map((l) => l.end));
-  const h = CAP + 2 * pitch + 0.21 * SIZE;
-  const d = lines.map((l) => l.d).join("");
-  return svg(w, h, `${markShapes(0, 0, u, v)}<path fill="${v.ink}" d="${d}"/>`);
 }
 
 function markOnly(v) {
   const u = 20;
-  return svg(5 * u, 5 * u, markShapes(0, 0, u, v), "Blur My Image mark");
+  return svg(0, 0, 5 * u, 5 * u, markShapes(0, 0, u, v), "Blur My Image mark");
 }
 
 for (const [name, v] of Object.entries(VARIANTS)) {
-  writeFileSync(join(logosDir, `logo-stacked-${name}.svg`), stacked(v));
-  writeFileSync(join(logosDir, `logo-horizontal-${name}.svg`), horizontal(v));
+  writeFileSync(
+    join(logosDir, `logo-stacked-${name}.svg`),
+    lockup("stacked", v),
+  );
+  writeFileSync(
+    join(logosDir, `logo-horizontal-${name}.svg`),
+    lockup("horizontal", v),
+  );
   writeFileSync(join(logosDir, `mark-${name}.svg`), markOnly(v));
 }
 

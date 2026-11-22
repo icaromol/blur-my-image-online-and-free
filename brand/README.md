@@ -16,8 +16,8 @@ Origin of the logos: created by Ícaro, the maintainer.
 | `favicon/apple-touch-icon-180.png`, `icon-192.png`, `icon-512.png` | Full-bleed dark tile, for the home screen and web app manifest |
 | `tokens.css`, `tokens.json` | Colors and fonts |
 | `contrast.md` | WCAG 2.2 contrast of every color pair in use |
-| `OFL.txt` | License of the wordmark font |
-| `scripts/` | Generators for the SVGs, the PNGs and `contrast.md` |
+| `OFL.txt` | License of the Liberation fonts used for running text in the social templates |
+| `scripts/` | `build-logos.mjs` (SVGs and PNGs), `vectorize-wordmark.mjs` and its output `wordmark-paths.json` (the lettering), `contrast.mjs` |
 
 Color suffixes: `black` and `blue` are for light backgrounds, `white` and `blue-reverse` for dark ones. In `blue` the bar is `#0d62b8`, in `blue-reverse` it is `#7cc4ff`. The blue differs because `#7cc4ff` has only 1.87:1 against white, and `#0d62b8` has 6.07:1 (ratios are rounded down, as in `contrast.md`).
 
@@ -70,15 +70,20 @@ Everything is in `tokens.css` (`tokens.json` has the same values). `marketing/so
 
 The only fonts are Liberation Sans (headlines and text) and Liberation Mono (labels). Contrast ratios are in `contrast.md`; regenerate it with `node brand/scripts/contrast.mjs`.
 
-## Font and license
+## Lettering, mark and fonts
 
-The wordmark letters are outlines of Liberation Sans Bold 2.1.5, licensed under the SIL Open Font License 1.1 (`OFL.txt`). The SVGs contain paths, not text, so no font needs to be installed to show them. The font files are not in the repository. Rendering the social templates needs Liberation Sans and Liberation Mono installed (`fonts-liberation` on Debian and Ubuntu); the browser falls back to Arimo, Arial or Helvetica without them, and the layout then changes slightly.
+The lettering of "Blur My Image" is the maintainer's own, vectorized from his raw PNGs (`logo-horizontal.png` for the horizontal logo, `logo-stacked.png` for the stacked one, kept in `brand/source/` and never committed). The SVGs contain only paths: no raster image, no text and no font.
 
-The mark and the layout follow the maintainer's original logo. The letters do not: the original wordmark is a heavier face, and these were redrawn with an open font so the kit has a license that is clear. A different weight or font is a decision for the maintainer.
+The mark is redrawn as plain rectangles: 5 x 5 equal blocks, 14 grey blocks and the solid bar. It sits in the same place and at the same size relative to the lettering as in the original files. The horizontal original draws the mark slightly wider than tall; here it is square, as in the stacked original.
+
+Liberation Sans and Liberation Mono (2.1.5, SIL Open Font License 1.1, `OFL.txt`) are used only as live text in the social templates and the OG image. The font files are not in the repository. Rendering those templates needs `fonts-liberation` installed (Debian and Ubuntu); without it the browser falls back to Arimo, Arial or Helvetica and the layout changes slightly.
 
 ## Regenerating
 
-`node brand/scripts/build-logos.mjs` rewrites every SVG in `logos/` and `favicon/` and the PNGs in `favicon/`. It reads the font from `/usr/share/fonts/truetype/liberation/` and uses Playwright for the PNGs. `brand/source/` holds the maintainer's raw PNGs; they are not tracing sources and are never committed.
+- `node brand/scripts/build-logos.mjs` rewrites every SVG in `logos/` and `favicon/` and the PNGs in `favicon/` from `scripts/wordmark-paths.json`. It needs Playwright for the PNGs and no font.
+- `vectorize-wordmark.mjs` turns the raw PNGs into `wordmark-paths.json`. It loads the `potrace` npm package (2.1.8, GPL-2.0) from a folder outside the repository; it is not a dependency, and its license covers the tool, not the paths it produces. Run it with `npm install potrace@2.1.8` in a folder outside the repository, then `TRACE_MODULES=<that folder>/node_modules node brand/scripts/vectorize-wordmark.mjs`. It also needs `brand/source/` and `jimp`, which `potrace` installs.
+  - Potrace runs on a 4x upscale of the PNG with a light blur. The script then re-fits straight edges as exact vertical, horizontal or diagonal lines, aligns baselines and cap lines, rebuilds sharp corners, refits the curves (cubic fit, 0.35 px tolerance) and winds the holes of B, a, g and e opposite to the outlines, so the paths fill correctly without `fill-rule`.
+  - Checked at source size against the raw PNGs: no pixel of the SVG is more than 1 px from the original outline. Also compared side by side at 80, 120, 200 and 500 px wide (horizontal) and 80, 200 and 320 px wide (stacked); the holes of B, a, g and e are open in all four colors.
 
 ## Known limits
 
