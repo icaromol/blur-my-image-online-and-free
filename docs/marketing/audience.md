@@ -19,7 +19,7 @@ Five motives show up across sources. Each maps to one effect in v1.
 | Protect a person in a published photo | Protest, news, source photo | Pixelate plus metadata removal | [Newsrooms routinely blur vulnerable people](https://verificationhandbook.com/book/chapter9.1.php); [RSF tells journalists to strip metadata and prefer offline tools](https://resources.rsf.org/work-with-open-source-intelligence-part-1-extracting-information-from-online-images/); [Fstoppers: blur faces and strip metadata from protest photos](https://fstoppers.com/hacks/how-blur-faces-and-strip-metadata-your-protest-photos-and-why-you-should-do-it-491839) |
 | Make a photo look better | Portrait background, product shot, thumbnail | Gaussian, Motion | Every mass-market editor sells this: [Canva](https://www.canva.com/features/photo-blur/), [Picsart](https://picsart.com/photo-effects/blur-image/), [Adobe Express](https://www.adobe.com/express/feature/image/effect/blur) |
 
-The first four motives are about privacy. That's the ground this product can own, because the image never leaves the device and the export drops EXIF. The fifth motive is the biggest market, and Canva and Adobe already own it.
+The first four motives are about privacy. That's the ground this product can own, because the image never leaves the device (except when loaded by URL, which goes through a proxy; see the "Private by construction" pillar) and the export drops EXIF. The fifth motive is the biggest market, and Canva and Adobe already own it.
 
 ## What frustrates people with current tools
 
@@ -50,8 +50,8 @@ Fictional composites built from the evidence above. Use them to check whether a 
 - **Who:** support agent, QA tester, developer or technical writer, 22 to 45, desktop, Chrome or Firefox. Pastes screenshots into Jira, Zendesk, Slack, GitHub issues or docs several times a week.
 - **Job to be done:** "When I need to share a screenshot that shows customer or company data, I want to hide those parts in seconds, so I can send it without breaking policy or leaking anything."
 - **Today:** Snagit or Greenshot if the company pays, a black box in Paint, or the first search result, often feeling uneasy about uploading.
-- **What wins them:** `Ctrl+V` straight from the clipboard, brush-on pixelate, keyboard shortcuts, nothing uploaded and a way to verify it (open source, no network requests). Honesty that blur isn't redaction reads as competence to this group.
-- **Objections:** "How do I know it doesn't upload?" → open source code and a DevTools check. "Will it leave text readable?" → strong pixelate defaults and the in-app warning.
+- **What wins them:** `Ctrl+V` straight from the clipboard, brush-on pixelate, keyboard shortcuts, nothing uploaded and a way to verify it (no network requests in the DevTools Network tab; **after BMI-050 only:** open source code they can read, since the repo is private until then and "open source" can't be said before it's public). Honesty that blur isn't redaction reads as competence to this group.
+- **Objections:** "How do I know it doesn't upload?" → a DevTools network check, which works today. **After BMI-050 only:** add "and the code is open source". The check has one expected exception: loading by URL goes through the proxy (see the "Private by construction" pillar). "Will it leave text readable?" → strong pixelate defaults and the in-app warning.
 - **Words they search:** blur screenshot, pixelate text in image, redact screenshot online, hide sensitive info in image, blur part of image.
 
 ### P2. The private seller (secondary)
@@ -59,7 +59,7 @@ Fictional composites built from the evidence above. Use them to check whether a 
 - **Who:** someone selling a car or renting out a flat, 25 to 60, often on a phone, does it a few times a year. Not technical.
 - **Job to be done:** "When I post photos of my car or home, I want to hide the plate, house number or family photos on the wall, so strangers and bots can't use them."
 - **Today:** a thumb over the plate, an emoji sticker, or a phone editor's markup tool.
-- **What wins them:** works on a phone, three steps, no account, no watermark on photos they're about to publish.
+- **What wins them:** three steps, no account, no watermark on photos they're about to publish. "Works on a phone" is **unproven**: the README doesn't state it. Don't claim it until real-device testing is done and a README line exists.
 - **Objections:** "Is it really free?" → no watermark and no account, stated up front. "Will it shrink my photo?" → exports at the original resolution.
 - **Words they search:** blur license plate, hide number plate in photo, blur part of a picture, blur house number.
 
@@ -68,7 +68,7 @@ Fictional composites built from the evidence above. Use them to check whether a 
 - **Who:** parent sharing family photos, or a teacher or volunteer who runs a school, club or team account. Phone first. [District rules often require blurring students without a media release](https://procedure.washk12.org/letters/Admin/A171).
 - **Job to be done:** "When I post a group photo, I want to blur the kids who can't be shown, so I can share the moment without breaking a rule or a parent's trust."
 - **Today:** emoji stickers, cropping people out, or not posting at all.
-- **What wins them:** the photo of a child never goes to a server; the brush covers several faces in one pass; no app to install.
+- **What wins them:** the photo of a child never goes to a server when it's opened from a file, dropped or pasted (loading by URL goes through the proxy, see the "Private by construction" pillar); the brush covers several faces in one pass; no app to install. "Works on a phone" is **unproven** here too: the README doesn't state it, so don't claim it until real-device testing is done and a README line exists.
 - **Objections:** "Is a blurred face really unrecognizable?" → recommend heavy pixelate and say when a face is still recognizable to people who know the child ([the Clemson study's caveat](https://cse.buffalo.edu/~hongxinh/papers/CV-COPS2017.pdf)).
 - **Words they search:** blur faces in photo, blur kids' faces, hide face in picture, emoji over face alternative.
 
@@ -76,20 +76,20 @@ Fictional composites built from the evidence above. Use them to check whether a 
 
 - **Who:** journalist, OSINT researcher or digital-safety trainer. Writes guides and keeps lists of recommended tools.
 - **Why they matter:** few in number, but one mention in a safety guide brings steady, trusting traffic.
-- **What wins them:** local processing, EXIF stripped on export, open source, a candid explanation of blur's limits with sources.
+- **What wins them:** local processing, EXIF stripped on export, a candid explanation of blur's limits with sources. **After BMI-050 only:** open source, since the repo is private until then and "open source" can't be said before it's public. Local processing has one exception to state plainly to this group: URL loading goes through the proxy (see the "Private by construction" pillar).
 - **What loses them:** any overstated security claim. Never call the tool "secure redaction" or "anonymization."
 
 ## Positioning
 
-**For** people who need to hide part of an image before sharing it, **Blur My Image** is a browser tool that blurs or pixelates in three steps. **Unlike** Canva, Kapwing or upload-based blur sites, it never uploads the image, needs no account, adds no watermark and strips location metadata on export.
+**For** people who need to hide part of an image before sharing it, **Blur My Image** is a browser tool that blurs or pixelates in three steps. **Unlike** Canva, Kapwing or upload-based blur sites, it never uploads the image (except when loaded by URL, which goes through a proxy; see the "Private by construction" pillar), needs no account, adds no watermark and strips location metadata on export.
 
-One-line version: *Blur or pixelate any part of an image. It never leaves your device.*
+One-line version: *Blur or pixelate any part of an image. It never leaves your device.* The one exception is loading by URL through the proxy (see the "Private by construction" pillar); any copy longer than this line that covers privacy or URL loading must say so.
 
 ## Messaging pillars
 
 | Pillar | Proof that exists today (README) | Don't say |
 | --- | --- | --- |
-| Private by construction | Processing in the browser; no server storage; EXIF dropped on export; no analytics cookies | "100% anonymous", "military-grade", "secure redaction" |
+| Private by construction | Processing in the browser; EXIF dropped on export; no analytics cookies. One exception, per the README: loading by URL when the remote server doesn't allow cross-origin access sends the image once through a stateless proxy that keeps nothing and whose code logs nothing, but Vercel keeps its standard request log (method, path including the image URL, status, IP, user agent) for 1 hour. State this wherever URL loading or "never leaves your device" is mentioned | "100% anonymous", "military-grade", "secure redaction", or "never leaves your device" with no mention of the URL-loading exception where privacy is the claim |
 | Free without catches | No account, no watermark, original resolution | "unlimited forever" (hosting may change) |
 | Fast for one job | Paste, brush, download; Photoshop shortcuts | "the most powerful editor" |
 | Honest about limits | In-app warning that blur isn't redaction, with the PETS 2016 study | Any implication that blurred text is unrecoverable |
