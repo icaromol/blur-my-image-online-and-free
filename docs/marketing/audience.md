@@ -83,7 +83,7 @@ Fictional composites built from the evidence above. Use them to check whether a 
 
 **For** people who need to hide part of an image before sharing it, **Blur My Image** is a browser tool that blurs or pixelates in three steps. **Unlike** Canva, Kapwing or upload-based blur sites, it never uploads the image (except when loaded by URL, which goes through a proxy; see the "Private by construction" pillar), needs no account, adds no watermark and strips location metadata on export.
 
-One-line version: *Blur or pixelate any part of an image. Images you open, drop or paste never leave your device.* The scope ("open, drop or paste") is what keeps the line true, because loading by URL goes through the proxy (see the "Private by construction" pillar). **Provisional:** the wording stays provisional until Ícaro answers the open en/pt-BR tagline question in `docs/product/status.md`. Note that `src/i18n/messages/en.json` `tagline` still reads "It never leaves your device." without the scope.
+One-line version: *Blur or pixelate any part of an image. Image files you open, drop or paste never leave your device.* The scope ("open, drop or paste") is what keeps the line true, because loading by URL goes through the proxy (see the "Private by construction" pillar). This is the final wording from decision D-010 (`docs/product/decisions.md`). The English tagline now ends "Image files never leave your device." (`src/i18n/messages/en.json`, line 4). The pt-BR tagline is confirmed too, but marketing is English only (Q-002), so it isn't quoted here.
 
 ## Messaging pillars
 

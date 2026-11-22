@@ -58,7 +58,7 @@ Could not verify
 - The detection method, now checked in `src/export/encode.ts` lines 49-61 (`supportsNativeWebp`): it calls `toBlob` with `image/webp` on a 1x1 canvas and reports native support only if the returned `blob.type` is `image/webp`. The result is cached, and a rejected call counts as unsupported. The posts say only "feature-detect the problem". Add "by encoding a 1x1 canvas and checking the blob type" if a developer audience wants the method.
 - The caniuse claim ("unsupported through 26.5") is the README's, with no link. Recheck it on caniuse the day before posting, since Safari versions move.
 - Remaining limit on the test: it simulates Safari's behaviour with a stub, so it shows the fallback path works, not that real Safari behaves as described. That is why the Safari reproduction above blocks publishing.
-- The posts still say "the app will" for the fallback, as in the earlier draft, because the README status is "planning". The code for it exists on the branch, so Ícaro can switch to the present tense if it has shipped by the post date.
+- The posts still say "the app will" for the fallback, as in the earlier draft, because the site isn't deployed; the fallback code and its e2e test exist on the branch. Ícaro can switch to the present tense once it's live.
 
 Alternatives (pick one of each)
 - LinkedIn hook. A: the current "Ask Safari for a WebP..." (shows the quirk in one sentence). B: "Safari can decode WebP but can't encode it through canvas.toBlob, and it doesn't tell you." Reason: states the cause first, which suits readers who already know the API.
@@ -67,4 +67,4 @@ Alternatives (pick one of each)
 
 Not claimed
 - Any size, speed or browser-share figure for the WebAssembly encoder or Safari. The README gives none.
-- That the fallback exists. It's written as the plan.
+- That the fallback exists. That the fallback is live. The code and its e2e test exist on the branch, but the site isn't deployed, so the posts keep "will".

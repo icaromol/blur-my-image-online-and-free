@@ -12,7 +12,7 @@ Canvas export writes pixels only, so a file exported from a canvas has no EXIF. 
 
 I'm treating that as a feature. Say you hide the plate in a car listing photo. A tool that keeps the metadata could still publish where the photo was taken.
 
-Two limits, so nobody reads more into this than it says. EXIF will be gone, but the picture won't be: a face or a house number you didn't cover is still in the pixels. And I haven't shipped anything yet, so there's nothing to test today. Once there's a build, the check takes a minute. Export a photo that has GPS data and open the result in any EXIF viewer.
+Two limits. EXIF will be gone, but the picture won't be: a face or a house number you didn't cover is still in the pixels. It isn't deployed yet, so you can't check it today. Once it's live, the check takes a minute. Export a photo that has GPS data and open the result in any EXIF viewer.
 
 ## bluesky
 
@@ -22,7 +22,7 @@ Canvas export writes pixels only, so the blur tool I'm building will export file
 
 Canvas export writes pixels only, so the blur tool I'm building will export files with no EXIF. Camera model, timestamps and GPS coordinates from the original get dropped.
 
-A face or a plate you didn't cover is still in the pixels. Once there's a build, the check is to export a photo with GPS data and open the result in any EXIF viewer.
+A face or a plate you didn't cover is still in the pixels. Once it's live, the check is to export a photo with GPS data and open the result in any EXIF viewer.
 
 #privacy #infosec
 
@@ -43,11 +43,12 @@ Counts: Bluesky about 230 of 300. Mastodon about 365 of 500 including hashtags. 
 Sources
 - "Exported files contain no EXIF metadata. Camera model, timestamps and GPS coordinates from the original are dropped, because canvas export writes pixels only": README, section "Privacy", third bullet.
 - Export through the canvas (PNG, JPEG, WebP): README, "How it works", paragraph "Export".
+- The test: `e2e/exif.spec.ts`. It builds a JPEG in the browser, inserts an EXIF block (ImageDescription holding a sentinel string, plus a GPS IFD with GPSLatitudeRef and GPSLatitude) and an XMP packet carrying the same sentinel, loads it into the app, then exports PNG, JPG and WebP. For each file it asserts that the sentinel, the `Exif\0\0` marker and the `http://ns.adobe.com/xap` marker are absent. It also asserts no `eXIf`, `tEXt`, `iTXt` or `zTXt` chunk in the PNG and no `EXIF` or `XMP ` chunk in the WebP. A second test stubs `toBlob` so WebP requests return a PNG, forcing the WebAssembly encoder, and repeats the WebP checks (including a `WEBP` header). Per `docs/quality.md`, CI runs Playwright on Chromium for every PR, and on Firefox and WebKit on `main`.
 
 Could not verify
-- The README states the canvas-export fact without a linked source, and I had no way to test it. The post says it for canvas export in general, as the README does. It makes no claim about any specific browser or about colour profiles or orientation data.
+- The README states the canvas-export fact without a linked source. The e2e test above checks it on a synthetic fixture (a generated JPEG with hand-built EXIF, GPS and XMP), not on a real camera file, and it checks for the sentinel and metadata markers, not for every possible field. The post says it for canvas export in general, as the README does. It makes no claim about any specific browser or about colour profiles or orientation data.
 - "A tool that keeps the metadata could still publish where the photo was taken" is general knowledge about GPS in EXIF, not a README sentence. It names no tool.
-- The EXIF-viewer check is my suggestion for how a reader can verify the claim. The README doesn't describe it. It's written as "once there's a build" because the README status is "planning".
+- The EXIF-viewer check is my suggestion for how a reader can verify the claim. The README doesn't describe it. It's written as "once it's live" because the site isn't deployed (README: pre-release).
 
 Alternatives (pick one of each)
 - LinkedIn hook. A: the current first sentence. B: "A photo can carry its camera model, timestamps and GPS coordinates. A canvas can't." Reason: shorter and shows the contrast at once, but it is a bit more of a slogan.
