@@ -75,7 +75,7 @@ Shortcuts follow Photoshop's defaults where one exists.
 ## Privacy
 
 - Images are decoded, edited and encoded in your browser. There is no upload step and no server-side storage.
-- The single exception is loading by URL when the remote server doesn't allow cross-origin access. Then the image passes once through a stateless proxy (see [How it works](#how-it-works)). The proxy streams the bytes back and keeps nothing. Our code logs nothing. Vercel keeps its own runtime log of requests to the function (method, path and query string, which holds the image URL, status, user agent and client IP) for 1 hour on the Hobby plan. Under the link field the app shows this notice: "Links are fetched through our server. Files you open, drop or paste never leave your browser."
+- The single exception is loading by URL when the remote server doesn't allow cross-origin access, or when the link is `http://`. Then the image passes once through a stateless proxy (see [How it works](#how-it-works)). An `http://` link always takes this path, because the page's security policy (`connect-src 'self' https:`) blocks the direct fetch. The proxy streams the bytes back and doesn't keep a copy of the image. Our code logs nothing. Vercel keeps its own runtime log of requests to the function (method, path and query string, which holds the image URL, status, user agent and client IP) for 1 hour on the Hobby plan. Under the link field the app shows this notice: "Links are fetched through our server. Files you open, drop or paste never leave your browser."
 - Exported files contain no EXIF metadata. Camera model, timestamps and GPS coordinates from the original are dropped, because canvas export writes pixels only.
 - No analytics cookies, no tracking pixels.
 
