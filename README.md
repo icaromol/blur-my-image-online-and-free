@@ -92,13 +92,16 @@ This is the same model Photoshop uses for a Smart Filter with a layer mask, and 
 
 **Large images.** The maximum size is the GPU's `MAX_TEXTURE_SIZE`, read at runtime. Larger images are downscaled to fit, and the app says so before you start editing.
 
-**Loading by URL.** The browser first tries a direct CORS request. If the server refuses, the canvas would be tainted and export would throw a `SecurityError`, so the request goes through `/api/image`, a Vercel Function that:
+**Loading by URL.** The browser first tries a direct CORS request. If the server refuses, the canvas would be tainted and export would throw a `SecurityError`, so the request goes through `/api/image`, a small [Hono](https://hono.dev/) app that:
 
 - accepts only `http` and `https` URLs,
 - resolves the hostname and refuses private, loopback and link-local addresses (SSRF protection), re-checking after each redirect, with at most 3 redirects,
 - requires an `image/*` content type,
-- caps the response at 4.5 MB, the Vercel Function response body limit,
+- caps the response size with a configurable limit (`MAX_BYTES`, default 4.5 MB, the Vercel Function response body limit) and times out slow fetches,
+- rejects cross-site callers (`Sec-Fetch-Site` / `Origin` checks) so it can't be used as a public proxy, behind a platform rate limit,
 - stores and logs nothing about the image.
+
+The proxy uses only web-standard `Request`, `Response` and `fetch`, so the same code runs as a Vercel Function, a Cloudflare Worker or a Node server in Docker. Only a few-line entry file differs per platform. See [docs/hosting.md](docs/hosting.md).
 
 **Export.** PNG and JPEG use the browser's native `canvas.toBlob`. JPEG has no transparency, so transparent pixels are flattened onto white. WebP uses `toBlob` where the browser can encode it. Safari can decode WebP but `toBlob('image/webp')` silently returns a PNG there, so the app feature-detects this and lazy-loads [@jsquash/webp](https://github.com/jamsinclair/jSquash), a WebAssembly build of libwebp, only for those browsers. JPEG and WebP use quality 0.92.
 
@@ -110,12 +113,12 @@ This is the same model Photoshop uses for a Smart Filter with a layer mask, and 
 | Build | Vite | Standard for Vue, fast dev server |
 | Rendering | PixiJS 8 + pixi-filters | Maintained WebGL engine with the blur filters already written |
 | WebP fallback | @jsquash/webp | libwebp in WASM, loaded only where native encoding is missing |
-| URL proxy | One Vercel Function | The only server code; everything else is static |
+| URL proxy | Hono, deployed as one Vercel Function | The only server code; web-standard APIs keep it portable |
 | Lint + format | Biome | One tool, one config |
 | Unit tests | Vitest | |
 | E2E tests | Playwright | Real browser checks for paste, URL load and export |
 | Package manager | pnpm | |
-| Hosting | Vercel | Static site plus the proxy function |
+| Hosting | Vercel Hobby | Free for a non-commercial project; pauses instead of billing. Docker image built in CI as the tested exit path ([docs/hosting.md](docs/hosting.md)) |
 
 Canvas 2D's `ctx.filter = 'blur()'` was considered and rejected: it only provides gaussian blur, and caniuse lists Safari on iOS as unsupported through 26.5, so it would need a second code path anyway.
 
@@ -132,7 +135,12 @@ pnpm test:e2e     # Playwright
 pnpm build        # production build in dist/
 ```
 
-The URL proxy runs locally through `vercel dev`.
+The URL proxy runs locally through `vercel dev`. To run the whole app as it would run off Vercel:
+
+```bash
+docker build -t blur-my-image .
+docker run -p 3000:3000 blur-my-image   # static site + proxy at http://localhost:3000
+```
 
 ### Planned layout
 
@@ -142,11 +150,18 @@ src/
   engine/     renderer, effect definitions, operation list, masks
   export/     format encoders and download
   ui/         Vue components
+server/
+  proxy/      Hono app, SSRF checks, config (platform-agnostic)
+  entries/    node.ts (Docker), worker.ts (Cloudflare)
 api/
-  image.ts    URL proxy
+  image.ts    Vercel entry: wraps server/proxy/app.ts
 docs/
   research.md
+  hosting.md
+Dockerfile
 ```
+
+The frontend reads the proxy location from `VITE_PROXY_URL` (default `/api/image`), so static hosting and the proxy can be split across platforms.
 
 Adding an effect means adding one entry to `src/engine/effects.ts`: its id, label, controls and a function that builds the PixiJS filter from intensity and image size. Nothing else should need to change.
 
