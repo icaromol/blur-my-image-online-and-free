@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 44 `Must` done · 21 in review · 5 in progress (i18n) · 0 blocked. Full list in [backlog.md](backlog.md).
+0 of 44 `Must` done · 22 in review · 10 in progress · 0 blocked. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -30,6 +30,8 @@ The editor was committed before i18n, with English strings hard-coded (D-003). B
 
 New epic E7 (BMI-060 to BMI-073): quality bar, proxy hardening, CSP and headers, supply chain, privacy tests, accessibility, community files, releases. Grooming comes after i18n lands, because BMI-061 and BMI-068 touch the same components. Written to `Idea` for now; each item gets acceptance criteria from `.local/standards/*.md` when groomed. The reports are in a git-ignored folder, so the only durable record is the backlog and D-004.
 
+**Dated item:** `pnpm-workspace.yaml` supply-chain settings go in on **2026-11-28** (BMI-066), after the newest locked package turns 7 days old.
+
 ## Next
 
 In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the items below already exist on the PR and need review and merge, not building.
@@ -47,6 +49,11 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 - **BMI-042** needs Ícaro to review the `pt-BR` strings before it's `Done`.
 
 ## Log
+
+### 2026-11-22 (E7 progress)
+
+- Committed by the git-owner session: community files, code of conduct, security policy, issue forms, release-please (`4c15265`); Dependabot, security workflow, license and bundle scripts, `docs/quality.md` (`a61f693`, `48b1f3d`). BMI-072 → `Review`; BMI-060, 066, 070, 071 and BMI-002 → `In progress`, details in the backlog.
+- BMI-066: `pnpm-workspace.yaml` dated 2026-11-28.
 
 ### 2026-11-22 (standards package)
 
