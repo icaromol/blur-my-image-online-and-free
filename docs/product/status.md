@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 45 `Must` done · 40 in review · 2 in progress · 0 ready · 0 blocked. Plus BMI-074 (`Should`, `In progress`): unexplained e2e failure. Full list in [backlog.md](backlog.md).
+0 of 45 `Must` done · 40 in review · 2 in progress · 0 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -56,6 +56,8 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- BMI-074 → `Done` (verification, nothing to merge): 10 runs with `--retries=0`, one with `CI=1` and 6 with 1 and 20 workers all passed 35/35. The cause of the first failing run stays **unknown**. The `reuseExistingServer` risk went to `Later` as BMI-135. Nobody has to hold off e2e anymore.
 
 - BMI-051 → `Review` (`5117278`, verified by the dispatcher, approved by the reviewer; PM spot-checked the README, hosting and `index.html` lines). BMI-074 is `In progress` in the quality lane; nobody runs e2e or a preview on port 4173 meanwhile. Follow-ups: final privacy wording (Ícaro) and `README.md` line 99 wording.
 
