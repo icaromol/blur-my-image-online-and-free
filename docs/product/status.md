@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 45 `Must` done · 40 in review · 3 in progress · 1 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+0 of 45 `Must` done · 40 in review · 3 in progress · 2 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -50,12 +50,14 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 Only items that block something. Questions with a default in force are in decisions.md and don't wait.
 
 - **Tagline and privacy wording:** decided, see D-010. The final `pt-BR` text is shown to Ícaro before the merge (BMI-051).
-- **BMI-050 (go public):** Ícaro said yes (D-013). Waiting on `-aa`'s go to `-5b` for the flip, and on Q-008 (origin and license of `brandkit`, `design-taste-frontend` and `no-ai-slop`). After the flip he installs the CodeRabbit app; the merge of PR #1 comes after CodeRabbit's corrections.
+- **BMI-050 (go public):** Ícaro said yes (D-013). Waiting on `-aa`'s go to `-5b` for the flip and on the gitleaks re-run. After the flip he installs the CodeRabbit app; the merge of PR #1 comes after CodeRabbit's corrections.
 - **D-004, D-006, D-007, D-008, D-009** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
 
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- D-014 (Ícaro: "posso publicar" the three skills, relayed by `-aa`) closed Q-008; the origin stays undocumented and nothing leaves the history. BMI-073 split by when each part matters: only the merge of PR #1 (first production deploy) needs it, not the flip, so BMI-050's dependency changed; BMI-073 is `Ready`. Squash message set to the PR title by `-5b` (`32a6a57`).
 
 - BMI-070 (D-011): `-5b` read the GitHub settings back and found squash-only, delete branch on merge, update branch and the labels already applied. One setting from the approved community package was still off: the default squash message (PR body instead of the PR title); added to BMI-070 and handed to `-5b`. Saved replies stay Ícaro's.
 

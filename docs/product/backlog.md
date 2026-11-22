@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 45 `Must` done, 40 in review, 3 in progress (BMI-050, 066, 070), 1 ready (BMI-003), 1 idea (BMI-073). Also BMI-074 (`Should`, `Done`).
+Progress: 0 of 45 `Must` done, 40 in review, 3 in progress (BMI-050, 066, 070), 2 ready (BMI-003, 073), 0 idea. Also BMI-074 (`Should`, `Done`).
 
 ### E1. Foundation
 
@@ -84,14 +84,14 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-070 | Community files: `CONTRIBUTING.md`, issue forms, PR template, labels, merge settings, saved replies | Must | M | In progress | |
 | BMI-071 | Releases: release-please config and workflow, Conventional Commits check on the PR title | Must | S | Review | BMI-002 |
 | BMI-072 | `CODE_OF_CONDUCT.md` (Contributor Covenant 3.0) and `SECURITY.md`; `SECURITY.md` uses GitHub private reporting (no email); the code of conduct contact is set (D-007, edit waiting for the git owner's commit) | Must | S | Review | |
-| BMI-073 | Manual platform settings checklist for Ícaro (GitHub Actions and security, Vercel 2FA, WAF rate-limit rule, toolbar and analytics off, env vars); each README or hosting claim that only the platform can make true is checked or reworded: 1-hour request-log retention, the 4.5 MB body limit, the rate-limit rule and usage alerts | Must | S | Idea | BMI-003 |
+| BMI-073 | Manual platform settings checklist for Ícaro (GitHub Actions and security, Vercel 2FA, WAF rate-limit rule, toolbar and analytics off, env vars); each README or hosting claim that only the platform can make true is checked or reworded: 1-hour request-log retention, the 4.5 MB body limit, the rate-limit rule and usage alerts | Must | S | Ready | BMI-003 |
 | BMI-074 | Find the cause of the unexplained Chromium e2e failure of 2026-11-22: repeat the suite, capture the report and trace, fix the cause or show N green runs | Should | S | Done | BMI-067 |
 
 ### E6. Launch readiness
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
-| BMI-050 | Go-public checklist (see details; order set by D-013): pre-flip checks, flip, protections, CodeRabbit, PR #1 out of draft, corrections, merge | Must | M | In progress | all v1 items, BMI-070 to BMI-073 |
+| BMI-050 | Go-public checklist (see details; order set by D-013): pre-flip checks, flip, protections, CodeRabbit, PR #1 out of draft, corrections, merge | Must | M | In progress | BMI-070, BMI-072; the merge also needs BMI-073 |
 | BMI-051 | README status line and content match what shipped | Must | S | Review | BMI-040 |
 | BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
 
@@ -202,6 +202,18 @@ As a user, I want to paste a screenshot with `Ctrl/Cmd+V` so that I skip saving 
 User stories and acceptance criteria are in [specs/i18n.md](specs/i18n.md), requirements R1 to R5.
 
 
+### BMI-073 — platform settings, split by when they matter
+
+Not everything here has to be done before the repo is public. The flip doesn't depend on Vercel. What matters is the first production deploy, which is the merge of PR #1 (D-005, D-013). Split, nothing dropped:
+
+Before the merge of PR #1 (the app goes live):
+- [ ] Vercel account: 2FA on (Ícaro, by hand).
+- [ ] Vercel project settings from BMI-003: env vars, one WAF rate-limit rule on `/api/image`, Toolbar, Web Analytics and Speed Insights off; usage alerts on (`-f2` for what the tools can set; Ícaro for the rest).
+- [ ] Each README or `docs/hosting.md` claim that only the platform can make true is checked against the live settings, or reworded: 1-hour request-log retention, the 4.5 MB body limit, the rate-limit rule and the usage alerts (quality lane, after BMI-003).
+
+After the flip (they only exist on a public repo; they are the BMI-050 list):
+- [ ] GitHub Actions and security settings: private vulnerability reporting, push protection, CodeQL default, fork PR workflows needing approval, the `main` ruleset, scorecard and dependency-review.
+
 ### BMI-070 — what is left (D-011)
 
 Community files are in. Left is GitHub settings, which `-5b` applies now (D-011): labels, squash-only merges, delete branch on merge, suggest updating PR branches.
@@ -212,16 +224,16 @@ Community files are in. Left is GitHub settings, which `-5b` applies now (D-011)
 
 ### BMI-050 — Go-public checklist
 
-Ícaro's answer is yes (D-013, relayed). Order, from `.local/standards/community.md` and `security.md` (D-004), reordered by D-013 so CodeRabbit can review PR #1 before the merge. The flip itself waits for `-aa`'s go to `-5b`, and Q-008 is open.
+Ícaro's answer is yes (D-013, relayed). Order, from `.local/standards/community.md` and `security.md` (D-004), reordered by D-013 so CodeRabbit can review PR #1 before the merge. The flip itself waits for `-aa`'s go to `-5b`. BMI-073 gates the merge of PR #1, not the flip.
 
 Pre-flip, nothing outward-facing:
 - [ ] Full-history `gitleaks` re-run over every branch is clean (quality lane, read-only; report the command and the commit count).
 - [x] `SECURITY.md` and `CODE_OF_CONDUCT.md` committed with the contact from D-007 (`c5b3bce`).
 - [x] `CLAUDE.md` and `.claude/` stay in the repo (D-008).
-- [ ] Origin and license of `brandkit`, `design-taste-frontend` and `no-ai-slop` under `.claude/` settled (Q-008). Blocks the flip.
+- [x] The three skills under `.claude/` may be published, nothing removed from the history (D-014; origin still undocumented, Ícaro's own claim).
 - [x] Third-party license notices in the bundle (checked in BMI-052); README status line and contributing links updated (BMI-051, `Review`).
 - [ ] Repo description and topics drafted (marketing lane, wording true to the product: no "open source" claim before the flip) and applied by `-5b`. The social preview image is rendered by the designer from action 5; uploading it is done by hand in GitHub's settings (Ícaro).
-- [ ] BMI-070 settings applied (D-011) and the BMI-073 checklist done by Ícaro.
+- [ ] BMI-070 settings applied (D-011; saved replies by Ícaro, not blocking).
 - [ ] BMI-003 project exists and a preview deployment passes its checks (not required to flip, but the URL feeds the README).
 
 The flip:
@@ -234,7 +246,8 @@ After the flip, in this order:
 - [ ] CodeRabbit app installed (Ícaro's action).
 - [ ] PR #1 out of draft (CodeRabbit ignores drafts).
 - [ ] CodeRabbit's review answered and the corrections committed, checks green. Findings that change scope go to Ícaro, never applied silently.
-- [ ] Merge PR #1 (authorized by Ícaro only after the line above). With BMI-003 done, this merge starts the first production deploy (D-005, D-013). Then the items in `Review` become `Done` against `main`.
+- [ ] BMI-073 done: the Vercel and platform settings that must exist before the first production deploy.
+- [ ] Merge PR #1 (authorized by Ícaro only after the two lines above). With BMI-003 done, this merge starts the first production deploy (D-005, D-013). Then the items in `Review` become `Done` against `main`.
 - [ ] 3 to 5 good first issues (after the flip), and the first tagged release (BMI-071).
 
 ### E7 progress notes (2026-11-22, earlier; the later notes below supersede these where they differ)
