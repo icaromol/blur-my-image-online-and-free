@@ -1,0 +1,105 @@
+# Audience and personas
+
+Who uses a free browser blur tool, why, and which of those people to reach first. Researched November 2026. Every claim below links to its source; where the evidence is thin, the text says so.
+
+## What the research could and could not answer
+
+- **No search-volume numbers.** Public sources don't publish monthly volumes for "blur image", "pixelate image" or "blur face". The ranking of segments below is inferred from behavior evidence (surveys, platform policies, competitor positioning), not from keyword data. Replace it with real numbers from Google Search Console once the site is live, and from Google Ads Keyword Planner or Bing Keyword Planner before that.
+- **No demographics for competitor sites.** Similarweb and Semrush pages for blur.me, Pixelied and others give traffic sources, not age or gender. The one useful signal: [Semrush shows blur.me gets about 49% of its traffic from Google organic and 24% direct](https://pl.semrush.com/website/blur.me/overview). Blur tools are found through search, not social.
+
+## Why people blur images
+
+Five motives show up across sources. Each maps to one effect in v1.
+
+| Motive | Typical image | Effect | Evidence |
+| --- | --- | --- | --- |
+| Hide data in a screenshot before sharing it | Chat, order page, dashboard, bug report | Pixelate | Support teams treat screenshots as a PII leak path: [unredacted screenshots attached to tickets create extra copies of customer data](https://www.supportbench.com/?p=25698); [BrowserStack's bug capture can't hide data, so redaction has to happen before upload](https://www.browserstack.com/docs/bug-capture/reports/sensitive-info) |
+| Hide a license plate or address in a sales listing | Car, flat, house photo | Pixelate | Sellers cite cloning, scams and bots scraping plates ([Autotrader](https://www.autotrader.com/car-shopping/should-i-stick-my-thumb-over-license-plate-when-im-selling-my-car-online-269853), [Jalopnik](https://jalopnik.com/why-do-we-always...net-1691298199)). [carsales in Australia now blurs plates automatically](https://business.carsales.com.au/insights/auto-industry-news/carsales-innovation-tackles-number-plate-cloning/), which shows the demand is real |
+| Hide a child's or bystander's face before posting | Family, school, event photo | Pixelate or Gaussian | [19% of US parents cover their children's faces](https://www.hostingadvice.com/studies/parents-use-of-social-media-statistics/); [only 5% of Germans do it in holiday photos (YouGov for eco, June 2025)](https://international.eco.de/presse/holiday-photos-only-5-per-cent-blur-childrens-faces/), so the habit is growing from a small base |
+| Protect a person in a published photo | Protest, news, source photo | Pixelate plus metadata removal | [Newsrooms routinely blur vulnerable people](https://verificationhandbook.com/book/chapter9.1.php); [RSF tells journalists to strip metadata and prefer offline tools](https://resources.rsf.org/work-with-open-source-intelligence-part-1-extracting-information-from-online-images/); [Fstoppers: blur faces and strip metadata from protest photos](https://fstoppers.com/hacks/how-blur-faces-and-strip-metadata-your-protest-photos-and-why-you-should-do-it-491839) |
+| Make a photo look better | Portrait background, product shot, thumbnail | Gaussian, Motion | Every mass-market editor sells this: [Canva](https://www.canva.com/features/photo-blur/), [Picsart](https://picsart.com/photo-effects/blur-image/), [Adobe Express](https://www.adobe.com/express/feature/image/effect/blur) |
+
+The first four motives are about privacy. That's the ground this product can own, because the image never leaves the device and the export drops EXIF. The fifth motive is the biggest market, and Canva and Adobe already own it.
+
+## What frustrates people with current tools
+
+1. **Uploading a sensitive image to a stranger's server.** It's the most repeated reason people build their own blur tools: ["I got tired of uploading sensitive images to random websites"](https://dev.to/wplacetool/i-got-tired-of-uploading-sensitive-images-to-random-websites-so-i-built-a-local-only-blur-tool-581l), ["most tools required uploading the image, which isn't ideal for privacy"](https://dev.to/atharvtathe/i-built-a-simple-tool-to-pixelate-images-instantly-free-no-upload-required-2o34). The many look-alike launches ([BlurPrivacy](https://www.producthunt.com/products/blurprivacy), [Image Blur Editor](https://www.producthunt.com/products/image-blur-editor/reviews)) confirm the demand. The market is also crowded with that claim, so "no upload" alone won't set us apart.
+2. **Watermarks, sign-up walls and daily limits.** [Kapwing watermarks free exports](https://www.kapwing.com/tools/blur/image); [Canva requires an account and limits free downloads](https://www.datanumen.com/blogs/11-best-blur-picture-tools-free); [BlurMe is freemium from $9.99 a month](https://www.blur.me/blog/blur-online-complete-guide/).
+3. **A weak blur that leaves text readable.** Several free tools blur too little (see [research.md](../research.md#3-online-blur-tools)). [Redaction guides warn that blur can still leak short strings](https://convertandedit.com/blog/support-screenshot-redaction-workflow/).
+4. **Too much editor for one task.** Photopea and Canva are full editors; most of these jobs take ten seconds.
+
+## Segments, ranked
+
+The ranking weighs three things: how often the person needs the tool, how much the no-upload promise matters to them, and whether we can reach them without paying for ads.
+
+| # | Segment | Frequency | No-upload matters | Reachable through | Priority |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Work screenshot redactors: support, QA, developers, PMs, technical writers | Weekly | Very high: company data, often a policy rule | Search, dev.to, Hacker News, Reddit (r/sysadmin, r/webdev), GitHub | **Primary** |
+| 2 | Everyday screenshot sharers: chats, receipts, bank pages for social posts or disputes | Occasional, very large group | Medium: the concern is real but rarely put into words | Search ("blur text in screenshot", "pixelate name") | **Primary by volume**, served by the same pages as #1 |
+| 3 | Private sellers and small agents: cars, rentals, real estate | Per listing | Medium | Search ("blur license plate"), seller forums, r/askcarsales | **Secondary** |
+| 4 | Parents and school or club comms volunteers | Monthly | High: images of children | Search, parenting and school-admin groups | **Secondary** |
+| 5 | Journalists, activists, researchers | Bursts | Very high, plus EXIF removal | Press-freedom and OSINT circles, Mastodon, newsletters | **Amplifier**: small group, but its recommendations carry trust |
+| 6 | Creators wanting an aesthetic blur | Frequent | Low | Search, TikTok, YouTube | **Not targeted in v1.** Canva owns it; we still rank on "blur background" pages if they convert |
+
+## Personas
+
+Fictional composites built from the evidence above. Use them to check whether a piece of copy speaks to someone real.
+
+### P1. The work screenshot redactor (primary)
+
+- **Who:** support agent, QA tester, developer or technical writer, 22 to 45, desktop, Chrome or Firefox. Pastes screenshots into Jira, Zendesk, Slack, GitHub issues or docs several times a week.
+- **Job to be done:** "When I need to share a screenshot that shows customer or company data, I want to hide those parts in seconds, so I can send it without breaking policy or leaking anything."
+- **Today:** Snagit or Greenshot if the company pays, a black box in Paint, or the first search result, often feeling uneasy about uploading.
+- **What wins them:** `Ctrl+V` straight from the clipboard, brush-on pixelate, keyboard shortcuts, nothing uploaded and a way to verify it (open source, no network requests). Honesty that blur isn't redaction reads as competence to this group.
+- **Objections:** "How do I know it doesn't upload?" → open source code and a DevTools check. "Will it leave text readable?" → strong pixelate defaults and the in-app warning.
+- **Words they search:** blur screenshot, pixelate text in image, redact screenshot online, hide sensitive info in image, blur part of image.
+
+### P2. The private seller (secondary)
+
+- **Who:** someone selling a car or renting out a flat, 25 to 60, often on a phone, does it a few times a year. Not technical.
+- **Job to be done:** "When I post photos of my car or home, I want to hide the plate, house number or family photos on the wall, so strangers and bots can't use them."
+- **Today:** a thumb over the plate, an emoji sticker, or a phone editor's markup tool.
+- **What wins them:** works on a phone, three steps, no account, no watermark on photos they're about to publish.
+- **Objections:** "Is it really free?" → no watermark and no account, stated up front. "Will it shrink my photo?" → exports at the original resolution.
+- **Words they search:** blur license plate, hide number plate in photo, blur part of a picture, blur house number.
+
+### P3. The careful parent or school volunteer (secondary)
+
+- **Who:** parent sharing family photos, or a teacher or volunteer who runs a school, club or team account. Phone first. [District rules often require blurring students without a media release](https://procedure.washk12.org/letters/Admin/A171).
+- **Job to be done:** "When I post a group photo, I want to blur the kids who can't be shown, so I can share the moment without breaking a rule or a parent's trust."
+- **Today:** emoji stickers, cropping people out, or not posting at all.
+- **What wins them:** the photo of a child never goes to a server; the brush covers several faces in one pass; no app to install.
+- **Objections:** "Is a blurred face really unrecognizable?" → recommend heavy pixelate and say when a face is still recognizable to people who know the child ([the Clemson study's caveat](https://cse.buffalo.edu/~hongxinh/papers/CV-COPS2017.pdf)).
+- **Words they search:** blur faces in photo, blur kids' faces, hide face in picture, emoji over face alternative.
+
+### A1. The press-freedom advocate (amplifier)
+
+- **Who:** journalist, OSINT researcher or digital-safety trainer. Writes guides and keeps lists of recommended tools.
+- **Why they matter:** few in number, but one mention in a safety guide brings steady, trusting traffic.
+- **What wins them:** local processing, EXIF stripped on export, open source, a candid explanation of blur's limits with sources.
+- **What loses them:** any overstated security claim. Never call the tool "secure redaction" or "anonymization."
+
+## Positioning
+
+**For** people who need to hide part of an image before sharing it, **Blur My Image** is a browser tool that blurs or pixelates in three steps. **Unlike** Canva, Kapwing or upload-based blur sites, it never uploads the image, needs no account, adds no watermark and strips location metadata on export.
+
+One-line version: *Blur or pixelate any part of an image. It never leaves your device.*
+
+## Messaging pillars
+
+| Pillar | Proof that exists today (README) | Don't say |
+| --- | --- | --- |
+| Private by construction | Processing in the browser; no server storage; EXIF dropped on export; no analytics cookies | "100% anonymous", "military-grade", "secure redaction" |
+| Free without catches | No account, no watermark, original resolution | "unlimited forever" (hosting may change) |
+| Fast for one job | Paste, brush, download; Photoshop shortcuts | "the most powerful editor" |
+| Honest about limits | In-app warning that blur isn't redaction, with the PETS 2016 study | Any implication that blurred text is unrecoverable |
+
+## How to keep this file current
+
+- After launch, replace the inferred ranking with Search Console queries grouped by segment.
+- Add any objection that shows up twice in feedback, issues or community threads.
+- Put new evidence in the table it supports, with a link, and remove any claim that loses its source.
+
+## Sources
+
+Linked inline. Also see [research.md](../research.md) for the competitor and redaction research that underlies this file.
