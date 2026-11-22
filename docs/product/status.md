@@ -56,6 +56,8 @@ Only items that block something. Questions with a default in force are in decisi
 
 ### 2026-11-22 (new PM session, handoff)
 
+- Incident, repaired (`-5b`, around 18:03 to 18:06): running `pnpm check` in temporary worktrees whose `node_modules` was a symlink made pnpm re-point the shared `node_modules` at the worktrees; removing them broke biome and other modules for a few minutes, and the pre-commit hook failed meanwhile. `-5b` repaired it with a forced frozen install and removed only the broken links: 0 broken links, none pointing to `/tmp`, `pnpm check` clean, 293 tests passing; `package.json` and the lockfile were not touched. Rule added to `team.md`: temporary worktrees get their own `node_modules`, never a symlink to the shared one. A lane that saw a biome or module-not-found failure in that window can rerun.
+
 - **BMI-075 (brand kit) is `Review`:** the original lettering, vectorized, is committed as `abc7410` on the local branch `feat/brand-kit` (28 files in the kit, about 109 KB), approved by the reviewer in two rounds; it is not on the shared feature branch and not pushed. Its PR comes after the merge of PR #2; applying it to the site is BMI-078. PM checked the commit and files, not the logos' renders.
 
 - **BMI-077 is `Review` again, complete:** server `9828aa7`, quality `745c2fa` then `42fc557` (the SPDX parser swap), ui `b3ca37f` and `0209c48` (the 100 MiB cap), all local on the feature branch, verified and approved by the reviewer. PM confirmed the commits and the cap constant in `src/input/url.ts`. Next: `-aa` gives the push; `-5b` posts the last two PR replies; CodeRabbit's second round; then the merge with green checks. The brand kit (BMI-075, SVGs being redone) and its site application (BMI-078) are separate PRs after that merge.

@@ -30,6 +30,10 @@ Nobody runs `vercel deploy` from the working tree: it uploads git-ignored files 
 
 Fork PRs: Git fork protection is on, so a fork PR's build waits for a team member and gets no environment variables first. Authorize a fork PR's deployment only after reading its diff, above all `vercel.json`, `api/`, `server/` and `package.json`: authorizing runs the fork's code in the build with the variables. The same rule goes into `docs/hosting.md` (BMI-073).
 
+## Temporary worktrees
+
+A temporary git worktree gets its own `node_modules` (a clean `pnpm install --frozen-lockfile` in it), never a symlink to the shared one: pnpm rewrites the links of a symlinked `node_modules` to point into the worktree, and removing the worktree then breaks the shared tree (it happened on 2026-11-22, around 18:03 to 18:06, and `-5b` repaired it). Remove the worktree before the next gate run, and check that no link in `node_modules` points outside the repository.
+
 ## Not lanes
 
 | Who | Role |
