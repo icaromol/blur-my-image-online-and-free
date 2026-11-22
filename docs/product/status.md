@@ -55,6 +55,10 @@ Only items that block something. Questions with a default in force are in decisi
 
 ## Log
 
+### 2026-11-22 (PM agent)
+
+- Added the `pm` agent (`.claude/agents/pm.md`) to run beside the dispatcher: the PM is the only writer of `backlog.md`, `status.md`, `decisions.md` and `specs/`; the dispatcher writes `dispatch.md` only and reports item states to the PM by message. `dispatcher.md`, `team.md` and the `/pm` skill updated to match.
+
 ### 2026-11-22 (E7 landed)
 
 - Git-owner session committed the frontend standards package (`533f624`), Node entry headers (`6bea2a7`) and the layout doc (`120f89b`). BMI-060, 062, 063, 064, 065, 067, 068, 069 → `Review`; BMI-061 `In progress`.

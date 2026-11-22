@@ -95,3 +95,7 @@ docs/product/
 ```
 
 Talk to Ícaro in Portuguese. The files are in English, like the rest of the repo docs.
+
+## Working with the dispatcher
+
+When the `dispatcher` agent is running (see `docs/product/team.md`), you are the only writer of `backlog.md`, `status.md`, `decisions.md` and `specs/`; it writes only `docs/product/dispatch.md`. Read `dispatch.md` during `status`: its tick log and the worker reports are inputs, and the code is still the truth. Tell the dispatcher by message when items become `Ready`, when priorities change and when Ícaro decides something that affects the lanes.

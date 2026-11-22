@@ -30,7 +30,7 @@ When a lane needs one that another lane holds, its item waits. A lane can still 
 | --- | --- |
 | **Git owner**: the interactive session that commits (currently named `ci-main-branch-decisions`; names change, confirm with `ListAgents`) | The only one who runs git. Receives file lists and commit messages. Also owns CI (BMI-002), PR #1 and repo settings |
 | **Ícaro** | Scope, priorities that change scope, anything outward-facing (publishing, Vercel and GitHub settings, purchases), the Q-### questions in `decisions.md` |
-| **PM** (`/pm` skill, any session) | Backlog grooming, `decisions.md`, specs. The dispatcher uses `/pm groom` when a lane is starved |
+| **PM** (`claude --agent pm`; name the session `pm` with `/rename` so the dispatcher can message it) | The only writer of `backlog.md`, `status.md`, `decisions.md` and `specs/`. Grooms items, applies the statuses the dispatcher reports, takes scope questions to Ícaro. The dispatcher writes `dispatch.md` only |
 | Other interactive sessions (for example the frontend session) | Not controlled by the dispatcher. It may message them with a request and never assumes they act on it |
 
 ## Handoff protocol
@@ -38,7 +38,7 @@ When a lane needs one that another lane holds, its item waits. A lane can still 
 1. Worker reports → dispatcher re-runs verification itself.
 2. Reviewer reads the diff and returns a verdict.
 3. Dispatcher sends the git owner: exact file list (flagging any shared file that also carries another lane's changes), suggested conventional-commit message, no AI attribution.
-4. Backlog status: `Review` once committed on a branch, `Done` only once merged to `main`.
+4. Dispatcher tells the PM; the PM sets the backlog status: `Review` once committed on a branch, `Done` only once merged to `main`.
 
 ## Escalation
 
