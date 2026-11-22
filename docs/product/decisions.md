@@ -36,9 +36,9 @@ The URL doesn't exist yet. Checked 2026-11-22 through the Vercel MCP: the Vercel
 
 ### D-006 — Precompile the i18n messages to meet the size budget (2026-11-22)
 
-**Decision**, as relayed by the git-owner session (PM has not heard it directly): vue-i18n messages are precompiled at build time instead of compiled in the browser, to bring the initial JavaScript under the 35 kB budget. The frontend session implements it.
+**Decision**, as reported by the frontend session (`implementar-v1-editor-pixi`) and passed on by the git-owner session (neither PM nor git owner heard it directly): vue-i18n messages are precompiled at build time instead of compiled in the browser, to bring the initial JavaScript under the 35 kB budget. The frontend session implements it.
 **Why:** `pnpm size` fails at 43.21 kB brotli against 35 kB, and the message compiler that ships with the runtime build is the largest piece Ícaro can remove without dropping a feature.
-**Decided by:** Ícaro, per the git-owner session.
+**Decided by:** Ícaro, per the frontend session, which asked him.
 **Affects:** BMI-061, BMI-040 (follow-up), BMI-002 (CI waits for `pnpm size` to pass).
 
 ### D-005 — Production deploys on every merge to `main` (2026-11-22)
