@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 49 `Must` done, 43 in review, 4 in progress (BMI-003, 050, 066, 070), 2 ready (BMI-076 after the merge, BMI-086), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 and BMI-081 (`Should`, `Review`), BMI-082 (`Should`, `Ready`, after the merge), BMI-083 (`Should`, `Idea`) and BMI-084 and BMI-087 (`Should`, `Ready`) and BMI-085 (`Should`, `Idea`).
+Progress: 0 of 50 `Must` done, 43 in review, 4 in progress (BMI-003, 050, 066, 070), 3 ready (BMI-076 after the merge, BMI-086, BMI-088), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 and BMI-081 (`Should`, `Review`), BMI-082 (`Should`, `Ready`, after the merge), BMI-083 (`Should`, `Idea`) and BMI-084 and BMI-087 (`Should`, `Ready`) and BMI-085 (`Should`, `Idea`).
 
 ### E1. Foundation
 
@@ -102,6 +102,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-085 | The landing built as the app's own screen with the copy underneath (D-032), as static HTML the crawlers can read, plus the use-case pages if Ícaro keeps them (Q-024), with the technical SEO the SEO file lists: canonical, `robots.txt`, `sitemap.xml`, a real `<h1>`, `<html lang>`, a minimal `WebApplication` block; from the copy of BMI-084; after the merge of PR #2 | Should | L | Idea | BMI-084, BMI-078, the merge of PR #2, Q-022 |
 | BMI-086 | Correct statements that are false or imprecise and already public: the "roughly 20 px" figure and the Unredacter wording in the README and in the project and marketing notes, and the README's account of which links use the proxy; before the merge of PR #2 | Must | S | Ready | |
 | BMI-087 | A proxied download cut at the proxy's cap, with no declared size, shows the generic error; the user should learn that the image is too large for the proxy | Should | S | Ready | |
+| BMI-088 | Rewrite the in-app redaction warning (line 47 of `en.json` and `pt-BR.json`): blur and pixelate don't really hide what must stay secret, and for a secret one covers or crops; the shortest wording, no new feature; Ícaro reads the `pt-BR` before the merge | Must | S | Ready | |
 
 ### E6. Launch readiness
 
@@ -128,7 +129,7 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-101 | Zoom blur | Effect | Idea |
 | BMI-102 | Tilt-shift | Effect | Idea |
 | BMI-103 | Lens blur / bokeh | Effect | Idea |
-| BMI-104 | Solid box for real redaction | Effect | Idea |
+| BMI-104 | Solid box for real redaction; stays in `Later` by Ícaro's decision (D-033), and the honest in-app warning (BMI-088) is its mitigation | Effect | Idea |
 | BMI-105 | Box blur | Effect | Idea |
 | BMI-106 | Surface / Smart blur (edge-preserving) | Effect | Idea |
 | BMI-107 | Iris and Field blur | Effect | Idea |
@@ -152,7 +153,7 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-137 | Image loading by link on phones: the real ceiling is decoding memory, not the 100 MiB cap (a compressed file of tens of MB can exceed 100 megapixels, over 400 MB as RGBA, and end in `decode_failed`; a body just under the cap sits whole in a Blob, kept in RAM on iOS Safari and able to reload the tab); a lower or device-aware cap, or a clearer message when decoding fails on a very large file | Quality | Idea |
 | BMI-135 | Playwright config: don't silently reuse another process's server on port 4173 outside CI (`reuseExistingServer`); no evidence yet that this caused the 2026-11-22 failure (BMI-074) | Quality | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-088`; later effects `BMI-109`, features `BMI-129`, other later `BMI-139`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-089`; later effects `BMI-109`, features `BMI-129`, other later `BMI-139`.
 
 ---
 
@@ -397,14 +398,25 @@ Spec: [specs/hosted-analytics.md](specs/hosted-analytics.md). Decided by Ícaro 
 
 ### BMI-086 — False or imprecise statements that are already public
 
-Found by the opus reviewer while reading the landing copy against the sources, relayed by `-75` (2026-11-22); PM read README line 58, `en.json` line 47, the README's URL sentence (line 78) and the repo's homepage field, and didn't re-read the study. The repo is public and PR #2 is about to merge, so these go into PR #2 before the merge, or the merge waits.
+**Authorized in full by Ícaro (D-033, relayed by `-aa`, 2026-11-22)**, including the three `audience.md` edits (the objection about detection is not the opening of the landing). It goes into PR #2 before the merge, and the opus reviewer reads it for faithfulness to the study and for no-ai-slop. Found by the opus reviewer while reading the landing copy against the sources, relayed by `-75` (2026-11-22); PM read README line 58, `en.json` line 47, the README's URL sentence (line 78) and the repo's homepage field, and didn't re-read the study. The repo is public and PR #2 is about to merge, so these go into PR #2 before the merge, or the merge waits.
 
-- [ ] **README line 58**: it says the 2016 study "found text stayed recognizable unless the blur radius or mosaic block size exceeded roughly 20 px". The reviewer read the paper (PoPETs 2016, Hill, Zhou, Saul, Shacham): there is no absolute threshold; mosaic accuracy falls as the grid nears the font size; blurred 24 px text was recovered up to a Gaussian radius of 45 px; the authors concluded that mosaic and blur aren't viable for redacting text. Suggested text: "A 2016 study recovered pixelated text until the blocks grew close to the size of the letters, and read blurred text at blur radii of up to 45 px; its authors concluded that pixelation and blur are not safe ways to redact text." The Unredacter sentence stops saying "brute force": Bishop Fox describes a search that renders guesses in the same font. The advice "use heavy Pixelate as a minimum" goes too (see Q-023 for the in-app twin); "prefer a solid box (on the backlog)" stays only as a statement about the backlog.
+- [ ] **README line 58**: it says the 2016 study "found text stayed recognizable unless the blur radius or mosaic block size exceeded roughly 20 px". The reviewer read the paper (PoPETs 2016, Hill, Zhou, Saul, Shacham): there is no absolute threshold; mosaic accuracy falls as the grid nears the font size; blurred 24 px text was recovered up to a Gaussian radius of 45 px; the authors concluded that mosaic and blur aren't viable for redacting text. **Wording, corrected after a second read:** the first suggestion carried numbers ("blocks close to the size of the letters", "blur radii of up to 45 px") that the second reviewer couldn't confirm. PM extracted the paper's text and found: the abstract's conclusion is "mosaicing and blurring, despite their widespread usage, are not viable approaches for text redaction"; there is no absolute threshold (the only "threshold" in it is a 70% accuracy score for sensible against nonsensical text); and the 45p figure is for sentences rendered as 24p Verdana, mosaiced with 8p tiles and then blurred, where the HMM-based recognizers keep that score up to a Gaussian blur radius of 45p and the brute-force ones up to 15p. So the text carries **no numbers**: "A 2016 study recovered pixelated and blurred text across typefaces, font sizes, grid sizes and noise levels; its authors concluded that pixelation and blur are not viable ways to redact text." The Unredacter sentence stops saying "brute force": Bishop Fox describes a search that renders guesses in the same font. The advice "use heavy Pixelate as a minimum" goes too (see Q-023 for the in-app twin); "prefer a solid box (on the backlog)" stays only as a statement about the backlog.
 - [ ] **README line 78**: "the single exception is loading by URL when the remote server doesn't allow cross-origin access" is imprecise: an `http://` link always goes through the proxy, because the page's CSP is `connect-src 'self' https:`. The sentence says so.
 - [ ] The same figure and wording in `docs/research.md` (and the Unredacter line there), `docs/marketing/channels.md` line 161 and `docs/marketing/plans/2026-11-pre-launch.md` line 39 are corrected the same way; the draft post `marketing/social/posts/2026-11-24-blur-is-not-redaction.md` carries it too and keeps its blocking note until it is fixed. The marketing files are the marketing lane's.
 - [ ] `docs/marketing/audience.md` line 17 and the evidence of P2 cite Autotrader and Jalopnik for reasons the sources don't support (carsales is verified for cloning; Autotrader advises not to cover the plate; the Jalopnik page is a 404). This joins the list of `audience.md` edits that wait for Ícaro's direct yes (the dispatcher asked `-aa`).
-- [ ] The in-app warning (`en.json` and `pt-BR.json`, line 47) is **not** in this item: it is Ícaro's (Q-023).
+- [ ] The in-app warning (`en.json` and `pt-BR.json`, line 47) is **not** in this item: it is BMI-088 (D-033).
 - [ ] The GitHub repository's About field shows the app's domain, the earlier `blur-my-image.vercel.app`, while D-016 keeps the URL out until Ícaro says (PM read it with `gh`). The owner clears or keeps it: `-5b` asks `-aa`.
+
+### BMI-088 — The in-app redaction warning
+
+Authorized by Ícaro (D-033, relayed by `-aa`): the text next to the Pixelate option ("Pixelated text can sometimes be recovered. For passwords or document numbers, use a high intensity.") gives the same weak assurance as the README's false figure. PM read the 2016 study's text: its conclusion is that mosaicing and blurring "are not viable approaches for text redaction". The rewrite adds no feature and states no number. Ui lane, in PR #2, after the opus reviewer.
+
+PM's draft, for the reviewer and the strategist to shorten (not approved; Ícaro reads the `pt-BR`): `en` "Blur and pixelate don't reliably hide text. For anything secret, crop it out or cover it with a solid shape." `pt-BR` "Desfoque e pixelização não escondem texto de verdade. Para algo secreto, recorte ou cubra com uma forma sólida."
+
+- [ ] The warning says that blur and pixelate don't really hide text that must stay secret and that a secret is covered or cropped out, in the fewest words, in `en` and `pt-BR`, with no number and no "high intensity".
+- [ ] Both languages keep the same keys; the key-parity test, check, unit and e2e tests (including the axe contrast) and `pnpm size` pass; it is text only, so the JavaScript budget (1.2 to 1.3 kB of room) isn't touched.
+- [ ] The text near the Pixelate option stays tied to it for assistive tech as it is today.
+- [ ] Ícaro reads the `pt-BR` before the merge; PM sends `-aa` both texts once the reviewer approves them. BMI-104 (a solid box) stays in `Later` (D-033); this warning is its mitigation, so the text doesn't promise a box.
 
 ### BMI-087 — A proxied download cut at the proxy's cap
 

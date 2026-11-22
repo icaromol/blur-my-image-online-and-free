@@ -24,14 +24,6 @@ Recommendation: launch in English; once the app has real visits, add Portuguese 
 
 D-032 makes the landing the app's own screen with the copy underneath. BMI-085 planned a home and three use-case pages (blur a license plate, pixelate a screenshot, blur a face) as static pages. Question for Ícaro: do the use-case pages stay as separate pages that the app screen links to, or does everything live on the one screen (sections, no separate pages)? The SEO notes favour separate pages (one query intent per page), at the price of more files to keep true; one screen is simpler and ranks for fewer queries. Recommendation: keep the three use-case pages, small, linked from the sections under the app, since each search intent (plate, screenshot, face) deserves its own answer. Default in force: BMI-085 stays an `Idea` and nothing is built; the copy of BMI-084 is written for the home first.
 
-### Q-023 — The in-app redaction warning promises too much
-
-The app's own warning (`en.json` line 47, `pt-BR.json` line 47) says: "Pixelated text can sometimes be recovered. For passwords or document numbers, use a high intensity." The opus reviewer read the 2016 study (PoPETs, Hill, Zhou, Saul and Shacham) and found no absolute safe threshold: mosaic accuracy falls as the grid nears the letters' size, and it recovered 24 px text up to a Gaussian radius of 45 px; its authors concluded that pixelation and blur aren't viable for redacting text. Bishop Fox's Unredacter post describes a search that renders guesses in the same font, and recommends black bars. So "use a high intensity" gives the same weak assurance as the README's false "roughly 20 px". It is the product's own text in two languages, so Ícaro decides, and it touches BMI-104 (a solid box, today in `Later`).
-
-Options: (a) reword now, no new feature: say that blur and pixelation aren't safe ways to hide text that must stay secret and that covering it or cropping it out is; (b) as (a), and move BMI-104 (the solid box) into v1 so the app offers what the warning recommends; (c) leave the sentence.
-
-Recommendation: (a) now, since a warning that overstates safety is a defect in the promise the product makes; and put (b) to him as a separate scope question, because adding the solid box to v1 changes the milestone. Default in force: **(c) until he answers**, with the fix to the README and the research notes going ahead (BMI-086), because those are plain factual errors.
-
 ### Q-022 — When may the app's URL be public: canonical, sitemap, README, marketing?
 
 D-016 says the URL stays out of the README and marketing until Ícaro says. Meanwhile `index.html` already carries it (`og:url` and `og:image`, on the repository that is public now), and the landing pages need the real host for `canonical` and `sitemap.xml` (decision 3 of `docs/marketing/landing/seo.md`, read through `-75`; PM hasn't read the file). So the URL is already discoverable, and the question is when it stops being a secret to the places that matter.
@@ -55,6 +47,13 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the project's main domain on 2026-11-22, per `-aa`; the earlier `https://blur-my-image.vercel.app` answers 307 to it (PM read both with a plain `GET`). The README, the repo website field and the bug form get it only when Ícaro says (D-016). Not blocking.
 
 ## Decisions
+
+### D-033 — Merge after the fixes, the false statements corrected, the in-app warning rewritten, BMI-104 stays in Later (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answers (closing Q-023): (1) **Merge**: correct, push everything, and only then merge (option A). (2) **BMI-086 is authorized in full**: replace the "roughly 20 px" figure with sentences faithful to the 2016 PoPETs study in `README.md` line 58, `docs/research.md`, `docs/marketing/channels.md`, the pre-launch plan and the post (dropping its blocking note); take "brute force" and "use heavy Pixelate as a minimum" out of the README; fix line 78 (an `http://` link always goes through the proxy; the CSP is `connect-src 'self' https:`); and the three `audience.md` edits (the objection "does it find the faces or the plate for me?" in P2 and P3, **without making it the opening of the landing**; the CSP caveat in P1; a re-check of the "no analytics cookies" pillar against BMI-082 before the copy leaves draft); all of it read by the opus reviewer (faithful to the study, no-ai-slop). (3) **The in-app warning** (line 47 of `en.json` and `pt-BR.json`) is rewritten, with no new feature: blur and pixelate don't really hide what must stay secret, and for a secret one covers or crops. It is an item (BMI-088); Ícaro **reads the `pt-BR` before the merge**. (4) **BMI-104 (a solid box) stays in `Later`**, and the honest warning is its mitigation. (5) Q-022 (when the URL is public, the About field) and Q-024 (the use-case pages) are still with him, defaults in force.
+**Why:** a public statement that overstates what the study found is a defect, and the product's own warning should not promise what the study doesn't.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-086, BMI-088, BMI-104, BMI-084 (the `audience.md` edits), the merge of PR #2.
 
 ### D-032 — Landing choices (2026-11-22)
 
