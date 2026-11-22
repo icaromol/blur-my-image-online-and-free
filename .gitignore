@@ -33,3 +33,9 @@ Thumbs.db
 
 # claude code (local, per-machine)
 .claude/settings.local.json
+
+# marketing renders (regenerate with marketing/social/render.mjs)
+marketing/social/out/
+
+# local working notes (never committed)
+.local/

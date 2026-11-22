@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__buffer__create_post|mcp__buffer__edit_post",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/buffer-draft-only.mjs\""
+          }
+        ]
+      }
+    ]
+  }
+}
