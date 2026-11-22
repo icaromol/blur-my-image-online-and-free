@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 48 `Must` done · 42 in review · 4 in progress · 2 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+0 of 48 `Must` done · 43 in review · 4 in progress · 1 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -55,6 +55,8 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- **BMI-073 is `Review`:** the neutral usage-alert sentence is committed as `e3922a7` (PM confirmed `grep -i alert` finds only that line in the README and `docs/hosting.md`). Ícaro's items are done by his word. The Speed Insights question is Q-018; CodeQL waits for the merge; the two workflows are BMI-076. Merged-state note: with BMI-073, 077, 079, 080 and 081 in `Review`, what stands between PR #2 and the merge is `-aa`'s push, CodeRabbit's fourth round, Ícaro's look at the `pt-BR` text of the rate-limit message, and green checks.
 
 - **BMI-081 is `Review`** (`3aa1445` and `a9f8966`): a 429 or a Vercel deny header becomes a "too many requests" error, anything else stays generic, and the README and `docs/hosting.md` describe it with the shared-address sentence. The reviewer's decisions and two optional leftovers are in the item. The `pt-BR` text still needs Ícaro. **A wording error in `a9f8966`:** the docs say usage alerts are "not set up", which contradicts Ícaro's word that the notifications are on and can't be verified by anyone; PM's instruction was to promise nothing, not to deny. A fix commit with neutral wording is the one remaining task of BMI-073 (the lane writes it; PM owns the instruction that led to it).
 
