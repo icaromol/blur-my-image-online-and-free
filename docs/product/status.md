@@ -56,6 +56,8 @@ Only items that block something. Questions with a default in force are in decisi
 
 ### 2026-11-22 (new PM session, handoff)
 
+- **BMI-075 (brand kit) is `Review`:** the original lettering, vectorized, is committed as `abc7410` on the local branch `feat/brand-kit` (28 files in the kit, about 109 KB), approved by the reviewer in two rounds; it is not on the shared feature branch and not pushed. Its PR comes after the merge of PR #2; applying it to the site is BMI-078. PM checked the commit and files, not the logos' renders.
+
 - **BMI-077 is `Review` again, complete:** server `9828aa7`, quality `745c2fa` then `42fc557` (the SPDX parser swap), ui `b3ca37f` and `0209c48` (the 100 MiB cap), all local on the feature branch, verified and approved by the reviewer. PM confirmed the commits and the cap constant in `src/input/url.ts`. Next: `-aa` gives the push; `-5b` posts the last two PR replies; CodeRabbit's second round; then the merge with green checks. The brand kit (BMI-075, SVGs being redone) and its site application (BMI-078) are separate PRs after that merge.
 
 - BMI-077's two new deliveries are approved by the opus reviewer (per `-75`): the SPDX parser swap (D-026; production allowlist unchanged, tested) and the direct-fetch size cap of **100 MiB** (104,857,600 bytes; PM wrote "100 MB" earlier, the number was always this one). Commits are requested from `-5b`. Reviewer's product note, recorded as the `Later` idea BMI-137: on phones the real ceiling is decoding memory, not the cap, so a very large compressed file can end in `decode_failed`, and a body just under the cap is held whole in a Blob. A lower, device-aware cap or a clearer message is Ícaro's to decide, later. The designer (BMI-075) works in `/tmp/brand-work`, outside the shared tree.
