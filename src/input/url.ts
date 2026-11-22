@@ -93,6 +93,12 @@ export async function fetchImage(
     throw new CodedError("load_failed");
   }
   if (!proxied.ok) {
+    // The platform's rate limit answers with plain text, not the proxy's JSON error.
+    if (
+      proxied.status === 429 ||
+      proxied.headers.get("x-vercel-mitigated") === "deny"
+    )
+      throw new CodedError("rate_limited");
     const code = await proxied
       .json()
       .then((body: { error?: string }) => body.error ?? "unknown")

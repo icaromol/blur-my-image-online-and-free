@@ -75,6 +75,7 @@
     "upstream_unreachable": "Não foi possível acessar o site.",
     "not_an_image": "Esse link não leva a uma imagem.",
     "too_large": "Essa imagem é grande demais para carregar por link. Baixe o arquivo e abra-o aqui.",
+    "rate_limited": "Muitas solicitações vindas da sua rede agora. Tente de novo em cerca de um minuto.",
     "timeout": "O site demorou demais para responder.",
     "too_many_redirects": "O link redireciona vezes demais.",
     "bad_redirect": "O link redireciona para um lugar inválido.",

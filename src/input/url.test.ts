@@ -95,6 +95,61 @@ describe("fetchImage", () => {
     });
   });
 
+  describe("when the platform's rate limit denies the proxy request", () => {
+    const viaProxy = (response: () => Response) =>
+      vi.fn(async (input: RequestInfo | URL) => {
+        if (String(input).startsWith(PROXY)) return response();
+        throw new TypeError("Failed to fetch");
+      });
+
+    it("reports rate_limited for the plain text deny", async () => {
+      const fetcher = viaProxy(
+        () =>
+          new Response("Forbidden", {
+            status: 403,
+            headers: {
+              "content-type": "text/plain",
+              "x-vercel-mitigated": "deny",
+            },
+          }),
+      );
+
+      await expect(fetchImage(target, PROXY, fetcher)).rejects.toMatchObject({
+        code: "rate_limited",
+      });
+    });
+
+    it("reports rate_limited for a 429", async () => {
+      const fetcher = viaProxy(
+        () => new Response("Too Many Requests", { status: 429 }),
+      );
+
+      await expect(fetchImage(target, PROXY, fetcher)).rejects.toMatchObject({
+        code: "rate_limited",
+      });
+    });
+
+    it("doesn't call a plain text 403 without the deny header a rate limit", async () => {
+      const fetcher = viaProxy(
+        () => new Response("Forbidden", { status: 403 }),
+      );
+
+      await expect(fetchImage(target, PROXY, fetcher)).rejects.toMatchObject({
+        code: "load_failed",
+      });
+    });
+
+    it("keeps the proxy's own 403 and its code", async () => {
+      const fetcher = viaProxy(() =>
+        Response.json({ error: "forbidden_origin" }, { status: 403 }),
+      );
+
+      await expect(fetchImage(target, PROXY, fetcher)).rejects.toMatchObject({
+        code: "forbidden_origin",
+      });
+    });
+  });
+
   describe("direct size cap", () => {
     const CAP = 10;
     const bytes = (n: number) => new Uint8Array(n).fill(1);

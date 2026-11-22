@@ -96,6 +96,25 @@ test("show the proxy's reason when a URL can't be loaded", async ({ page }) => {
   );
 });
 
+test("tell the user to wait when the platform's rate limit denies the proxy", async ({
+  page,
+}) => {
+  await page.route("https://busy.test/**", (route) => route.abort());
+  await page.route("**/api/image?**", (route) =>
+    route.fulfill({
+      status: 403,
+      body: "Forbidden",
+      contentType: "text/plain",
+      headers: { "x-vercel-mitigated": "deny" },
+    }),
+  );
+  await page.getByLabel("Image URL").fill("https://busy.test/x.png");
+  await page.getByRole("button", { name: "Load" }).click();
+  await expect(page.getByRole("alert")).toContainText(
+    "Try again in about a minute",
+  );
+});
+
 test("reject a file that isn't an image", async ({ page }) => {
   await page.getByLabel("Image file").setInputFiles({
     name: "notes.png",
