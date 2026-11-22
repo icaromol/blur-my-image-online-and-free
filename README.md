@@ -75,7 +75,7 @@ Shortcuts follow Photoshop's defaults where one exists.
 ## Privacy
 
 - Images are decoded, edited and encoded in your browser. There is no upload step and no server-side storage.
-- The single exception is loading by URL when the remote server doesn't allow cross-origin access. Then the image passes once through a stateless proxy (see [How it works](#how-it-works)). The proxy streams the bytes back and keeps nothing. Our code logs nothing. Vercel keeps its standard request log (method, path including the image URL, status, IP, user agent) for 1 hour.
+- The single exception is loading by URL when the remote server doesn't allow cross-origin access. Then the image passes once through a stateless proxy (see [How it works](#how-it-works)). The proxy streams the bytes back and keeps nothing. Our code logs nothing. Vercel keeps its own runtime log of requests to the function (method, path and query string, which holds the image URL, status, user agent and client IP) for 1 hour on the Hobby plan.
 - Exported files contain no EXIF metadata. Camera model, timestamps and GPS coordinates from the original are dropped, because canvas export writes pixels only.
 - No analytics cookies, no tracking pixels.
 
@@ -105,7 +105,7 @@ This is the same model Photoshop uses for a Smart Filter with a layer mask, and 
 - accepts only `http` and `https` URLs on their default ports (80 and 443), with no username or password,
 - resolves the hostname and refuses private, loopback and link-local addresses (SSRF protection), re-checking after each redirect, with at most 3 redirects,
 - accepts only PNG, JPEG, GIF, WebP, AVIF and BMP content types, checks the file's first bytes against the declared type, and re-labels the response with the canonical type for the format rather than passing the upstream header through,
-- caps the response size with a configurable limit (`MAX_BYTES`, default 4,400,000 bytes, just under the 4.5 MB Vercel Function response body limit to leave room for headers) and times out slow fetches,
+- caps the response size with a configurable limit (`MAX_BYTES`, default 4,400,000 bytes, below the 4.5 MB response body limit Vercel documents for Functions, which doesn't apply to streamed responses, so the proxy refuses a larger image itself) and times out slow fetches,
 - rejects cross-site callers (`Sec-Fetch-Site` / `Origin` checks),
 - relies on those header checks only to stop other websites from using the proxy. A script can forge them, so scripted abuse is limited by a rate-limit rule on `/api/image` in the Vercel firewall plus usage alerts, both set up at deploy time,
 - stores nothing about the image and logs nothing itself.

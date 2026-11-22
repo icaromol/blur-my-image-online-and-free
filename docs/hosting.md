@@ -17,7 +17,7 @@ Cost grows with visits, not with image size, because edited images never reach t
 
 | Option | Cost | Relevant limits | Commercial use (ads, donations) | Proxy |
 | --- | --- | --- | --- | --- |
-| **Vercel Hobby** | Free | 100 GB transfer, 1M function invocations, 4 h Active CPU per month. Over the limit the project **pauses**, no bill | **Not allowed.** Ads count as commercial; donations are disputed | Node function, 4.5 MB body limit |
+| **Vercel Hobby** | Free | 100 GB transfer, 1M function invocations, 4 h Active CPU per month. Over the limit the project **pauses**, no bill | **Not allowed.** Ads count as commercial; donations are disputed | Node function, 4.5 MB request body limit and 4.5 MB response body limit (streamed responses excepted) |
 | **Vercel Open Source Program** | US$3,600 credits over 12 months | Selective, quarterly cohorts | Allowed | Same as Pro |
 | **Vercel Pro** | US$20 per seat per month | Much higher, overage billed | Allowed | Same |
 | **Cloudflare Workers Free** | Free | Static asset requests free and unlimited. 100k Worker requests per day, 10 ms CPU per request | Allowed | Worker `fetch`. Cannot fetch bare IPs or reach private networks without a VPC binding, which already blocks most SSRF |
@@ -41,7 +41,7 @@ Write the proxy so that leaving Vercel means swapping one entry file (see [Porta
    - enforce the size cap and a fetch timeout,
    - spend the one WAF rate-limit rule on `/api/image`.
 3. **Hitting a limit takes the site down**, in most cases until 30 days have passed. For a free tool that's better than a surprise bill, but monitor usage.
-4. **The 4.5 MB cap belongs to Vercel, not the product.** Keep it in configuration.
+4. **The 4.5 MB body limit belongs to Vercel, not the product.** It applies to request bodies and to responses that aren't streamed. The proxy only takes GET requests and streams its response, so its own cap, `MAX_BYTES` (4,400,000 by default), is the one that decides. Keep it in configuration, below 4.5 MB.
 
 ## Portable layout
 
@@ -114,6 +114,7 @@ Cloudflare is the cheapest next step. A VPS only pays off when the proxy itself 
 
 - [Vercel Hobby plan](https://vercel.com/docs/plans/hobby)
 - [Vercel fair use policy](https://vercel.com/docs/limits/fair-use-policy)
+- [Vercel Functions limits (request and response body size)](https://vercel.com/docs/functions/limitations#request-body-size) and [Runtime Logs (retention per plan)](https://vercel.com/docs/logs/runtime#limits)
 - [Is Vercel free? Hobby in 2026 (DEV)](https://dev.to/abhijais1/is-vercel-free-what-the-hobby-plan-covers-in-2026-2ke)
 - [Donations on the Hobby plan (Vercel Community)](https://community.vercel.com/t/donations-on-the-hobby-plan/50665)
 - [Vercel Open Source Program](https://vercel.com/open-source-program) and [docs](https://vercel.com/docs/open-source-program)
