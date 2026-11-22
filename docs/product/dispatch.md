@@ -11,9 +11,9 @@ Status: **Running** in session `blur-my-image-online-and-free-75` (took over fro
 | Heartbeat id | `3eef7853` (CronCreate, recurring) |
 | Interval | 30 min (`17,47 * * * *`); auto-expires after 30 days |
 | Created | 2026-11-22 15:1x, tick 1 of this session (the `-ad` heartbeat `89127110` died with its session) |
-| Last tick | 2026-11-22 (tick 1, this session) |
-| Next tick | 2026-11-22 15:21, or earlier on a worker result or a message |
-| Quiet ticks in a row | 1 (tick 11: nothing to assign; BMI-073 is `Ready` but its worker part waits on BMI-003, which is `In progress`, and the rest is Ícaro's; no worker running; every peer idle except `-aa`) |
+| Last tick | 2026-11-22 (tick 37, this session) |
+| Next tick | on a worker result or a message; otherwise the next heartbeat |
+| Quiet ticks in a row | 0 (tick 37: BMI-088, BMI-086 and BMI-084 delivered and committed locally; waiting on `-aa` for the push) |
 
 ## Lanes
 
@@ -21,10 +21,10 @@ Workers from the `-ad` session are all dead; nothing below is carried over from 
 
 | Lane | State | Item | Worker id | Started | Files held |
 | --- | --- | --- | --- | --- | --- |
-| ui | Idle (tick 36). BMI-077 UI delivered (`b3ca37f`); the 100 MiB direct-fetch cap (D-025) verified and approved, commit asked of `-5b`. Not mine yet: BMI-078 (apply the brand kit on the site: favicon and apple-touch in `public/`, tags in `index.html`, new OG), only after the PR #2 merge and the kit's own PR. Bundle headroom thin: 43.49 of 45 kB initial, 192.51 of 195 kB total. Executor `-cc` on stand-by | | | | |
+| ui | Idle (tick 37). BMI-088 delivered and read by the opus reviewer: the redaction warning shows with every effect (`effects.warning`, one key, pt-BR approved by Ícaro), plus the D-034 a11y add-on (`aria-describedby="effects-warning"` on the effects radiogroup only, one test of the link). Committed locally as `c00002d`. Gates re-run by me on the tree at `ec54b1f`: `pnpm check` clean, 307 tests, build, e2e 50/50, size 43.8 of 45 kB initial and 192.96 of 195 kB total (thin headroom). Not mine yet: BMI-078 (brand kit on the site), only after the PR #2 merge and the kit's own PR; BMI-087 (`url.ts`, `url.test.ts`, `download_interrupted`) stays uncommitted until after the PR #2 merge. Executor `-cc` on stand-by | | | | |
 | server | Idle (tick 31). BMI-077 server tests committed (`9828aa7`). The rate-limit burst proof (BMI-003) waits for `-aa`'s direct yes. Executor `-f2` on stand-by | | | | |
-| quality | Idle (tick 36). BMI-077: the SPDX parser swap with CC-BY-3.0 allowed for dev tooling only is committed (`42fc557`): `spdx-expression-parse` 5.0.0 as a devDependency, production allowlist unchanged, tests prove a production dependency under CC-BY-3.0 still fails. Queued: BMI-076 scorecard and dependency-review workflows, only after the PR #2 merge (scorecard also waits on Q-012) | | | | |
-| marketing | Idle (tick 46). BMI-075 brand kit done after D-027: Ícaro's original lettering vectorized, committed on the local branch `feat/brand-kit` (`abc7410` on top of `2a8d07a`, local only, outside PR #2). The first review found filled letter counters (a missing fill rule); the designer fixed it by winding the holes opposite to the outlines, and the second review approved. The git owner used a temporary worktree, so the shared tree never left `feat/scaffold-and-proxy`. Applying the kit on the site is BMI-078, after the PR #2 merge and the kit's own PR. The plan line about the domain is still not assigned. Posts remain drafts; publish blockers stand (PETS 20 px, Safari, Mastodon decision 4) | | | | |
+| quality | Idle (tick 37). BMI-086 (study wording, intensity advice, README) committed locally as `a3f312f`; README line 78 (http:// links always use the proxy, proxy "doesn't keep a copy of the image") committed as `ec54b1f`. BMI-077 SPDX swap committed earlier (`42fc557`). Queued: BMI-076 scorecard and dependency-review workflows, only after the PR #2 merge (scorecard also waits on Q-012) | | | | |
+| marketing | Idle (tick 37). BMI-084 drafts and research delivered and committed locally as `2b1492d` (`docs/marketing/landing/`: home, three use-case pages, structured data, claims check, research, SEO). Draft only, on hold for Q-024 (use pages); nothing published; the app URL stays out of the text (markers `[EDITOR-URL]`, `[HOME-URL]`). Rule added to `claims-check.md`: never write "keeps nothing", "logs nothing" or "stores nothing" about the proxy; say only that it doesn't keep a copy of the image. Another critique (`.local/landing-improvements.md`) is with `-aa` for Ícaro and is NOT applied. Brand kit (BMI-075) is on `feat/brand-kit`, outside PR #2 | | | | |
 | reviewer | Idle. Reads the next finished item before `-5b` | | | | |
 
 Marketing queue after the verdict (the plan was approved by Ícaro with "prossiga"): action 1 SEO, action 4 launch kit, then action 2 page copy (after the SEO briefs), action 3 images (designer, after copy), Buffer drafts (only once accounts are connected), action 5 OG image (blocked by the English tagline).
@@ -52,6 +52,7 @@ Not assigned to anyone:
 | Marketing plan (3 lines + earlier fixes) | `docs/marketing/plans/2026-11-pre-launch.md` | tick 6: `docs(marketing): drop the open tagline question and the stale status from the pre-launch plan` | `0d37933` (pushed); reviewer approved; PM told so it can close BMI-051's marketing criterion |
 | `docs/product/dispatch.md` | this file | after this rewrite is stable | `2f0731b` (the board has been edited since; the next commit is asked when a tick leaves it stable) |
 | BMI-051 | `README.md`, `docs/hosting.md`, `index.html` | tick 2: `docs: sync the README and hosting guide with the shipped code` | `04dfa46` (pushed); PM told |
+| BMI-088, BMI-086, BMI-084, README:78 | warning in every effect with the aria link; study wording and advice; landing drafts; http:// sentence | tick 37: four commits in order | `c00002d`, `a3f312f`, `2b1492d`, `ec54b1f` (local only, not pushed; the push waits on `-aa`, the 5th CodeRabbit round and the clean-copy check) |
 
 
 ## Decisions in force (relayed by `-aa` from Ícaro's direct answers, tick 12)
@@ -91,6 +92,7 @@ Not assigned to anyone:
 
 Newest first, one line per tick that changed something.
 
+- 2026-11-22 tick 37 (session `-75`): BMI-088 (warning in every effect, plus the D-034 aria link), BMI-086 and BMI-084 approved by the opus reviewer after final re-reads and committed locally by `-5b` (`c00002d`, `a3f312f`, `2b1492d`, `ec54b1f`). The proxy "keeps nothing" claim was corrected in the landing drafts and README:78. I re-ran the gates on the committed tree (check, 307 tests, build, e2e 50/50, size 43.8 and 192.96 kB). No push: `-aa`'s call. Still outside PR #2: BMI-087, `docs/product/*`.
 - 2026-11-22 tick 3 (session `-75`): BMI-074 finished and verified: 10 of 10 runs green with `--retries=0`, `CI=1` run green, cause of the original failure still unexplained; e2e quiet request lifted. Quality lane idle.
 - 2026-11-22 tick 2 (session `-75`): BMI-051 committed (`04dfa46`) after one rework round and a reviewer re-read; PM moved it to `Review`. Reviewer read the marketing files, one rework round, three files approved and committed (`8c7896e`), three still stale in wording and blocked (second review). BMI-074 started and finished the same tick window.
 - 2026-11-22 tick 1 (session `-75`): took over from `-ad`. Heartbeat `3eef7853` created. Marketing files were already committed (`b1ee611`, `39f93cf`), so the reviewer reads the committed versions. BMI-051 assigned to quality (README lock taken). `-cc` and `-f2` on stand-by.
