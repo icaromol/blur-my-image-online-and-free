@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 30 `Must` done · 7 in review · 0 blocked. Full list in [backlog.md](backlog.md).
+0 of 30 `Must` done · 7 in review · 14 in progress (uncommitted) · 0 blocked. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -16,9 +16,15 @@ Updated: 2026-11-22
 | BMI-002 | CI + Dependabot | git-owner session | Ready |
 | BMI-040 | i18n foundation | — | Ready |
 | BMI-041 | Locale resolution + switcher | — | Ready |
-| BMI-042 | Translate existing UI | — | Ready |
+| BMI-042 | Translate existing UI (now ~5 components + effect and export labels; re-size to M) | — | Ready, waits for UI commit |
 | BMI-043 | Errors as codes | — | Ready |
 | BMI-044 | Number formatting + plurals | — | Ready |
+
+**Working tree, not committed (found 2026-11-22):** another session has built drag and drop, paste, URL loading, Pixelate, Motion, brush, eraser, undo/redo, JPG/JPEG/WebP export and large-image handling, with unit and e2e specs (`src/ui/`, `src/engine/`, `src/input/`, `src/export/`, `e2e/`). All of it is `In progress` until committed and green.
+
+## Risk: UI built before i18n
+
+D-001 put i18n first so new screens would be born translated. The UI above was built without it: English strings are hard-coded in five new components, in `effects.ts` labels and in `encode.ts` labels. BMI-042 is now bigger than the `S` it was sized at. Proposed order, which is sequencing and not a cut: BMI-040 and BMI-041 (new files only, no conflicts) can start now; BMI-042 to BMI-044 wait until the current UI work is committed so two sessions don't edit the same components. Needs Ícaro's call on whether to also freeze new UI strings until BMI-040 lands.
 
 ## Next
 
@@ -40,6 +46,12 @@ In order, once the items above are merged. This is build order, not a scope cut:
 - **BMI-042** needs Ícaro to review the `pt-BR` strings before it's `Done`.
 
 ## Log
+
+### 2026-11-22 (later)
+
+- `0be65bc` landed the status log update on `feat/scaffold-and-proxy`.
+- Synced backlog with the working tree: 14 items moved to `In progress`. Nothing marked `Done`: no tests were run by PM and nothing is merged.
+- Flagged the i18n ordering risk above.
 
 ### 2026-11-22
 

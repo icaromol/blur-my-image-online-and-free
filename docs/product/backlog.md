@@ -2,13 +2,13 @@
 
 Single source of truth for work items. Statuses, priority and size are defined in `.claude/skills/pm/SKILL.md`. Current iteration and log live in [status.md](status.md); decisions in [decisions.md](decisions.md).
 
-Last synced with the code: 2026-11-22 (branch `feat/scaffold-and-proxy`, not merged yet).
+Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (PR #1, draft): the first slice. `In progress` means the code exists in the shared working tree but isn't committed, so nothing there is verified or `Review` yet.
 
 ## Milestone v1
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 30 `Must` done, 7 in review.
+Progress: 0 of 30 `Must` done, 7 in review, 14 in progress (uncommitted).
 
 ### E1. Foundation
 
@@ -24,11 +24,11 @@ Progress: 0 of 30 `Must` done, 7 in review.
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
 | BMI-010 | Load via file picker | Must | S | Review | BMI-001 |
-| BMI-011 | Load via drag and drop anywhere on the page | Must | S | Ready | BMI-010 |
-| BMI-012 | Load via paste (`Ctrl/Cmd+V` with an image on the clipboard) | Must | S | Ready | BMI-010 |
-| BMI-013 | Load via URL field and via pasting a copied link; direct CORS first, proxy fallback | Must | M | Idea | BMI-014 |
+| BMI-011 | Load via drag and drop anywhere on the page | Must | S | In progress | BMI-010 |
+| BMI-012 | Load via paste (`Ctrl/Cmd+V` with an image on the clipboard) | Must | S | In progress | BMI-010 |
+| BMI-013 | Load via URL field and via pasting a copied link; direct CORS first, proxy fallback | Must | M | In progress | BMI-014 |
 | BMI-014 | URL proxy `/api/image`: Hono, SSRF checks per redirect, `image/*` only, `MAX_BYTES`, timeout, cross-site rejection | Must | M | Review | |
-| BMI-015 | Large images: read `MAX_TEXTURE_SIZE`, downscale to fit, tell the user before editing | Must | S | Idea | BMI-010 |
+| BMI-015 | Large images: read `MAX_TEXTURE_SIZE`, downscale to fit, tell the user before editing | Must | S | In progress | BMI-010 |
 
 ### E3. Effects and editing
 
@@ -36,22 +36,22 @@ Progress: 0 of 30 `Must` done, 7 in review.
 | --- | --- | --- | --- | --- | --- |
 | BMI-020 | Operation list + PixiJS renderer, whole-image operations | Must | M | Review | BMI-001 |
 | BMI-021 | Gaussian effect, intensity 1–100 relative to the image's shorter side | Must | S | Review | BMI-020 |
-| BMI-022 | Pixelate effect + "blur is not redaction" warning next to it | Must | S | Idea | BMI-020 |
-| BMI-023 | Motion effect + angle control (0–180°) | Must | S | Idea | BMI-020 |
-| BMI-024 | Effect selector in the toolbar | Must | S | Idea | BMI-022 |
-| BMI-025 | Brush: paint the current effect + intensity as a mask; strokes with the same setting don't compound; `B` shortcut | Must | L | Idea | BMI-020 |
-| BMI-026 | Eraser: restore original pixels; `E` shortcut | Must | M | Idea | BMI-025 |
-| BMI-027 | Brush size from toolbar and `[` / `]` | Must | S | Idea | BMI-025 |
-| BMI-028 | Undo / redo as a pointer in the operation list; `Ctrl/Cmd+Z`, `Ctrl/Cmd+Shift+Z` | Must | M | Idea | BMI-020 |
+| BMI-022 | Pixelate effect + "blur is not redaction" warning next to it | Must | S | In progress | BMI-020 |
+| BMI-023 | Motion effect + angle control (0–180°) | Must | S | In progress | BMI-020 |
+| BMI-024 | Effect selector in the toolbar | Must | S | In progress | BMI-022 |
+| BMI-025 | Brush: paint the current effect + intensity as a mask; strokes with the same setting don't compound; `B` shortcut | Must | L | In progress | BMI-020 |
+| BMI-026 | Eraser: restore original pixels; `E` shortcut | Must | M | In progress | BMI-025 |
+| BMI-027 | Brush size from toolbar and `[` / `]` | Must | S | In progress | BMI-025 |
+| BMI-028 | Undo / redo as a pointer in the operation list; `Ctrl/Cmd+Z`, `Ctrl/Cmd+Shift+Z` | Must | M | In progress | BMI-020 |
 
 ### E4. Export
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
 | BMI-030 | Export PNG at original resolution | Must | S | Review | BMI-020 |
-| BMI-031 | Export JPG / JPEG (user picks extension), transparency flattened on white, quality 0.92 | Must | S | Idea | BMI-030 |
-| BMI-032 | Export WebP; feature-detect Safari's silent PNG fallback and lazy-load `@jsquash/webp` | Must | M | Idea | BMI-030 |
-| BMI-033 | Export guarantees: output equals preview at full resolution, no EXIF in any format (e2e) | Must | S | Idea | BMI-031, BMI-032 |
+| BMI-031 | Export JPG / JPEG (user picks extension), transparency flattened on white, quality 0.92 | Must | S | In progress | BMI-030 |
+| BMI-032 | Export WebP; feature-detect Safari's silent PNG fallback and lazy-load `@jsquash/webp` | Must | M | In progress | BMI-030 |
+| BMI-033 | Export guarantees: output equals preview at full resolution, no EXIF in any format (e2e) | Must | S | In progress | BMI-031, BMI-032 |
 
 ### E5. Internationalization — spec: [specs/i18n.md](specs/i18n.md)
 
