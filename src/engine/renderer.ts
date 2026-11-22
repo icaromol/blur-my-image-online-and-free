@@ -1,12 +1,43 @@
-import { Application, type Filter, Rectangle, Sprite, Texture } from "pixi.js";
+import {
+  Application,
+  Container,
+  type Filter,
+  Graphics,
+  RenderTexture,
+  Sprite,
+  Texture,
+} from "pixi.js";
 import { effects } from "./effects";
-import type { Operation } from "./operations";
+import type { Operation, Stroke } from "./history";
+import type { ImageSize } from "./intensity";
 
+interface Targets {
+  // Input of the operation being edited.
+  base: RenderTexture;
+  // Base with the operation's effect applied (unused for restore, which reads the original).
+  source: RenderTexture;
+  // White where the operation applies.
+  mask: RenderTexture;
+  // What is on screen and what gets exported.
+  result: RenderTexture;
+}
+
+const MASK_COLOR = 0xffffff;
+
+// Renders an operation list. Each operation blurs the current result and composites it back
+// through its mask. The last operation's base, source and mask stay cached, so a brush stroke
+// that extends it only draws into the mask and composites again.
 export class Renderer {
-  private sprite: Sprite | null = null;
-  private filters: Filter[] = [];
+  private original: Texture | null = null;
+  private image: ImageBitmap | null = null;
+  private targets: Targets | null = null;
+  private readonly display = new Sprite();
+  private rendered: readonly Operation[] = [];
+  private drawnPoints = new WeakMap<Stroke, number>();
 
-  private constructor(private readonly app: Application) {}
+  private constructor(private readonly app: Application) {
+    app.stage.addChild(this.display);
+  }
 
   static async create(): Promise<Renderer> {
     const app = new Application();
@@ -24,48 +55,233 @@ export class Renderer {
     return this.app.canvas;
   }
 
+  get maxTextureSize(): number {
+    const renderer = this.app.renderer;
+    return "gl" in renderer
+      ? renderer.gl.getParameter(renderer.gl.MAX_TEXTURE_SIZE)
+      : 4096;
+  }
+
+  get size(): ImageSize | null {
+    return this.image && { width: this.image.width, height: this.image.height };
+  }
+
+  // Takes ownership of the bitmap and closes it when replaced.
   setImage(image: ImageBitmap): void {
-    this.clearImage();
-    this.sprite = new Sprite(Texture.from(image));
-    this.app.stage.addChild(this.sprite);
-    this.app.renderer.resize(image.width, image.height);
+    this.releaseImage();
+    const { width, height } = image;
+    this.image = image;
+    this.original = Texture.from(image);
+    const create = () => RenderTexture.create({ width, height });
+    this.targets = {
+      base: create(),
+      source: create(),
+      mask: create(),
+      result: create(),
+    };
+    this.app.renderer.resize(width, height);
     this.render([]);
   }
 
-  // Operations run in order: each one blurs the result of the previous ones.
   render(operations: readonly Operation[]): void {
-    if (!this.sprite) return;
-    const size = {
-      width: this.sprite.texture.width,
-      height: this.sprite.texture.height,
-    };
-    for (const filter of this.filters) filter.destroy();
-    this.filters = operations.map((op) =>
-      effects[op.effect].createFilter(op.intensity, size),
-    );
-    this.sprite.filters = this.filters;
+    if (!this.targets || !this.original) return;
+    const previous = this.rendered;
+    const last = operations.at(-1);
+
+    if (
+      last &&
+      operations.length === previous.length &&
+      sameOperations(operations, previous, operations.length - 1)
+    ) {
+      const before = previous.at(-1);
+      if (before && extendsOperation(last, before)) {
+        this.drawMask(last);
+        this.composite(last);
+      } else {
+        this.renderAll(operations);
+      }
+    } else if (
+      last &&
+      operations.length === previous.length + 1 &&
+      sameOperations(operations, previous, previous.length)
+    ) {
+      this.apply(last);
+    } else {
+      this.renderAll(operations);
+    }
+
+    this.rendered = operations;
+    this.display.texture = this.targets.result;
     this.app.render();
   }
 
   // Full-resolution copy of the current result, independent of how the canvas is displayed.
   toCanvas(): HTMLCanvasElement {
-    if (!this.sprite) throw new Error("No image loaded");
-    const { width, height } = this.sprite.texture;
-    return this.app.renderer.extract.canvas({
-      target: this.app.stage,
-      frame: new Rectangle(0, 0, width, height),
-    }) as HTMLCanvasElement;
+    if (!this.targets) throw new Error("No image loaded");
+    return this.app.renderer.extract.canvas(
+      this.targets.result,
+    ) as HTMLCanvasElement;
   }
 
   destroy(): void {
-    this.clearImage();
-    this.app.destroy(true);
+    this.releaseImage();
+    this.app.destroy(true, { children: true });
   }
 
-  private clearImage(): void {
-    for (const filter of this.filters) filter.destroy();
-    this.filters = [];
-    this.sprite?.destroy({ texture: true, textureSource: true });
-    this.sprite = null;
+  private renderAll(operations: readonly Operation[]): void {
+    if (!this.targets || !this.original) return;
+    this.drawnPoints = new WeakMap();
+    this.draw(new Sprite(this.original), this.targets.result);
+    for (const operation of operations) this.apply(operation);
   }
+
+  private apply(operation: Operation): void {
+    if (!this.targets || !this.original) return;
+    const targets = this.targets;
+    // The previous result becomes this operation's base; the old base is free to overwrite.
+    [targets.base, targets.result] = [targets.result, targets.base];
+
+    if (operation.kind === "effect") {
+      const filter = effects[operation.settings.effect].createFilter(
+        operation.settings,
+        targets.base,
+      );
+      this.draw(new Sprite(targets.base), targets.source, [filter]);
+      filter.destroy();
+    }
+    if (operation.mask !== "whole") {
+      this.app.renderer.render({
+        container: new Container(),
+        target: targets.mask,
+        clear: true,
+        clearColor: [0, 0, 0, 0],
+      });
+      this.drawMask(operation);
+    }
+    this.composite(operation);
+  }
+
+  private composite(operation: Operation): void {
+    if (!this.targets || !this.original) return;
+    const { base, source, mask, result } = this.targets;
+    const top = new Sprite(
+      operation.kind === "restore" ? this.original : source,
+    );
+    if (operation.mask === "whole") {
+      this.draw(top, result);
+      return;
+    }
+    const scene = new Container();
+    const maskSprite = new Sprite(mask);
+    top.mask = maskSprite;
+    scene.addChild(new Sprite(base), top, maskSprite);
+    this.draw(scene, result);
+  }
+
+  private drawMask(operation: Operation): void {
+    if (!this.targets || operation.mask === "whole") return;
+    const graphics = new Graphics();
+    for (const stroke of operation.mask) {
+      const drawn = this.drawnPoints.get(stroke) ?? 0;
+      if (drawn >= stroke.points.length) continue;
+      drawStroke(graphics, stroke, drawn);
+      this.drawnPoints.set(stroke, stroke.points.length);
+    }
+    this.app.renderer.render({
+      container: graphics,
+      target: this.targets.mask,
+      clear: false,
+    });
+    graphics.destroy();
+  }
+
+  private draw(
+    container: Container,
+    target: RenderTexture,
+    filters?: Filter[],
+  ): void {
+    if (filters) container.filters = filters;
+    this.app.renderer.render({
+      container,
+      target,
+      clear: true,
+      clearColor: [0, 0, 0, 0],
+    });
+    container.destroy({ children: true });
+  }
+
+  private releaseImage(): void {
+    if (this.targets)
+      for (const texture of Object.values(this.targets)) texture.destroy(true);
+    this.targets = null;
+    this.original?.destroy(true);
+    this.original = null;
+    this.image?.close();
+    this.image = null;
+    this.rendered = [];
+    this.display.texture = Texture.EMPTY;
+  }
+}
+
+// Draws the points from `from` on, joined to the point before so segments connect.
+function drawStroke(graphics: Graphics, stroke: Stroke, from: number): void {
+  const radius = stroke.diameter / 2;
+  const { points } = stroke;
+  if (points.length === 1) {
+    graphics.circle(points[0].x, points[0].y, radius).fill(MASK_COLOR);
+    return;
+  }
+  const start = Math.max(0, from - 1);
+  graphics.moveTo(points[start].x, points[start].y);
+  for (let i = start + 1; i < points.length; i++)
+    graphics.lineTo(points[i].x, points[i].y);
+  graphics.stroke({
+    width: stroke.diameter,
+    color: MASK_COLOR,
+    cap: "round",
+    join: "round",
+  });
+}
+
+function sameOperations(
+  a: readonly Operation[],
+  b: readonly Operation[],
+  count: number,
+): boolean {
+  for (let i = 0; i < count; i++) {
+    if (!sameOperation(a[i], b[i])) return false;
+  }
+  return true;
+}
+
+function sameOperation(a: Operation, b: Operation): boolean {
+  if (a.kind !== b.kind) return false;
+  if (a.kind === "effect" && b.kind === "effect" && a.settings !== b.settings)
+    return false;
+  if (a.mask === "whole" || b.mask === "whole") return a.mask === b.mask;
+  return (
+    a.mask.length === b.mask.length &&
+    a.mask.every((stroke, i) => stroke === b.mask[i])
+  );
+}
+
+// True when `next` is `previous` with more strokes or more points; only the new parts need drawing.
+function extendsOperation(next: Operation, previous: Operation): boolean {
+  if (
+    next.kind !== previous.kind ||
+    next.mask === "whole" ||
+    previous.mask === "whole"
+  )
+    return false;
+  if (
+    next.kind === "effect" &&
+    previous.kind === "effect" &&
+    next.settings !== previous.settings
+  )
+    return false;
+  const before = previous.mask;
+  return (
+    next.mask.length >= before.length &&
+    before.every((stroke, i) => stroke === next.mask[i])
+  );
 }

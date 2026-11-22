@@ -1,144 +1,262 @@
 <script setup lang="ts">
-import {
-	onBeforeUnmount,
-	onMounted,
-	ref,
-	shallowRef,
-	useTemplateRef,
-} from "vue";
-import { MAX_INTENSITY, MIN_INTENSITY } from "../engine/intensity";
-import type { Operation } from "../engine/operations";
-import { Renderer } from "../engine/renderer";
-import { canvasToBlob, downloadBlob, exportFileName } from "../export/download";
-import { decodeImage } from "../input/decode";
+import { onBeforeUnmount, onMounted, ref, shallowRef } from "vue";
+import { readClipboard } from "../input/clipboard";
+import EditorCanvas from "./EditorCanvas.vue";
+import EffectControls from "./EffectControls.vue";
+import ExportControls from "./ExportControls.vue";
+import { useEditor } from "./editor";
+import ImageInput from "./ImageInput.vue";
+import { commandFor } from "./shortcuts";
+import ToolControls from "./ToolControls.vue";
 
-const stage = useTemplateRef<HTMLDivElement>("stage");
-const renderer = shallowRef<Renderer | null>(null);
-const fileName = ref("");
-const hasImage = ref(false);
-const intensity = ref(50);
-const operations = ref<Operation[]>([]);
-const error = ref("");
+const editor = useEditor();
+const { settings, tool, brushSize, format, hasImage, loading, error, notice, canUndo, canRedo } = editor;
+const canvas = shallowRef<HTMLCanvasElement | null>(null);
+const dragging = ref(false);
+let dragDepth = 0;
+
+function openFile(file: File) {
+  void editor.open(file, file.name);
+}
+
+function onPaste(event: ClipboardEvent) {
+  if (!event.clipboardData) return;
+  const input = readClipboard(event.clipboardData);
+  if (!input) return;
+  const typing = event.target instanceof HTMLInputElement && event.target.type !== "range";
+  // A link pasted into the URL field stays there until the user presses Load.
+  if (typing && input.kind === "url") return;
+  event.preventDefault();
+  if (input.kind === "file") openFile(input.file);
+  else void editor.openUrl(input.url);
+}
+
+function onKeydown(event: KeyboardEvent) {
+  const command = commandFor(event);
+  if (!command) return;
+  event.preventDefault();
+  switch (command) {
+    case "brush":
+    case "eraser":
+      tool.value = command;
+      break;
+    case "smaller":
+      editor.resizeBrush(0.8);
+      break;
+    case "larger":
+      editor.resizeBrush(1.25);
+      break;
+    case "undo":
+      editor.undo();
+      break;
+    case "redo":
+      editor.redo();
+      break;
+  }
+}
+
+function hasFiles(event: DragEvent): boolean {
+  return event.dataTransfer?.types.includes("Files") ?? false;
+}
+
+function onDragEnter(event: DragEvent) {
+  if (!hasFiles(event)) return;
+  dragDepth++;
+  dragging.value = true;
+}
+
+function onDragLeave(event: DragEvent) {
+  if (!hasFiles(event)) return;
+  dragDepth = Math.max(0, dragDepth - 1);
+  if (dragDepth === 0) dragging.value = false;
+}
+
+function onDragOver(event: DragEvent) {
+  if (hasFiles(event)) event.preventDefault();
+}
+
+function onDrop(event: DragEvent) {
+  if (!hasFiles(event)) return;
+  event.preventDefault();
+  dragDepth = 0;
+  dragging.value = false;
+  const file = Array.from(event.dataTransfer?.files ?? []).find((f) => f.type.startsWith("image/"));
+  if (file) openFile(file);
+  else error.value = "That file isn't an image.";
+}
 
 onMounted(async () => {
-	try {
-		const instance = await Renderer.create();
-		stage.value?.appendChild(instance.canvas);
-		renderer.value = instance;
-	} catch {
-		error.value =
-			"Your browser couldn't start WebGL, which this app needs to render effects.";
-	}
+  canvas.value = await editor.start();
+  window.addEventListener("paste", onPaste);
+  window.addEventListener("keydown", onKeydown);
+  window.addEventListener("dragenter", onDragEnter);
+  window.addEventListener("dragleave", onDragLeave);
+  window.addEventListener("dragover", onDragOver);
+  window.addEventListener("drop", onDrop);
 });
 
-onBeforeUnmount(() => renderer.value?.destroy());
-
-async function onFileChange(event: Event) {
-	const input = event.target as HTMLInputElement;
-	const file = input.files?.[0];
-	input.value = "";
-	if (!file || !renderer.value) return;
-	error.value = "";
-	try {
-		const image = await decodeImage(file);
-		renderer.value.setImage(image);
-		image.close();
-		fileName.value = file.name;
-		operations.value = [];
-		hasImage.value = true;
-	} catch (e) {
-		error.value = e instanceof Error ? e.message : String(e);
-	}
-}
-
-function blurEntireImage() {
-	operations.value = [
-		...operations.value,
-		{ effect: "gaussian", intensity: intensity.value },
-	];
-	renderer.value?.render(operations.value);
-}
-
-async function downloadPng() {
-	if (!renderer.value) return;
-	const blob = await canvasToBlob(renderer.value.toCanvas(), "image/png");
-	downloadBlob(blob, exportFileName(fileName.value, "png"));
-}
+onBeforeUnmount(() => {
+  window.removeEventListener("paste", onPaste);
+  window.removeEventListener("keydown", onKeydown);
+  window.removeEventListener("dragenter", onDragEnter);
+  window.removeEventListener("dragleave", onDragLeave);
+  window.removeEventListener("dragover", onDragOver);
+  window.removeEventListener("drop", onDrop);
+  editor.stop();
+});
 </script>
 
 <template>
-	<main class="app">
-		<h1>Blur My Image</h1>
+  <div class="layout" :class="{ editing: hasImage }">
+    <header class="header">
+      <h1>Blur My Image</h1>
+      <p class="tagline">Blur all of an image or just the parts you paint. It never leaves your device.</p>
+    </header>
 
-		<div class="toolbar">
-			<label class="button">
-				Choose image
-				<input type="file" accept="image/*" class="visually-hidden" @change="onFileChange" />
-			</label>
+    <aside class="controls">
+      <ImageInput
+        :compact="hasImage"
+        :loading="loading"
+        @file="openFile"
+        @url="editor.openUrl"
+        @invalid="error = $event"
+      />
+      <template v-if="hasImage">
+        <EffectControls
+          v-model:effect="settings.effect"
+          v-model:intensity="settings.intensity"
+          v-model:angle="settings.angle"
+        />
+        <ToolControls
+          v-model:tool="tool"
+          v-model:brush-size="brushSize"
+          :disabled="!hasImage"
+          :can-undo="canUndo"
+          :can-redo="canRedo"
+          @blur-entire="editor.blurEntireImage"
+          @undo="editor.undo"
+          @redo="editor.redo"
+        />
+        <ExportControls v-model:format="format" :disabled="!hasImage" @download="editor.download" />
+      </template>
+    </aside>
 
-			<label>
-				Intensity
-				<input v-model.number="intensity" type="range" :min="MIN_INTENSITY" :max="MAX_INTENSITY" />
-				<output>{{ intensity }}</output>
-			</label>
+    <main class="stage">
+      <p v-if="error" role="alert" class="message error">{{ error }}</p>
+      <p v-if="notice" role="status" class="message notice">{{ notice }}</p>
+      <EditorCanvas
+        v-if="canvas"
+        v-show="hasImage"
+        :canvas="canvas"
+        :brush-size="brushSize"
+        @stroke-start="editor.beginStroke"
+        @stroke-move="editor.extendStroke"
+        @stroke-end="editor.endStroke"
+      />
+    </main>
 
-			<button type="button" :disabled="!hasImage" @click="blurEntireImage">Blur entire image</button>
-			<button type="button" :disabled="!hasImage" @click="downloadPng">Download PNG</button>
-		</div>
-
-		<p v-if="error" role="alert" class="error">{{ error }}</p>
-		<p v-else-if="!hasImage" class="hint">Choose an image to start. It never leaves your device.</p>
-
-		<div ref="stage" class="stage" :hidden="!hasImage" />
-	</main>
+    <div v-if="dragging" class="drop-overlay" aria-hidden="true">Drop the image to open it</div>
+  </div>
 </template>
 
 <style scoped>
-.app {
-	max-width: 1200px;
-	margin: 0 auto;
-	padding: 16px;
-	font-family: system-ui, sans-serif;
+.layout {
+  display: grid;
+  gap: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px;
 }
 
-.toolbar {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 12px;
+.header h1 {
+  margin: 0;
+  font-size: 1.4rem;
 }
 
-.button {
-	cursor: pointer;
-	padding: 6px 12px;
-	border: 1px solid currentColor;
-	border-radius: 6px;
+.tagline {
+  margin: 4px 0 0;
+  color: var(--text-muted);
 }
 
-.button:focus-within {
-	outline: 2px solid Highlight;
-}
-
-.visually-hidden {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	overflow: hidden;
-	clip-path: inset(50%);
-}
-
-.error {
-	color: #b00020;
+.controls {
+  display: grid;
+  gap: 16px;
+  align-content: start;
 }
 
 .stage {
-	margin-top: 16px;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  align-content: start;
+  min-width: 0;
 }
 
-.stage :deep(canvas) {
-	display: block;
-	max-width: 100%;
-	max-height: 80vh;
-	object-fit: contain;
+.layout:not(.editing) .stage:empty {
+  display: none;
+}
+
+/* On narrow screens the image comes right after the header, above the controls. */
+.layout.editing .stage {
+  order: 1;
+}
+
+.layout.editing .controls {
+  order: 2;
+}
+
+.message {
+  justify-self: stretch;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+}
+
+.error {
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.notice {
+  background: var(--notice-bg);
+  color: var(--text);
+}
+
+.drop-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+  border: 4px dashed var(--accent);
+  color: var(--text);
+  font-size: 1.5rem;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+@media (min-width: 900px) {
+  .layout.editing {
+    grid-template-columns: 300px 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .layout.editing .header {
+    grid-column: 1 / -1;
+  }
+
+  .layout.editing .controls {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .layout.editing .stage {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .layout:not(.editing) {
+    max-width: 640px;
+  }
 }
 </style>
