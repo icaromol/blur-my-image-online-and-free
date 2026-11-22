@@ -164,6 +164,7 @@ export function createProxyApp({
     const origin = c.req.header("origin");
     const crossOriginAllowed =
       origin !== undefined && config.allowedOrigins.includes(origin);
+    // A non-browser client can send this header too; the WAF rate limit on this path is what bounds it.
     if (
       c.req.header("sec-fetch-site") !== "same-origin" &&
       !crossOriginAllowed

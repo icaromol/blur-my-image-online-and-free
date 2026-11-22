@@ -15,7 +15,16 @@ describe("loadConfig ALLOWED_ORIGINS", () => {
     "https://a.example/path",
     "https://a.example/",
     "a.example",
+    "*",
+    "https://a.example,*",
   ])("throws for %j", (entry) => {
     expect(() => loadConfig({ ALLOWED_ORIGINS: entry })).toThrow();
+  });
+
+  it("ignores empty entries instead of rejecting them", () => {
+    expect(
+      loadConfig({ ALLOWED_ORIGINS: "https://a.example," }).allowedOrigins,
+    ).toEqual(["https://a.example"]);
+    expect(loadConfig({ ALLOWED_ORIGINS: "," }).allowedOrigins).toEqual([]);
   });
 });

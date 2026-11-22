@@ -330,6 +330,70 @@ describe("redirects", () => {
     expect(res.status).toBe(400);
   });
 
+  it.each([
+    [
+      "a non-default port",
+      "http://example.com:8080/x.png",
+      400,
+      "unsupported_port",
+    ],
+    [
+      "a non-default https port",
+      "https://example.com:444/x.png",
+      400,
+      "unsupported_port",
+    ],
+    [
+      "user and password",
+      "https://user:pw@example.com/a.png",
+      400,
+      "credentials_not_allowed",
+    ],
+    [
+      "a username only",
+      "https://user@example.com/a.png",
+      400,
+      "credentials_not_allowed",
+    ],
+    [
+      "a metadata address",
+      "http://169.254.169.254/latest/meta-data/",
+      403,
+      "blocked_address",
+    ],
+    ["a private IPv4 literal", "http://10.0.0.5/", 403, "blocked_address"],
+    ["an IPv6 loopback literal", "http://[::1]/", 403, "blocked_address"],
+    [
+      "an IPv4-mapped IPv6 loopback",
+      "http://[::ffff:127.0.0.1]/",
+      403,
+      "blocked_address",
+    ],
+    ["a hex-encoded loopback", "http://0x7f.1/", 403, "blocked_address"],
+  ])(
+    "applies the first-hop guards to a redirect into %s",
+    async (_label, location, status, error) => {
+      const fetch = vi.fn<Fetch>(async () => redirect(location));
+      const res = await proxy(fetch)("https://example.com/a.png");
+      expect(await errorOf(res)).toEqual({ status, error });
+      expect(fetch).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it("checks the guards on a later hop, not only the first redirect", async () => {
+    const fetch = vi.fn<Fetch>(async (url) =>
+      url.pathname === "/start"
+        ? redirect("/middle")
+        : redirect("http://example.com:8080/x.png"),
+    );
+    const res = await proxy(fetch)("https://example.com/start");
+    expect(await errorOf(res)).toEqual({
+      status: 400,
+      error: "unsupported_port",
+    });
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
   it("follows up to 3 redirects, resolving relative locations", async () => {
     const fetch = vi.fn<Fetch>(async (url) => {
       const hop = Number(url.pathname.slice(1));
