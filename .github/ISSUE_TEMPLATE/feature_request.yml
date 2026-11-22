@@ -1,0 +1,52 @@
+name: Feature request
+description: Suggest an effect or a change. It must serve load, blur or export.
+title: "feat: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This tool does one job: load an image, blur it, export it. Decisions follow this order: privacy, scope, maintenance cost, how common the feature is in research. See [Contributing](https://github.com/icaromol/blur-my-image-online-and-free/blob/main/CONTRIBUTING.md#how-decisions-are-made). Check the README backlog first, since many ideas are already listed with their order.
+
+        Please open this issue before writing code. A pull request for a feature without an accepted issue is likely to be closed.
+  - type: dropdown
+    id: step
+    attributes:
+      label: Which of the three steps does this serve?
+      options:
+        - "Load an image"
+        - "Blur it"
+        - "Export it"
+        - "None of these"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to do that you can't do now? Describe the situation, not the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: What should the app do? For a new effect, name it, say what it looks like, and name the Photoshop or pixi-filters equivalent if there is one.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Other tools or workarounds you use today, and what they do better.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: This serves loading, blurring or exporting an image. It is not cropping, resizing, rotating, text, accounts, cloud storage or batch processing.
+          required: true
+        - label: It needs no analytics, no account and no image upload to a server.
+          required: true
+        - label: I searched existing issues and the README backlog.
+          required: true

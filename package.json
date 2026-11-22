@@ -1,0 +1,67 @@
+{
+  "name": "blur-my-image",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.18.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "vite",
+    "check": "biome check --error-on-warnings . && vue-tsc --build",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test --project=chromium",
+    "test:e2e:all": "playwright test",
+    "build": "vite build",
+    "build:server": "vite build -c vite.server.config.ts",
+    "preview": "vite preview",
+    "size": "size-limit",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.11",
+    "@jsquash/webp": "^1.5.0",
+    "hono": "^4.13.19",
+    "ipaddr.js": "^2.5.0",
+    "pixi-filters": "^6.1.5",
+    "pixi.js": "^8.23.0",
+    "undici": "^8.13.1",
+    "vue": "^3.5.46",
+    "vue-i18n": "^11.4.23"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@biomejs/biome": "^2.6.8",
+    "@intlify/unplugin-vue-i18n": "^11.2.8",
+    "@playwright/test": "^1.65.1",
+    "@size-limit/file": "^14.3.0",
+    "@types/node": "^26.6.6",
+    "@vitejs/plugin-vue": "^6.0.11",
+    "@vitest/coverage-v8": "^5.1.1",
+    "@vue/tsconfig": "^0.9.1",
+    "husky": "^9.1.7",
+    "size-limit": "^14.3.0",
+    "spdx-expression-parse": "^5.0.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.1",
+    "vue-tsc": "^3.3.14"
+  },
+  "size-limit": [
+    {
+      "name": "Initial JS",
+      "path": "dist/assets/index-*.js",
+      "limit": "45 kB"
+    },
+    {
+      "name": "All JS except the WebP encoder",
+      "path": [
+        "dist/assets/*.js",
+        "!dist/assets/webp_enc*.js"
+      ],
+      "limit": "195 kB"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-server
+.git
+.claude
+.vercel
+coverage
+playwright-report
+test-results
+*.local
+.env
+.env.*

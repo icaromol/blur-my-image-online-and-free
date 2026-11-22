@@ -1,0 +1,5 @@
+# pnpm 12 fails the install when a dependency has a build script nobody reviewed.
+# esbuild comes in through @intlify/unplugin-vue-i18n and is only needed for .js/.ts
+# locale files; ours are JSON, so its binary download stays off.
+allowBuilds:
+  esbuild: false

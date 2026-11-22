@@ -1,8 +1,8 @@
 # Blur My Image
 
-Blur an image in your browser. Load it, blur all of it or paint over the parts you want hidden, download it. Free, no account, no watermark, and the image never leaves your device.
+Blur an image in your browser. Load it, blur all of it or paint over the parts you want hidden, download it. Free, no account, no watermark. Image files you open, drop or paste never leave your device.
 
-> **Status: planning.** Nothing is implemented yet. This README is the spec for v1. Everything below describes intended behavior.
+> **Status: pre-release.** v1 is built and under review. It is not deployed yet. This README is the spec for v1.
 
 ## What it does
 
@@ -25,11 +25,17 @@ Accepted formats are whatever your browser can decode: PNG, JPEG, WebP, GIF (fir
 - **Brush** paints the effect onto only the areas you drag over.
 - **Eraser** removes the effect from an area and brings back the original pixels.
 
-Each stroke uses the effect type and intensity selected at the moment you paint it, so one image can have a light gaussian blur on the background and heavy pixelation on a license plate.
+Each stroke uses the effect type and intensity selected at the moment you paint it, so one image can have a light gaussian blur on the background and pixelation on a face.
 
-**3. Export it** as PNG, JPG, JPEG or WebP at the original resolution. JPG and JPEG are the same format; you pick the extension you want in the filename.
+**3. Export it** at the original resolution, or at the downscaled size if the image was larger than the GPU limit (see [Large images](#how-it-works)). You choose the format from a list: PNG, JPG, JPEG or WebP. JPG and JPEG are the same format; the list sets the file extension. The file is named `<name>-blurred.<ext>`, where `<name>` is the original file name without its extension (for a link, the last part of the URL path; `image` if there is none).
 
 That is the whole product. Features that don't serve those three steps go to the [backlog](#backlog) or get dropped.
+
+## Languages
+
+The interface is available in English and Brazilian Portuguese. It follows your browser's language on first visit (any Portuguese variant gets `pt-BR`, everything else gets English), and the language picker in the header overrides it. Your choice is remembered in this browser.
+
+Adding a language means adding one message file and one entry in `SUPPORTED_LOCALES` (`src/i18n/locales.ts`); see [docs/product/specs/i18n.md](docs/product/specs/i18n.md).
 
 ## Blur effects
 
@@ -38,7 +44,7 @@ v1 ships the three effects people reach for most. The ranking comes from compari
 | Effect | What it looks like | Typical use | Photoshop equivalent |
 | --- | --- | --- | --- |
 | **Gaussian** | Smooth, even softening | Backgrounds, soft-focus, whole-image blur | Filter > Blur > Gaussian Blur |
-| **Pixelate** | Square blocks of averaged color | Hiding faces, plates, screen content | Filter > Pixelate > Mosaic |
+| **Pixelate** | Square blocks of averaged color | Obscuring faces and plates; not for text that must stay secret | Filter > Pixelate > Mosaic |
 | **Motion** | Streaks in one direction | Implied movement, stylized blur | Filter > Blur > Motion Blur |
 
 Controls:
@@ -49,7 +55,7 @@ Controls:
 
 ### Blur is not redaction
 
-Blurred and pixelated text can sometimes be recovered. A [2016 study](https://crysp.petsymposium.org/popets/2016/popets-2016-0047.pdf) found text stayed recognizable unless the blur radius or mosaic block size exceeded roughly 20 px, and tools such as [Unredacter](https://bishopfox.com/blog/unredacter-tool-never-pixelation) reconstruct pixelated text by brute force. To hide a password, a document number or anything that must stay secret, use heavy Pixelate as a minimum and prefer a solid box (on the backlog). The app shows this warning next to the Pixelate option.
+Blurred and pixelated text can sometimes be recovered. A [2016 study](https://crysp.petsymposium.org/popets/2016/popets-2016-0047.pdf) recovered pixelated and blurred text across typefaces, font sizes, grid sizes and noise levels; its authors concluded that pixelation and blur are not viable ways to redact text. Tools such as [Unredacter](https://bishopfox.com/blog/unredacter-tool-never-pixelation) rebuild pixelated text by rendering guesses in the same font and comparing them. To hide a password, a document number or anything that must stay secret, cover it with a solid box in another editor or leave it out of the image. The app shows this warning with every effect.
 
 ## Keyboard shortcuts
 
@@ -64,10 +70,12 @@ Shortcuts follow Photoshop's defaults where one exists.
 | `Ctrl/Cmd+Z` | Undo |
 | `Ctrl/Cmd+Shift+Z` | Redo |
 
+`B`, `E`, `[` and `]` work while the image has keyboard focus: click it or move to it with `Tab`. Single-key shortcuts that fire anywhere get in the way of screen reader and speech input users ([WCAG 2.1.4](https://www.w3.org/WAI/WCAG22/Understanding/character-key-shortcuts.html)). The `Ctrl/Cmd` shortcuts work anywhere on the page, except `Ctrl/Cmd+Z` inside a text field, which undoes typing there.
+
 ## Privacy
 
 - Images are decoded, edited and encoded in your browser. There is no upload step and no server-side storage.
-- The single exception is loading by URL when the remote server doesn't allow cross-origin access. Then the image passes once through a stateless proxy (see [How it works](#how-it-works)). The proxy streams the bytes back and keeps nothing.
+- The single exception is loading by URL when the remote server doesn't allow cross-origin access, or when the link is `http://`. Then the image passes once through a stateless proxy (see [How it works](#how-it-works)). An `http://` link always takes this path, because the page's security policy (`connect-src 'self' https:`) blocks the direct fetch. The proxy streams the bytes back and doesn't keep a copy of the image. Our code logs nothing. Vercel keeps its own runtime log of requests to the function (method, path and query string, which holds the image URL, status, user agent and client IP) for 1 hour on the Hobby plan. Under the link field the app shows this notice: "Links are fetched through our server. Files you open, drop or paste never leave your browser."
 - Exported files contain no EXIF metadata. Camera model, timestamps and GPS coordinates from the original are dropped, because canvas export writes pixels only.
 - No analytics cookies, no tracking pixels.
 
@@ -86,22 +94,23 @@ input (file / drop / paste / URL)
 
 This is the same model Photoshop uses for a Smart Filter with a layer mask, and it keeps brush strokes from compounding: painting over the same spot twice with intensity 40 gives intensity 40, not 80.
 
-**GPU rendering.** Effects run as WebGL fragment shaders through [PixiJS](https://pixijs.com/) v8 and [pixi-filters](https://github.com/pixijs/filters). PixiJS provides the gaussian blur; pixi-filters provides Pixelate and Motion, and also Radial, Zoom, Tilt-Shift and Kawase blur, which covers most of the backlog without writing shaders from scratch. While you paint, the blurred version for the current setting is already rendered, so a stroke only updates a mask texture.
+**GPU rendering.** Effects run as WebGL fragment shaders through [PixiJS](https://pixijs.com/) v8 and [pixi-filters](https://github.com/pixijs/filters). PixiJS provides the gaussian blur; pixi-filters provides Pixelate. Motion extends the pixi-filters motion blur filter (`EdgeClampedMotionBlurFilter` in `src/engine/motion-blur-filter.ts`) and swaps its shader for a copy that clamps samples to the image edge, so streaks repeat the edge pixels instead of fading to transparent. pixi-filters also has Radial, Zoom, Tilt-Shift and Kawase blur, which covers most of the backlog without writing shaders from scratch. While you paint, the blurred version for the current setting is already rendered, so a stroke only updates a mask texture.
 
-**Preview equals export.** Intensity is defined in source-image pixels, never screen pixels, and the export renders the same operation list at full resolution. What you see zoomed out is what you get in the file.
+**Preview equals export.** The blur size is defined in source-image pixels, never screen pixels, and the export renders the same operation list at the loaded image's resolution. What you see zoomed out is what you get in the file.
 
 **Large images.** The maximum size is the GPU's `MAX_TEXTURE_SIZE`, read at runtime. Larger images are downscaled to fit, and the app says so before you start editing.
 
 **Loading by URL.** The browser first tries a direct CORS request. If the server refuses, the canvas would be tainted and export would throw a `SecurityError`, so the request goes through `/api/image`, a small [Hono](https://hono.dev/) app that:
 
-- accepts only `http` and `https` URLs,
+- accepts only `http` and `https` URLs on their default ports (80 and 443), with no username or password,
 - resolves the hostname and refuses private, loopback and link-local addresses (SSRF protection), re-checking after each redirect, with at most 3 redirects,
-- requires an `image/*` content type,
-- caps the response size with a configurable limit (`MAX_BYTES`, default 4.5 MB, the Vercel Function response body limit) and times out slow fetches,
-- rejects cross-site callers (`Sec-Fetch-Site` / `Origin` checks) so it can't be used as a public proxy, behind a platform rate limit,
-- stores and logs nothing about the image.
+- accepts only PNG, JPEG, GIF, WebP, AVIF and BMP content types, checks the file's first bytes against the declared type, and re-labels the response with the canonical type for the format rather than passing the upstream header through,
+- caps the response size with a configurable limit (`MAX_BYTES`, default 4,400,000 bytes, below the 4.5 MB response body limit Vercel documents for Functions, which doesn't apply to streamed responses, so the proxy enforces its own cap: a 413 when the declared size is over the cap, and an aborted stream when the body grows past it) and times out slow fetches,
+- rejects cross-site callers (`Sec-Fetch-Site` / `Origin` checks),
+- relies on those header checks only to stop other websites from using the proxy. A script can forge them, so scripted abuse runs into a rate-limit rule on `/api/image` in the Vercel firewall, set to 30 requests per 60 seconds per IP and tested by hand on the live deployment. The proxy code has no rate limit of its own, so anyone running the Node entry or the Docker image has to put a rate limit in front of it. On the Hobby plan the project pauses when it goes over the plan limits, instead of billing,
+- stores nothing about the image and logs nothing itself.
 
-The proxy uses only web-standard `Request`, `Response` and `fetch`, so the same code runs as a Vercel Function, a Cloudflare Worker or a Node server in Docker. Only a few-line entry file differs per platform. See [docs/hosting.md](docs/hosting.md).
+`app.ts` is platform-neutral: it takes a `fetch` function and uses only web-standard `Request` and `Response`. Vercel (`api/image.ts`) and Node in Docker (`server/entries/node.ts`) ship today. Cloudflare Workers would need its own fetch (the Node one in `node-fetch.ts` relies on `node:dns`) and its own entry file. See [docs/hosting.md](docs/hosting.md).
 
 **Export.** PNG and JPEG use the browser's native `canvas.toBlob`. JPEG has no transparency, so transparent pixels are flattened onto white. WebP uses `toBlob` where the browser can encode it. Safari can decode WebP but `toBlob('image/webp')` silently returns a PNG there, so the app feature-detects this and lazy-loads [@jsquash/webp](https://github.com/jamsinclair/jSquash), a WebAssembly build of libwebp, only for those browsers. JPEG and WebP use quality 0.92.
 
@@ -113,12 +122,13 @@ The proxy uses only web-standard `Request`, `Response` and `fetch`, so the same 
 | Build | Vite | Standard for Vue, fast dev server |
 | Rendering | PixiJS 8 + pixi-filters | Maintained WebGL engine with the blur filters already written |
 | WebP fallback | @jsquash/webp | libwebp in WASM, loaded only where native encoding is missing |
+| i18n | vue-i18n | Official Vue i18n library; typed keys, plurals and number formatting, locales loaded on demand |
 | URL proxy | Hono, deployed as one Vercel Function | The only server code; web-standard APIs keep it portable |
 | Lint + format | Biome | One tool, one config |
 | Unit tests | Vitest | |
 | E2E tests | Playwright | Real browser checks for paste, URL load and export |
 | Package manager | pnpm | |
-| Hosting | Vercel Hobby | Free for a non-commercial project; pauses instead of billing. Docker image built in CI as the tested exit path ([docs/hosting.md](docs/hosting.md)) |
+| Hosting | Vercel Hobby | Free for a non-commercial project; pauses instead of billing. Docker image built and smoke-tested by `ci.yml` on `main` as the tested exit path ([docs/hosting.md](docs/hosting.md)) |
 
 Canvas 2D's `ctx.filter = 'blur()'` was considered and rejected: it only provides gaussian blur, and caniuse lists Safari on iOS as unsupported through 26.5, so it would need a second code path anyway.
 
@@ -128,12 +138,19 @@ Requires Node.js 24 and pnpm.
 
 ```bash
 pnpm install
-pnpm dev          # dev server at http://localhost:5173
-pnpm check        # Biome lint + format check and type check (also runs on pre-commit)
-pnpm test         # unit tests
-pnpm test:e2e     # Playwright
-pnpm build        # production build in dist/
+pnpm dev            # dev server at http://localhost:5173
+pnpm check          # Biome (warnings fail) and type check
+pnpm test           # unit tests
+pnpm test:coverage  # unit tests with coverage thresholds for src/engine and server/proxy
+pnpm build          # production build in dist/, with third-party licenses in dist/licenses.md
+pnpm size           # bundle size budgets (run after build)
+pnpm test:e2e       # Playwright on Chromium, against the production build under the real CSP
+pnpm test:e2e:all   # Playwright on Chromium, Firefox and WebKit
 ```
+
+Playwright needs its browsers once: `pnpm exec playwright install --with-deps chromium` (or without `chromium` for all three).
+
+The quality bar (TypeScript and Biome rules, folder boundaries, required tests, coverage, accessibility, bundle budgets, supported browsers) is in [docs/quality.md](docs/quality.md).
 
 The URL proxy runs locally through `vercel dev`. To run the whole app as it would run off Vercel:
 
@@ -142,28 +159,13 @@ docker build -t blur-my-image .
 docker run -p 3000:3000 blur-my-image   # static site + proxy at http://localhost:3000
 ```
 
-### Planned layout
+### Project layout
 
-```
-src/
-  input/      file picker, drag and drop, paste, URL loader
-  engine/     renderer, effect definitions, operation list, masks
-  export/     format encoders and download
-  ui/         Vue components
-server/
-  proxy/      Hono app, SSRF checks, config (platform-agnostic)
-  entries/    node.ts (Docker), worker.ts (Cloudflare)
-api/
-  image.ts    Vercel entry: wraps server/proxy/app.ts
-docs/
-  research.md
-  hosting.md
-Dockerfile
-```
+The folder tree and the import rules between folders are in [docs/quality.md](docs/quality.md#project-layout). In short: `src/` is the browser app (`input/`, `engine/`, `export/`, `ui/`, `i18n/`), `server/` and `api/` are the URL proxy, and `security-headers.ts` holds the page's security headers for every host.
 
 The frontend reads the proxy location from `VITE_PROXY_URL` (default `/api/image`), so static hosting and the proxy can be split across platforms.
 
-Adding an effect means adding one entry to `src/engine/effects.ts`: its id, label, controls and a function that builds the PixiJS filter from intensity and image size. Nothing else should need to change.
+Adding an effect means adding its id and controls to `src/engine/effect-catalog.ts`, the function that builds its PixiJS filter to `src/engine/effects.ts` (numbers such as radius or block size go in `src/engine/effect-params.ts`, which is unit tested), and its label in each file under `src/i18n/messages/`. The catalog stays free of PixiJS so the UI can read it without loading the renderer. Nothing else should need to change.
 
 ## Backlog
 
@@ -197,7 +199,7 @@ Not in v1. Ordered by how often the effect or feature shows up across the tools 
 
 Issues and pull requests are welcome. Before opening a PR:
 
-1. Run `pnpm check` and `pnpm test`.
+1. Run `pnpm check` and `pnpm test`. The pre-commit hook runs gitleaks and Biome on the staged files, plus `vue-tsc` when the commit stages a TypeScript or Vue file, `package.json` or a `tsconfig*.json`.
 2. Keep one change per PR.
 3. If you add an effect, include a before/after screenshot in the PR description.
 

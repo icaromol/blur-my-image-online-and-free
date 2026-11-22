@@ -78,7 +78,7 @@ Observations that shaped the spec:
 
 ## 4. Blur and pixelation as redaction
 
-Neither is secure for text. Pixelation averages blocks, so tools like Bishop Fox's Unredacter brute-force the original characters by re-pixelating candidates until the blocks match. Gaussian blur is a known linear operation and can be partly reversed. McPherson et al. (PETS 2016) found text and faces stayed recognizable to a trained model unless the mosaic block or blur radius exceeded roughly 20 px. Security researchers recommend opaque boxes. Hence the warning in the UI and the solid box in the backlog.
+Neither is secure for text. Pixelation averages blocks, so tools like Bishop Fox's Unredacter render guesses in the same font and compare them with the pixelated text. Gaussian blur is a known linear operation and can be partly reversed. Hill et al. (PoPETs 2016) recovered pixelated and blurred text across typefaces, font sizes, grid sizes and noise levels, and concluded that pixelation and blur are not viable ways to redact text. Security researchers recommend opaque boxes. Hence the warning in the UI and the solid box in the backlog.
 
 ## 5. Browser constraints
 
@@ -110,7 +110,7 @@ Neither is secure for text. Pixelation averages blocks, so tools like Bishop Fox
 - Softpicker, [How to Pixelate Image Online Free in 2026](https://softpicker.com/how-to-pixelate-image-online-free/)
 - BlurMe, [Online Blur Tools: Complete Guide + Comparison](https://www.blur.me/blog/blur-online-complete-guide/) (vendor-written)
 - Pixlr, [Blur tool](https://pixlr.com/tools/blur-tool)
-- McPherson, Shokri, Shmatikov, [Defeating Image Obfuscation with Deep Learning](https://crysp.petsymposium.org/popets/2016/popets-2016-0047.pdf), PETS 2016
+- Hill, Zhou, Saul, Shacham, [On the (In)effectiveness of Mosaicing and Blurring as Tools for Document Redaction](https://crysp.petsymposium.org/popets/2016/popets-2016-0047.pdf), PoPETs 2016
 - Bishop Fox, [Unredacter: never use pixelation](https://bishopfox.com/blog/unredacter-tool-never-pixelation)
 - Dark Reading, [Pixelating Text Leads to Information Leakage](https://darkreading.com/vulnerabilities-threats/pixelating-text-leads-to-information-leakage-warns-firm)
 - caniuse, [CanvasRenderingContext2D.filter](https://caniuse.com/mdn-api_canvasrenderingcontext2d_filter)

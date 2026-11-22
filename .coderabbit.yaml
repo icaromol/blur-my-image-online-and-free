@@ -1,0 +1,26 @@
+language: en-US
+reviews:
+  profile: chill
+  auto_review:
+    enabled: true
+    drafts: true
+  path_filters:
+    - "!pnpm-lock.yaml"
+    - "!dist/**"
+    - "!dist-server/**"
+    - "!coverage/**"
+    - "!docs/**"
+    - "!marketing/**"
+    - "!.claude/**"
+    - "!**/*.md"
+    - "!public/**"
+    - "!.github/ISSUE_TEMPLATE/**"
+    - "!.release-please-manifest.json"
+    - "!release-please-config.json"
+    - "!.husky/**"
+    - "!.dockerignore"
+    - "!.gitignore"
+    - "!.mcp.json"
+  path_instructions:
+    - path: "server/**"
+      instructions: "Security review first: SSRF, redirects, size and timeout limits."
