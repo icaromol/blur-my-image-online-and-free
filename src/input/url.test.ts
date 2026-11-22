@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CodedError } from "../errors";
-import { fetchImage, parseImageUrl } from "./url";
+import { fetchImage, MAX_DIRECT_BYTES, parseImageUrl } from "./url";
 
 const PROXY = "https://app.test/api/image";
 const target = new URL("https://images.test/cat.png");
@@ -92,6 +92,98 @@ describe("fetchImage", () => {
     });
     await expect(fetchImage(target, PROXY, fetcher)).rejects.toMatchObject({
       code: "unsupported_port",
+    });
+  });
+
+  describe("direct size cap", () => {
+    const CAP = 10;
+    const bytes = (n: number) => new Uint8Array(n).fill(1);
+
+    function streamed(chunks: number[], headers: Record<string, string> = {}) {
+      const pull = vi.fn();
+      const cancel = vi.fn();
+      const queue = [...chunks];
+      const body = new ReadableStream<Uint8Array>(
+        {
+          pull(controller) {
+            pull();
+            const next = queue.shift();
+            if (next === undefined) controller.close();
+            else controller.enqueue(bytes(next));
+          },
+          cancel,
+        },
+        { highWaterMark: 0 },
+      );
+      const response = new Response(body, {
+        headers: { "content-type": "image/png", ...headers },
+      });
+      return { response, pull, cancel };
+    }
+
+    it("allows 100 MiB by default", () => {
+      expect(MAX_DIRECT_BYTES).toBe(104_857_600);
+    });
+
+    it("refuses a declared size over the cap without reading the body or using the proxy", async () => {
+      const { response, pull, cancel } = streamed([5], {
+        "content-length": String(CAP + 1),
+      });
+      const fetcher = vi.fn(async () => response);
+
+      await expect(
+        fetchImage(target, PROXY, fetcher, CAP),
+      ).rejects.toMatchObject({ code: "too_large" });
+      expect(pull).not.toHaveBeenCalled();
+      expect(cancel).toHaveBeenCalledOnce();
+      expect(fetcher).toHaveBeenCalledTimes(1);
+    });
+
+    it("refuses an oversized declared size even when the body already errored", async () => {
+      const body = new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.error(new Error("connection reset"));
+        },
+      });
+      const response = new Response(body, {
+        headers: {
+          "content-type": "image/png",
+          "content-length": String(CAP + 1),
+        },
+      });
+
+      await expect(
+        fetchImage(target, PROXY, async () => response, CAP),
+      ).rejects.toMatchObject({ code: "too_large" });
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    it("aborts a body with no declared size once it passes the cap", async () => {
+      const { response, cancel } = streamed([6, 6, 6]);
+
+      await expect(
+        fetchImage(target, PROXY, async () => response, CAP),
+      ).rejects.toMatchObject({ code: "too_large" });
+      expect(cancel).toHaveBeenCalledOnce();
+    });
+
+    it("aborts a body that is larger than its declared size", async () => {
+      const { response } = streamed([4, 4, 4], { "content-length": "5" });
+
+      await expect(
+        fetchImage(target, PROXY, async () => response, CAP),
+      ).rejects.toMatchObject({ code: "too_large" });
+    });
+
+    it("loads a body exactly at the cap, keeping its type", async () => {
+      const { response } = streamed([4, 4, 2], {
+        "content-length": String(CAP),
+      });
+
+      const blob = await fetchImage(target, PROXY, async () => response, CAP);
+
+      expect(blob.size).toBe(CAP);
+      expect(blob.type).toBe("image/png");
     });
   });
 
