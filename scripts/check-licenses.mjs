@@ -1,6 +1,7 @@
 // Fails when an installed dependency has a license outside the allowlist.
 // Shipped (prod) dependencies must be permissive; dev tooling may also use MPL-2.0.
 import { spawnSync } from "node:child_process";
+import { isAllowed } from "./spdx-allowed.mjs";
 
 const PERMISSIVE = [
   "0BSD",
@@ -15,16 +16,6 @@ const PERMISSIVE = [
 ];
 const PROD_ALLOWED = new Set(PERMISSIVE);
 const DEV_ALLOWED = new Set([...PERMISSIVE, "MPL-2.0"]);
-
-// An SPDX expression passes when one OR alternative has every AND term allowed.
-function isAllowed(expression, allowed) {
-  const stripped = expression.replace(/[()]/g, " ");
-  return stripped
-    .split(/\s+OR\s+/i)
-    .some((alternative) =>
-      alternative.split(/\s+AND\s+/i).every((id) => allowed.has(id.trim())),
-    );
-}
 
 function listLicenses(scopeFlags) {
   const result = spawnSync(
@@ -43,12 +34,21 @@ function listLicenses(scopeFlags) {
   return JSON.parse(result.stdout);
 }
 
+function problem(license, allowed) {
+  try {
+    return isAllowed(license, allowed) ? null : license;
+  } catch (error) {
+    return `${license}  (${error.message})`;
+  }
+}
+
 function violations(byLicense, allowed) {
-  return Object.entries(byLicense)
-    .filter(([license]) => !isAllowed(license, allowed))
-    .flatMap(([license, packages]) =>
-      packages.map((p) => `${p.name}@${p.versions.join(",")}  ${license}`),
-    );
+  return Object.entries(byLicense).flatMap(([license, packages]) => {
+    const reason = problem(license, allowed);
+    return reason
+      ? packages.map((p) => `${p.name}@${p.versions.join(",")}  ${reason}`)
+      : [];
+  });
 }
 
 const prodLicenses = listLicenses(["--prod"]);
