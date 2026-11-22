@@ -165,6 +165,12 @@ Authorized by Ícaro (D-012, relayed). Report from `-f2`, 2026-11-22 (full evide
 - [ ] The production URL is `https://blur-my-image.vercel.app` (alias assigned; it already serves the app from a feature-branch deployment, see Q-010). It goes into the README, the repo website field and the bug-report form (Q-005) at go-live, which Ícaro decides (Q-010), not before. The preview URL carries the team slug and never goes into a repo file. It is put into the README, the repo's website field and the bug-report form (Q-005). Those edits go through the lanes and `-5b`, not through `-f2`.
 - [ ] The page carries Open Graph and Twitter card meta tags (title, description, image, URL), with the final wording from D-010. The OG image comes from marketing's action 5, unblocked now that the English tagline is decided.
 
+Open on BMI-003 after the live-alias finding (Q-010, `-f2` and the dispatcher, 2026-11-22; decisions are Ícaro's):
+- [ ] The WAF rate-limit rule is published.
+- [ ] The "Protection Bypass for Automation" secret is revoked.
+- [ ] Decision on the production deployment that already serves the alias from the feature branch (`c380981`, public, 200 without login). It affects the D-013 wording "the first production deploy is the merge of PR #1" and the README text about the URL; both get updated after he decides.
+- [ ] The private team deployment built from `-f2`'s local working-tree upload (307 files, including `.local/` and `.claude/settings.local.json` as source) is removed, and anything secret that was in those files is rotated.
+
 Two more things from the report. A "Protection Bypass for Automation" secret was created on the project by `vercel curl`, and `-f2` couldn't revoke it (reading the secret was denied): Ícaro revokes it in the Vercel dashboard (BMI-073). `vercel.json` gained `"framework": "vite"`, committed as `3e2e77a` by `-5b` (requested by the dispatcher). The push of the docs commit just before it had already triggered a preview without the preset.
 
 ### BMI-003, OG tags part — Ready for the ui lane (`-cc`)
