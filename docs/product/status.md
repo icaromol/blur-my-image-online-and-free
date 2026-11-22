@@ -52,13 +52,14 @@ Only items that block something. Questions with a default in force are in decisi
 - **Nothing waits on a question to Ícaro right now.** Tagline and privacy wording, Q-009 and Q-010 are decided (D-010, D-015, D-016); the WAF rule and the bypass revocation are done.
 - **Q-015:** three CodeRabbit findings that aren't plain corrections (release-please token, a size cap on the direct fetch, the tagline wording). Recommendations in decisions.md.
 - **Q-016:** three design choices in the brand kit.
-- **Q-017:** allow CC-BY-3.0 for development tools so the license check can use a maintained SPDX parser.- **Q-014:** the Vercel bot's public PR comment with the project ID and team slug. Recommendation in decisions.md.
-- **BMI-050 (go public):** Ícaro said yes (D-013), order in D-018. The flip waits on `-aa`'s go to `-5b`, which waits on the verified history rewrite (D-015). Still his own actions later: Vercel 2FA and usage alerts (BMI-073), saved replies (BMI-070), the social preview upload, installing the CodeRabbit app after the flip, and the go to merge PR #2 after CodeRabbit's corrections.
+- **Q-017:** allow CC-BY-3.0 for development tools so the license check can use a maintained SPDX parser.- **BMI-050 (go public):** Ícaro said yes (D-013), order in D-018. The flip waits on `-aa`'s go to `-5b`, which waits on the verified history rewrite (D-015). Still his own actions later: Vercel 2FA and usage alerts (BMI-073), saved replies (BMI-070), the social preview upload, installing the CodeRabbit app after the flip, and the go to merge PR #2 after CodeRabbit's corrections.
 - **D-004 and D-006 to D-019** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
 
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- Per `-aa`, from Ícaro: D-024, the Vercel pull-request comments are turned off (he flips the dashboard toggle; `-5b` deletes the comment on PR #2). CodeRabbit's review came out line by line, so the open-source plan covers it. **The brand kit (`d897bb6`, 29 files) stays out of PR #2** and gets a PR of its own after the merge, so that PR #2 stays under CodeRabbit's limit. For the PR comments: `-5b` posts, with text PM drafts into a file in `.local/`, answers only where we refuse or explain (the three of Q-015 and the `app.ts` finding); the rest are resolved by the commits. The draft waits for Ícaro's answer on Q-015.
 
 - **BMI-077 is `Review`:** all nine corrections are committed and approved by the opus reviewer: quality `c946bc6` (the hand-written license evaluator while Q-017 is open), server `c974801`, ui `aa1ce76` (gate: check, 280 tests, e2e 36/36, size). The three findings that need Ícaro are Q-015. BMI-073 is `Blocked` on Ícaro's own actions (Vercel 2FA, usage alerts). Watch item: 1.5 kB left under the initial JavaScript budget (43.48 of 45 kB) and 2.5 kB under the total (192.5 of 195 kB). Open: someone answers each CodeRabbit comment on PR #2 (`-aa` names who), then the push and the merge.
 

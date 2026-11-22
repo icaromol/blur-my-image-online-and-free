@@ -50,14 +50,6 @@ Of the 12 findings on PR #2 (BMI-077), nine are corrections inside what the READ
 2. **A cap on the direct cross-origin fetch** (`src/input/url.ts`). The direct fetch has no timeout and no size cap, unlike the proxy. A timeout only prevents a stalled host from keeping the app loading forever, so it is a correction. A size cap would reject some images the app accepts today (large images are downscaled, per the README). Recommendation: a timeout of the same order as the proxy's, and no size cap. Default: timeout only. PM refined the timeout after the reviewer's finding (BMI-077): 10 s to the response headers plus a 60 s total cap, so a normal photo on a slow link isn't cut; still no size cap and no fallback to the proxy on a timeout.
 3. **The tagline wording** (`src/i18n/messages/en.json` and `pt-BR.json`, line 4). CodeRabbit suggests scoping "Image files never leave your device" to files the user opens, drops or pastes, like the README and the meta description, because a URL load goes through the proxy. The wording is the one Ícaro chose (D-010) and approved in `pt-BR` (D-010). The README, the meta description and the app's own notice already state the URL exception. Recommendation: keep his wording and answer the finding on the PR; the claim holds for the user's own files. Default: the taglines stay as approved.
 
-### Q-014 — The Vercel bot commented on PR #2 with the project ID and the team slug
-
-Per `-aa` (relayed): the Vercel bot posted a public comment on PR #2 that contains the project ID and the team slug. The repo is public now, so anyone can read it. The slug already appears in Vercel's preview URLs, and the project ID isn't a secret by Vercel's own account, but the project's rule is to keep Vercel identifiers out of public places, and the bot will comment on every later PR.
-
-Recommendation: turn off the Vercel pull-request comments in the project's Git settings (previews still deploy; the GitHub status check stays), and have `-5b` delete the existing comment. Both are small and reversible; the first is a Vercel setting, so it needs Ícaro's go.
-
-Default in force: **no change** until he answers; PRs from `-5b` keep getting the comment meanwhile.
-
 ### Q-012 — Allow `ossf/scorecard-action` in the Actions allowlist?
 
 The post-flip checklist (BMI-050) asked for a scorecard workflow and a dependency-review workflow, and neither exists. The repo's Actions allowlist has GitHub's own actions and a short list of third-party ones (pnpm/action-setup, release-please-action, zizmor-action, action-semantic-pull-request). `actions/dependency-review-action` is GitHub's, so it's allowed; `ossf/scorecard-action` is third-party and isn't.
@@ -80,11 +72,18 @@ The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the proj
 
 ## Decisions
 
+### D-024 — Turn off the Vercel pull-request comments (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answer, closing Q-014: the Vercel comments on pull requests are turned off. Ícaro flips the toggle in the Vercel dashboard (Project Settings, Git); `-5b` deletes the existing comment on PR #2, already ordered by `-aa`. Previews and the GitHub status check stay.
+**Why:** the bot's public comment on PR #2 carried the project ID and the team slug, and it comments on every PR.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** PR #2, team.md's Vercel notes.
+
 ### D-023 — Path filters let CodeRabbit review PR #2 (2026-11-22)
 
 **Decision**, taken by `-aa`, `-f5` and `-5b` as option A of the former Q-013 (PM's recommendation, tried first on `-aa`'s word; PM hasn't seen the file): the committed `.coderabbit.yaml` (`57e170d`) uses path filters that take `docs/`, `marketing/`, `.claude/`, markdown and `public/` out of the review, while code, security and CI files stay in, and `drafts: true`. CodeRabbit's status on PR #2 went from "skipped" (134 files over the free plan's limit of 100) to "Review in progress". Ícaro's condition, a merge only after CodeRabbit's corrections, is met by this route and stays in force; he can overrule the filters.
 **Why:** the file count was the only thing that stopped the review, and the filtered files are text and assets, not code.
-**Decided by:** `-aa` with `-f5` and `-5b`, under Ícaro's order (D-018), not by Ícaro himself. Reversible.
+**Decided by:** `-aa` with `-f5` and `-5b`, under Ícaro's order (D-018), not by Ícaro himself. Reversible. Result: the review came out line by line, so the open-source plan covers PR #2 (per `-aa`; reading the CodeRabbit dashboard is still Ícaro's).
 **Affects:** BMI-050 (the review step), PR #2. Closes Q-013.
 
 ### D-022 — The logos are Ícaro's and may be published under MIT (2026-11-22)
