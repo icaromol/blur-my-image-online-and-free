@@ -95,14 +95,21 @@ export function useEditor() {
     renderNow();
   }
 
-  async function open(blob: Blob, name: string): Promise<void> {
+  // A slower, older load must not replace a newer one.
+  let latestLoad = 0;
+
+  async function show(id: number, blob: Blob, name: string): Promise<void> {
     const instance = await start();
-    if (!instance) return;
+    if (!instance || id !== latestLoad) return;
     error.value = "";
     notice.value = null;
     try {
       const max = instance.maxTextureSize;
       const { bitmap, originalSize } = await decodeImage(blob, max);
+      if (id !== latestLoad) {
+        bitmap.close();
+        return;
+      }
       instance.setImage(bitmap);
       if (originalSize) {
         notice.value = {
@@ -117,19 +124,25 @@ export function useEditor() {
       hasImage.value = true;
       commit();
     } catch (e) {
-      error.value = errorCode(e);
+      if (id === latestLoad) error.value = errorCode(e);
     }
   }
 
+  function open(blob: Blob, name: string): Promise<void> {
+    loading.value = false;
+    return show(++latestLoad, blob, name);
+  }
+
   async function openUrl(url: URL): Promise<void> {
+    const id = ++latestLoad;
     loading.value = true;
     error.value = "";
     try {
-      await open(await fetchImage(url, PROXY_URL), fileNameFromUrl(url));
+      await show(id, await fetchImage(url, PROXY_URL), fileNameFromUrl(url));
     } catch (e) {
-      error.value = errorCode(e);
+      if (id === latestLoad) error.value = errorCode(e);
     } finally {
-      loading.value = false;
+      if (id === latestLoad) loading.value = false;
     }
   }
 
@@ -182,12 +195,13 @@ export function useEditor() {
     const instance = renderer.value;
     if (!instance || !hasImage.value) return;
     error.value = "";
+    const chosen = format.value;
+    const name = exportFileName(
+      fileName.value,
+      exportFormats[chosen].extension,
+    );
     try {
-      const blob = await encodeImage(instance.toCanvas(), format.value);
-      downloadBlob(
-        blob,
-        exportFileName(fileName.value, exportFormats[format.value].extension),
-      );
+      downloadBlob(await encodeImage(instance.toCanvas(), chosen), name);
     } catch (e) {
       error.value = errorCode(e);
     }

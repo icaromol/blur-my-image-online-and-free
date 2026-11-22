@@ -71,3 +71,17 @@ test("the app still works when localStorage throws", async ({ page }) => {
   await page.getByLabel("Language").selectOption("pt-BR");
   await expect(page.getByText("Escolher uma imagem")).toBeVisible();
 });
+
+test("a language file that fails to load leaves the page and the select as they were", async ({
+  page,
+}) => {
+  await page.route("**/assets/pt-BR-*.js", (route) => route.abort());
+  await page.goto("/");
+
+  await page.getByLabel("Language").selectOption("pt-BR");
+
+  await expect(page.getByLabel("Language")).toHaveValue("en");
+  await expect(html(page)).toHaveAttribute("lang", "en");
+  await expect(page.getByText("Choose an image")).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem("locale"))).toBeNull();
+});

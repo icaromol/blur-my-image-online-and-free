@@ -30,11 +30,17 @@ export async function loadLocale(locale: Locale): Promise<void> {
   if (load) i18n.global.setLocaleMessage(locale, (await load()).default);
 }
 
-export async function setLocale(locale: Locale): Promise<void> {
-  await loadLocale(locale);
+// A locale file that fails to load leaves the current locale in place, so the page still mounts.
+export async function setLocale(locale: Locale): Promise<boolean> {
+  try {
+    await loadLocale(locale);
+  } catch {
+    return false;
+  }
   i18n.global.locale.value = locale;
   document.documentElement.lang = locale;
   document.title = i18n.global.t("app.title");
+  return true;
 }
 
 export function savedLocale(): string | null {
@@ -45,13 +51,14 @@ export function savedLocale(): string | null {
   }
 }
 
-export async function chooseLocale(locale: Locale): Promise<void> {
-  await setLocale(locale);
+export async function chooseLocale(locale: Locale): Promise<boolean> {
+  if (!(await setLocale(locale))) return false;
   try {
     localStorage.setItem(STORAGE_KEY, locale);
   } catch {
     // Private mode: the choice just doesn't persist.
   }
+  return true;
 }
 
 export function errorKey(code: string): MessageKey {

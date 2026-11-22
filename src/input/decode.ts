@@ -32,11 +32,16 @@ export async function decodeImage(
   if (fitted.width === original.width && fitted.height === original.height)
     return { bitmap };
 
-  const resized = await createImageBitmap(bitmap, {
-    resizeWidth: fitted.width,
-    resizeHeight: fitted.height,
-    resizeQuality: "high",
-  });
-  bitmap.close();
-  return { bitmap: resized, originalSize: original };
+  try {
+    const resized = await createImageBitmap(bitmap, {
+      resizeWidth: fitted.width,
+      resizeHeight: fitted.height,
+      resizeQuality: "high",
+    });
+    return { bitmap: resized, originalSize: original };
+  } catch {
+    throw new CodedError("decode_failed");
+  } finally {
+    bitmap.close();
+  }
 }

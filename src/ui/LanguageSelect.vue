@@ -4,9 +4,10 @@ import { isLocale, localeIds, SUPPORTED_LOCALES } from "../i18n/locales";
 
 const { t, locale } = useTranslation();
 
-function onChange(event: Event) {
-  const value = (event.target as HTMLSelectElement).value;
-  if (isLocale(value)) void chooseLocale(value);
+async function onChange(event: Event) {
+  const select = event.target as HTMLSelectElement;
+  if (!isLocale(select.value)) return;
+  if (!(await chooseLocale(select.value))) select.value = locale.value;
 }
 </script>
 

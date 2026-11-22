@@ -10,6 +10,15 @@ export function parseImageUrl(text: string): URL | null {
   }
 }
 
+// The short limit covers only the wait for response headers (the proxy's upstream limit);
+// the long one lets a slow but progressing download finish.
+const HEADERS_TIMEOUT_MS = 10_000;
+const TOTAL_TIMEOUT_MS = 60_000;
+
+function isTimeout(error: unknown): boolean {
+  return error instanceof DOMException && error.name === "TimeoutError";
+}
+
 function isImage(response: Response): boolean {
   return (response.headers.get("content-type") ?? "")
     .toLowerCase()
@@ -24,15 +33,32 @@ export async function fetchImage(
   fetcher: typeof fetch = fetch,
 ): Promise<Blob> {
   let direct: Response | null = null;
+  const headersTimeout = new AbortController();
+  const headersTimer = setTimeout(
+    () => headersTimeout.abort(new DOMException("Timed out", "TimeoutError")),
+    HEADERS_TIMEOUT_MS,
+  );
   try {
-    direct = await fetcher(url.href, { mode: "cors", credentials: "omit" });
-  } catch {
+    direct = await fetcher(url.href, {
+      mode: "cors",
+      credentials: "omit",
+      signal: AbortSignal.any([
+        headersTimeout.signal,
+        AbortSignal.timeout(TOTAL_TIMEOUT_MS),
+      ]),
+    });
+  } catch (e) {
+    if (isTimeout(e)) throw new CodedError("timeout");
     direct = null;
+  } finally {
+    clearTimeout(headersTimer);
   }
   if (direct) {
     if (!direct.ok) throw new CodedError("upstream_status");
     if (!isImage(direct)) throw new CodedError("not_an_image");
-    return direct.blob();
+    return direct.blob().catch((e: unknown) => {
+      throw isTimeout(e) ? new CodedError("timeout") : e;
+    });
   }
 
   let proxied: Response;
