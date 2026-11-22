@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 45 `Must` done, 40 in review, 3 in progress (BMI-050, 066, 070), 2 ready (BMI-003, 073), 0 idea. Also BMI-074 (`Should`, `Done`).
+Progress: 0 of 45 `Must` done, 40 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-073), 0 idea. Also BMI-074 (`Should`, `Done`).
 
 ### E1. Foundation
 
@@ -16,7 +16,7 @@ Progress: 0 of 45 `Must` done, 40 in review, 3 in progress (BMI-050, 066, 070), 
 | --- | --- | --- | --- | --- | --- |
 | BMI-001 | Scaffold: Vue 3 + Vite + TS, Biome, Vitest, Playwright, husky pre-commit | Must | M | Review | |
 | BMI-002 | CI: check, unit, e2e, Docker build on every PR; Dependabot | Must | S | Review | BMI-001 |
-| BMI-003 | Deploy to Vercel Hobby (static site + `/api/image` function); Git integration, production on every merge to `main` (D-005); authorized by D-012; see tooling.md and the details below | Must | S | Ready | BMI-001, BMI-014 |
+| BMI-003 | Deploy to Vercel Hobby (static site + `/api/image` function); Git integration, production on every merge to `main` (D-005); authorized by D-012; see tooling.md and the details below | Must | S | In progress | BMI-001, BMI-014 |
 | BMI-004 | Docker image (static site + proxy on Node) built in CI as the exit path | Must | S | Review | BMI-014 |
 
 ### E2. Input
@@ -152,15 +152,19 @@ Added as a `Should` verification of work already in `Review` (BMI-067, BMI-001).
 
 As a user, I want the app at a public URL so that I can use it without installing anything; as the maintainer, I want production to follow `main` without a manual step.
 
-Authorized by Ícaro (D-012, relayed). Executor: `-f2`, with the Vercel actions he authorized. Current state and the earlier 403 are in [../tooling.md](../tooling.md). Nothing may use another credential to get around a denied step: record it and report to `-aa`.
+Authorized by Ícaro (D-012, relayed). Report from `-f2`, 2026-11-22 (full evidence went to the dispatcher; PM did not re-check it): criteria 2, 3 and 5 done on the preview deployment, 1 done except one point, 4 and 6 waiting, 7 not started. Executor: `-f2`, with the Vercel actions he authorized. Current state and the earlier 403 are in [../tooling.md](../tooling.md). Nothing may use another credential to get around a denied step: record it and report to `-aa`.
 
-- [ ] A Vercel project exists for this repo and is confirmed through a read-only check (the earlier CLI creation was never confirmed). Whether Hobby deploys from a private repo is confirmed at this step.
-- [ ] The project is linked to the GitHub repo through Vercel's Git integration: production deploys on merge to `main` (D-005), PRs get preview deployments. If the link needs the Vercel app authorized in the browser, `-f2` asks `-aa` (that step is Ícaro's).
-- [ ] `MAX_BYTES`, `PROXY_TIMEOUT_MS` and `ALLOWED_ORIGINS` are set as in `docs/hosting.md`.
-- [ ] One WAF rate-limit rule on `/api/image`; Vercel Toolbar, Web Analytics and Speed Insights are off.
-- [ ] A preview deployment of `feat/scaffold-and-proxy` loads the app, the `/api/image` proxy answers, and the security headers and CSP from `security-headers.ts` are present on the response. Nothing is promoted to production by hand: the first production deploy is the merge of PR #1 (D-013).
-- [ ] The URL is read and put into the README, the repo's website field and the bug-report form (Q-005). Those edits go through the lanes and `-5b`, not through `-f2`.
+- [x] A Vercel project (`blur-my-image`) exists and is confirmed by a read-only check; `createDeployments` was `disabled` and is now `enabled`.
+- [ ] Whether Hobby deploys from a private repo is proven only by the first deployment through Git, after `-5b` pushes the `vercel.json` change.
+- [x] The project is linked to the GitHub repo through Vercel's Git integration: production deploys on merge to `main` (D-005), PRs get preview deployments. If the link needs the Vercel app authorized in the browser, `-f2` asks `-aa` (that step is Ícaro's).
+- [x] `MAX_BYTES`, `PROXY_TIMEOUT_MS` and `ALLOWED_ORIGINS` are set (production and preview) as in `docs/hosting.md`.
+- [x] Vercel Toolbar and Web Analytics are off (Speed Insights not reported).
+- [ ] One WAF rate-limit rule on `/api/image`. Staged by `-f2` (30 requests per 60 s per IP, deny for 1 minute) but not published: the CLI asks for a human approval to publish. Ícaro approves the publish.
+- [x] A preview deployment of `feat/scaffold-and-proxy` loads the app (app 200, security headers and CSP present, `/api/image` 200 for an image, 403 for cross-site and internal IPs, 415 for HTML), the `/api/image` proxy answers, and the security headers and CSP from `security-headers.ts` are present on the response. Nothing is promoted to production by hand: the first production deploy is the merge of PR #1 (D-013).
+- [ ] The production URL is `https://blur-my-image.vercel.app` (alias assigned; serves the app only after the merge of PR #1). It goes into the README, the repo website field and the bug-report form (Q-005) at go-live, once the first production deploy serves the app, not before. The preview URL carries the team slug and never goes into a repo file. It is put into the README, the repo's website field and the bug-report form (Q-005). Those edits go through the lanes and `-5b`, not through `-f2`.
 - [ ] The page carries Open Graph and Twitter card meta tags (title, description, image, URL), with the final wording from D-010. The OG image comes from marketing's action 5, unblocked now that the English tagline is decided.
+
+Two more things from the report. A "Protection Bypass for Automation" secret was created on the project by `vercel curl`, and `-f2` couldn't revoke it (reading the secret was denied): Ícaro revokes it in the Vercel dashboard (BMI-073). `vercel.json` gained `"framework": "vite"`, committed by `-5b` before the next push.
 
 ### BMI-002 — CI and Dependabot
 
@@ -208,6 +212,8 @@ Not everything here has to be done before the repo is public. The flip doesn't d
 
 Before the merge of PR #1 (the app goes live):
 - [ ] Vercel account: 2FA on (Ícaro, by hand).
+- [ ] Revoke the "Protection Bypass for Automation" secret that `vercel curl` created on the project (Ícaro, in the Vercel dashboard).
+- [ ] Approve publishing the staged WAF rate-limit rule on `/api/image` (BMI-003).
 - [ ] Vercel project settings from BMI-003: env vars, one WAF rate-limit rule on `/api/image`, Toolbar, Web Analytics and Speed Insights off; usage alerts on (`-f2` for what the tools can set; Ícaro for the rest).
 - [ ] Each README or `docs/hosting.md` claim that only the platform can make true is checked against the live settings, or reworded: 1-hour request-log retention, the 4.5 MB body limit, the rate-limit rule and the usage alerts (quality lane, after BMI-003).
 

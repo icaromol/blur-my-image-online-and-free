@@ -40,7 +40,7 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 
 ### Q-005 — Hosted URL
 
-The URL doesn't exist yet. Checked 2026-11-22 through the Vercel MCP: the Vercel account has one team and no project for this repo. Creating the project in BMI-003 produces the `*.vercel.app` URL. Then the README, the repo website field and the bug form get it. Not blocking before BMI-003. See [../tooling.md](../tooling.md).
+The URL is `https://blur-my-image.vercel.app` (alias assigned by BMI-003, 2026-11-22, per `-f2`). It serves the app only after PR #1 is merged, so the README, the repo website field and the bug form get it at go-live, not before. Not blocking. See [../tooling.md](../tooling.md).
 
 ## Decisions
 

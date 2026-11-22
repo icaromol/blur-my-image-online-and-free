@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 45 `Must` done · 40 in review · 3 in progress · 2 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+0 of 45 `Must` done · 40 in review · 4 in progress · 1 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -56,6 +56,8 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- BMI-003 (`-f2`'s report, not re-checked by PM): Vercel project confirmed and linked to the repo, env vars set, Toolbar and Web Analytics off, preview deployment checked (app, headers, CSP, proxy behavior). Waiting on Ícaro: publish the staged WAF rate-limit rule, revoke the "Protection Bypass for Automation" secret that `vercel curl` created, and the first Git deployment to prove that Hobby builds from a private repo. Production URL for Q-005 is `https://blur-my-image.vercel.app`; it goes into the README and settings at go-live. BMI-003 is `In progress` until these are done and `vercel.json` is committed.
 
 - Pre-flip scan (dispatcher, read-only): gitleaks over all branches, 64 commits, clean; license and dist checks pass; no AI trailer in the history. One finding: every commit carries the maintainer's own address as author and committer, which becomes public at the flip. Opened as Q-009 (keep, or rewrite the history first; the address isn't written in the docs). The flip waits for the answer. Repo description and topics are drafted and with the reviewer; the OG image is still in production.
 
