@@ -26,7 +26,7 @@ Found by `-cc` while rewriting the warning (BMI-088; via `-75`): the warning is 
 
 Options: (a) show it for every effect (a flag per effect, text only, no new library), and the README line says "next to the effect options"; (b) leave the placement and make the text talk only about pixelation, which understates the study; (c) leave both as they are.
 
-Recommendation: (a). The reason for the warning (text blurred or pixelated can be read) applies to all three effects, and it costs a flag per effect and one README sentence. Default in force: **(c)** until he answers: the text is the one he reads and approves, shown next to Pixelate only, so BMI-088 doesn't wait.
+Recommendation: (a). The reason for the warning (text blurred or pixelated can be read) applies to all three effects, and it costs a flag per effect and one README sentence. Default in force: **(c)** until he answers: the text is the one he reads and approves, shown next to Pixelate only, so BMI-088 doesn't wait. The opus reviewer of BMI-088 also recommends (a), keeping "Blur and pixelate" in the text (narrowing it to "Pixelate" would suggest that blur is safe); the simplest change is to render the warning for every effect, move the text to a key that isn't tied to an effect (for example `effects.warning`) and drop `hasWarning` from `src/engine/effect-catalog.ts`, which changes behavior beyond line 47 and needs the e2e and accessibility checks adjusted, hence Ícaro's yes.
 
 ### Q-024 — Do the three use-case pages stay, now that the home is the app screen?
 
