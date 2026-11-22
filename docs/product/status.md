@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 44 `Must` done · 36 in review · 4 in progress · 0 blocked. Full list in [backlog.md](backlog.md).
+0 of 45 `Must` done · 35 in review · 5 in progress · 1 ready · 0 blocked. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -54,6 +54,11 @@ Only items that block something. Questions with a default in force are in decisi
 - **D-004** was relayed by the git-owner session, not heard directly. Stays in force unless Ícaro objects.
 
 ## Log
+
+### 2026-11-22 (dispatcher started, groomed on its request)
+
+- Dispatcher reports it started (session `blur-my-image-online-and-free-ad`): heartbeat every 30 minutes, lives as long as its session, and BMI-060 is assigned to the quality lane. Not verified by PM.
+- E7 re-checked against the code. BMI-060 back to `In progress` (server tsconfig flags exist in the working tree, not committed). BMI-061 stays with the frontend session (size budget, D-006). New `BMI-052` (read-only pre-flip audit run, split from BMI-050) is `Ready`. The `ui` and `server` lanes have nothing eligible: every v1 feature is committed and in `Review`, and what remains is merging PR #1, CI, the Vercel project and the go-public steps.
 
 ### 2026-11-22 (PM agent)
 

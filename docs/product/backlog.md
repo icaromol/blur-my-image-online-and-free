@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 44 `Must` done, 36 in review, 4 in progress.
+Progress: 0 of 45 `Must` done, 35 in review, 5 in progress, 1 ready.
 
 ### E1. Foundation
 
@@ -71,7 +71,7 @@ Approved package from three research reports (quality and CI, security baseline,
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
-| BMI-060 | Quality bar: stricter tsconfig flags, Biome rules and per-folder import boundaries, kebab-case file names, coverage thresholds on `src/engine` and `server/proxy`, `docs/quality.md` linked from README | Must | M | Review | BMI-001 |
+| BMI-060 | Quality bar: stricter tsconfig flags, Biome rules and per-folder import boundaries, kebab-case file names, coverage thresholds on `src/engine` and `server/proxy`, `docs/quality.md` linked from README | Must | M | In progress | BMI-001 |
 | BMI-061 | Performance budget: lazy-load the engine so initial JS stays ≤ 35 kB brotli, `size-limit` in CI, WebP encoder only via `import()` | Must | S | In progress | BMI-040, BMI-002 |
 | BMI-062 | Proxy hardening A: one middleware sets `no-store`, `nosniff`, CORP, `Referrer-Policy`, sandbox CSP on every response; image type allowlist with file-signature check, mismatch → 415 | Must | M | Review | BMI-014 |
 | BMI-063 | Proxy hardening B: default ports only, reject URL credentials, block `::/96`, fixed outbound headers, validate `ALLOWED_ORIGINS` at startup | Must | M | Review | BMI-014 |
@@ -92,6 +92,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | --- | --- | --- | --- | --- | --- |
 | BMI-050 | Go-public checklist (see details): audit, replace placeholders, decide CLAUDE.md and `.claude/`, flip public, then GitHub protections | Must | M | Idea | all v1 items, BMI-070 to BMI-073 |
 | BMI-051 | README status line and content match what shipped | Must | S | Idea | all v1 items |
+| BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code | Must | S | Ready | BMI-070, BMI-072 |
 
 ## Later (post-v1)
 
@@ -120,7 +121,7 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-132 | App version in the UI and in the bug form | Community | Idea |
 | BMI-133 | `GOVERNANCE.md`, `CODEOWNERS`, second admin, Discussions, interaction limits, area labels | Community | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-052`, `BMI-074`; later effects `BMI-109`, features `BMI-127`, other later `BMI-134`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-074`; later effects `BMI-109`, features `BMI-127`, other later `BMI-134`.
 
 ---
 
@@ -181,7 +182,7 @@ Before the flip:
 
 At the flip, in order: flip public → private vulnerability reporting, push protection, CodeQL default → ruleset on `main` (no force push or deletion, PR required, required checks, linear history) → fork PR workflows need approval → scorecard and dependency-review workflows → confirm Vercel Git fork protection.
 
-### E7 progress notes (2026-11-22)
+### E7 progress notes (2026-11-22, earlier; the later notes below supersede these where they differ)
 
 What is committed on `feat/scaffold-and-proxy`, and what is still open per item:
 
@@ -204,3 +205,28 @@ Committed on `feat/scaffold-and-proxy` by the git-owner session: the frontend st
 - **BMI-067 → Review.** Privacy e2e (same-origin, no cookies, no CSP violations), metadata stripping e2e for PNG, JPEG and both WebP encoders, proxy privacy checks in `app.test.ts`.
 - **BMI-068 → Review.** axe at WCAG 2.2 AA, single-key shortcuts only with image focus, a click without drag paints one dab.
 - **BMI-069 → Review.** README states the Vercel request-log caveat and the shortcut focus rule.
+
+### BMI-060 — what is left (2026-11-22)
+
+Everything but the server tsconfig is committed (`533f624`). The quality lane has `noUncheckedIndexedAccess` and `noImplicitOverride` in `tsconfig.server.json` in the working tree, plus the few lines they flag in `server/proxy/{app.test,image-type,node-fetch}.ts`.
+
+- [ ] `tsconfig.server.json` sets both flags and `pnpm check` passes with them.
+- [ ] Committed by the git owner; then `Review`.
+
+### BMI-061 — what is left (2026-11-22)
+
+Owner: the frontend session (`implementar-v1-editor-pixi`), because the precompile touches `vite.config.ts`, `package.json` and the i18n loader, which that session holds. The dispatcher must not assign it to a lane while the session works on it (D-006).
+
+- [ ] `pnpm size` passes: initial JS ≤ 35 kB brotli and all JS except the WebP encoder ≤ 180 kB (today 43.21 kB and 192.22 kB).
+- [ ] i18n messages precompiled at build time; `pt-BR` still loads as its own chunk; `en` and `pt-BR` e2e still pass.
+- [ ] The WebP encoder is loaded only through `import()`, and the UI doesn't statically import the PixiJS-heavy effect code.
+
+### BMI-052 — pre-flip audit run
+
+Split out of BMI-050 so a worker can do the read-only part. Flipping the repo public stays with Ícaro under BMI-050.
+
+- [ ] `gitleaks` over the full history of every branch is clean (report the command and the commit count).
+- [ ] `dist/licenses.md` exists after `pnpm build` and lists every production dependency; `scripts/check-licenses.mjs` and `scripts/check-dist.mjs` pass.
+- [ ] Each claim in the README (formats, shortcuts, privacy, proxy limits, effects, languages) is checked against the code and the e2e specs; every mismatch is reported with file and line, not silently fixed.
+- [ ] No file under the repo, committed or not, contains the maintainer's email, a token or a Vercel team identifier.
+- [ ] Report written to the dispatcher; no files changed.
