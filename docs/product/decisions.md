@@ -20,6 +20,16 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-008 — The author address in the commit history becomes public at the flip
+
+All 64 commits (every branch) carry the same author and committer address, the maintainer's own, found by the dispatcher's pre-flip scan on 2026-11-22. A public repo shows it in every commit. Rewriting the history afterwards doesn't take it back from clones and caches.
+
+Options: leave it (it is the identity the commits were made under and the PR is attributed to it); or, before the flip, rewrite the 64 commits to a GitHub no-reply address and force-push. A rewrite changes every commit hash: the `backlog.md`, `status.md` and `decisions.md` cite hashes, PR #1 and its checks run again, and the local and CI clones need a refresh. It is cheap now and not possible later.
+
+Recommendation: Ícaro decides, knowing which address it is and whether he is fine with it being public; if it's one he'd rather keep private, rewrite before the flip. The address is deliberately not written here.
+
+Default in force: **the flip waits for his answer.** Ordering, not a scope cut.
+
 ### Q-006 — Do the Docker image and server bundle need license notices?
 
 Audit finding C: `dist-server/node.js` bundles hono, `@hono/node-server`, ipaddr.js and undici, and the Dockerfile ships it, but only the client build emits `licenses.md`.
