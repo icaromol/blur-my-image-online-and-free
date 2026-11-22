@@ -20,6 +20,10 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-020 — What does "overlapping images" mean? (a future spec, blocks nothing)
+
+Ícaro's request mentioned overlapping images and effects (relayed by `-aa`). The effect stack (BMI-128) is about effects; a second image placed over the first is a different, larger feature: a second source texture, a position and scale, a blend. Question for him, for later: what did he mean, a second picture over the first (a sticker, a logo, a pasted patch), or only effects on top of each other? Recommendation: ask when the effect stack comes up, then write its own spec. Default: not in `specs/effect-stack.md`, no item.
+
 ### Q-006 — Do the Docker image and server bundle need license notices?
 
 Audit finding C: `dist-server/node.js` bundles hono, `@hono/node-server`, ipaddr.js and undici, and the Dockerfile ships it, but only the client build emits `licenses.md`.
@@ -33,6 +37,13 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the project's main domain on 2026-11-22, per `-aa`; the earlier `https://blur-my-image.vercel.app` answers 307 to it (PM read both with a plain `GET`). The README, the repo website field and the bug form get it only when Ícaro says (D-016). Not blocking.
 
 ## Decisions
+
+### D-031 — Preview modes and the editable effect stack come after v1, in that order (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answer, closing Q-019: BMI-127 (preview: before and after, and no preview) and BMI-128 (the editable effect stack) come **after v1**, in this order: before and after first, the stack last. It is only an order; nothing he asked for was cut. The JavaScript cost of the preview is measured before any implementation (today's room is 1.31 kB). The meaning of "overlapping images" is a future question (Q-020) and blocks nothing.
+**Why:** v1 is the README plus i18n, already built and under review; the two ideas change the renderer and the undo model.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-127, BMI-128, `specs/preview-modes.md`, `specs/effect-stack.md`.
 
 ### D-030 — The rate-limit message in `pt-BR` is approved; `ossf/scorecard-action` is allowed (2026-11-22)
 

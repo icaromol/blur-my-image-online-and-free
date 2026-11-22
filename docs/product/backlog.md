@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 48 `Must` done, 43 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-076, after the merge), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 and BMI-081 (`Should`, `Review`), BMI-082 (`Should`, `Ready`, after the merge) and BMI-083 (`Should`, `Idea`).
+Progress: 0 of 48 `Must` done, 43 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-076, after the merge), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 and BMI-081 (`Should`, `Review`), BMI-082 (`Should`, `Ready`, after the merge), BMI-083 (`Should`, `Idea`) and BMI-084 (`Should`, `Ready`).
 
 ### E1. Foundation
 
@@ -94,6 +94,12 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-075 | Brand kit: vector logos (his original lettering, vectorized; black, white, blue accent), minimal palette with contrast checked, favicon, OG image base, marketing CSS, short guide; app theme not included | Should | M | Review | |
 | BMI-078 | Apply the brand to the site: favicon and apple-touch icon in `public/`, the link tags in `index.html`, the new OG image; in a PR of its own after the merge of PR #2 and the kit | Should | S | Idea | BMI-075, the merge of PR #2 |
 
+### E9. Landing page copy
+
+| ID | Item | Priority | Size | Status | Depends on |
+| --- | --- | --- | --- | --- | --- |
+| BMI-084 | Complete landing page copy in English, after research (competitors, search intent per persona, conversion patterns), drafted in `docs/marketing/landing/`; building the page is BMI-078 and is not part of this item | Should | M | Ready | |
+
 ### E6. Launch readiness
 
 | ID | Item | Priority | Size | Status | Depends on |
@@ -131,6 +137,8 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-124 | HEIC input outside Safari | Feature | Idea |
 | BMI-125 | Tiled rendering above `MAX_TEXTURE_SIZE` | Feature | Idea |
 | BMI-126 | Copy result to clipboard | Feature | Idea |
+| BMI-127 | Preview modes: before and after (divider or hold to see the original) and no preview; spec [specs/preview-modes.md](specs/preview-modes.md); after v1, first (D-031) | Feature | Idea |
+| BMI-128 | Editable effect stack: effects as items with editable parameters, own mask, on and off, reorder, delete, duplicate; spec [specs/effect-stack.md](specs/effect-stack.md); after v1, after BMI-127 (D-031); overlapping images are a future question, Q-020 | Feature | Idea |
 | BMI-130 | Property tests (fast-check) for URL and IP parsing | Quality | Idea |
 | BMI-131 | OpenSSF badge, signed commits, Trusted Types, COEP | Security | Idea |
 | BMI-132 | App version in the UI and in the bug form | Community | Idea |
@@ -140,7 +148,7 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-137 | Image loading by link on phones: the real ceiling is decoding memory, not the 100 MiB cap (a compressed file of tens of MB can exceed 100 megapixels, over 400 MB as RGBA, and end in `decode_failed`; a body just under the cap sits whole in a Blob, kept in RAM on iOS Safari and able to reload the tab); a lower or device-aware cap, or a clearer message when decoding fails on a very large file | Quality | Idea |
 | BMI-135 | Playwright config: don't silently reuse another process's server on port 4173 outside CI (`reuseExistingServer`); no evidence yet that this caused the 2026-11-22 failure (BMI-074) | Quality | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-084`; later effects `BMI-109`, features `BMI-127`, other later `BMI-138`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-085`; later effects `BMI-109`, features `BMI-129`, other later `BMI-138`.
 
 ---
 
@@ -382,6 +390,16 @@ Spec: [specs/hosted-analytics.md](specs/hosted-analytics.md). Decided by Ícaro 
 - [ ] `security-headers.ts` and `vercel.json` stay in sync; a test pins the strict policy for the default build and the one for the hosted build.
 - [ ] `e2e/privacy.spec.ts` passes unchanged against the default build; a second case lists the exact extra requests allowed on the hosted build.
 - [ ] README (privacy section and line 80, which changes unless the experiment shows no cookies), the app's one-line notice (`en` and `pt-BR`, shown to Ícaro) and `docs/hosting.md` say what is true; the key-parity test, check, unit and e2e tests and `pnpm size` pass.
+
+### BMI-084 — Landing page copy
+
+Asked for by Ícaro (relayed by `-aa`, 2026-11-22). Marketing lane (strategist, SEO, copywriter), nothing published, nothing built: the page itself is BMI-078's neighbor, not this item. Rules of the marketing skill apply: the privacy sentence from D-010, no claim the product can't back, the app's URL out of marketing until Ícaro says (D-016), "open source" allowed now that the repo is public and MIT.
+
+- [ ] **Research**, written in `docs/marketing/landing/research.md` with sources: the competitors' pages (what they promise, how they handle privacy, what they ask for), search intent per persona from `docs/marketing/audience.md` (blur a license plate, pixelate a screenshot, blur a face, hide an email in a screenshot), and conversion patterns for a free single-purpose tool.
+- [ ] **Complete English copy** in `docs/marketing/landing/`, one file per section or one file with sections: hero; how it works (the three steps of the README); the privacy proof, with the sentence from D-010 and the honest exception for links (the same wording as the app's notice); use-case sections (blur a license plate, pixelate a screenshot, blur a face); an FAQ; the call to action; meta title and description; structured data.
+- [ ] The copy matches what the app does today: effects, formats, the 100 MiB link cap and the proxy exception are true statements or absent; the "blur is not redaction" warning is present.
+- [ ] The `no-ai-slop` rules are applied and the reviewer (opus) approves before anything is committed; the list of files goes to `-5b` after that.
+- [ ] Nothing is published, scheduled or sent to Buffer; Portuguese is not in this item (Q-002: English only for marketing).
 
 ### BMI-083 — Funding
 
