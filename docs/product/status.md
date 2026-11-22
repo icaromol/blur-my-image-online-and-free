@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 45 `Must` done · 40 in review · 2 in progress · 0 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+0 of 45 `Must` done · 40 in review · 3 in progress · 1 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -41,21 +41,23 @@ New epic E7 (BMI-060 to BMI-073): quality bar, proxy hardening, CSP and headers,
 
 In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the items below already exist on the PR and need review and merge, not building.
 
-1. Merge PR #1 once checks are green; BMI-002 (CI) in parallel
-2. BMI-003: deploy
-3. BMI-050, BMI-051: audit, README matches what shipped, go public
+1. BMI-003 (Vercel project, preview deployment) and BMI-070 (GitHub settings) in parallel with the BMI-050 pre-flip checks
+2. BMI-050: flip, protections, CodeRabbit app, PR #1 out of draft, corrections (D-013)
+3. Merge PR #1 after CodeRabbit's corrections with green checks; the first production deploy follows (D-005)
 
 ## Blocked / waiting on Ícaro
 
 Only items that block something. Questions with a default in force are in decisions.md and don't wait.
 
 - **Tagline and privacy wording:** decided, see D-010. The final `pt-BR` text is shown to Ícaro before the merge (BMI-051).
-- **BMI-050 (go public)** still needs: BMI-051 (README and docs match what shipped), PR #1 merged, and Ícaro's direct go. Q-003 and the `CLAUDE.md` question are closed (D-007, D-008).
+- **BMI-050 (go public):** Ícaro said yes (D-013). Waiting on `-aa`'s go to `-5b` for the flip, and on Q-008 (origin and license of `brandkit`, `design-taste-frontend` and `no-ai-slop`). After the flip he installs the CodeRabbit app; the merge of PR #1 comes after CodeRabbit's corrections.
 - **D-004, D-006, D-007, D-008, D-009** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
 
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- Ícaro's go-ahead, relayed by `-aa`: D-011 (apply the BMI-070 GitHub settings, `-5b`), D-012 (BMI-003 `Ready`, `-f2` creates and deploys the Vercel project) and D-013 (go public is a yes, with CodeRabbit on PR #1 before the merge: pre-flip checks, flip, protections, CodeRabbit app, PR out of draft, corrections, merge). BMI-050 → `In progress` with the new order. The flip waits for `-aa`'s go to `-5b` and for Q-008 (origin and license of three skills under `.claude/`, in the history since the initial commit). Merging PR #1 starts the first production deploy once BMI-003 is done (D-005).
 
 - BMI-051's marketing criterion closed: `cb39247` and `ad82c2e` align the marketing text with D-010. BMI-051 has nothing open except the merge of PR #1. No item is `Ready` for any lane; BMI-066 waits for 2026-11-28.
 

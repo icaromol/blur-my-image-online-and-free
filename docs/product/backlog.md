@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 45 `Must` done, 40 in review, 2 in progress (BMI-066, 070), 0 ready, 3 idea (BMI-003, 050, 073). Also BMI-074 (`Should`, `Done`).
+Progress: 0 of 45 `Must` done, 40 in review, 3 in progress (BMI-050, 066, 070), 1 ready (BMI-003), 1 idea (BMI-073). Also BMI-074 (`Should`, `Done`).
 
 ### E1. Foundation
 
@@ -16,7 +16,7 @@ Progress: 0 of 45 `Must` done, 40 in review, 2 in progress (BMI-066, 070), 0 rea
 | --- | --- | --- | --- | --- | --- |
 | BMI-001 | Scaffold: Vue 3 + Vite + TS, Biome, Vitest, Playwright, husky pre-commit | Must | M | Review | |
 | BMI-002 | CI: check, unit, e2e, Docker build on every PR; Dependabot | Must | S | Review | BMI-001 |
-| BMI-003 | Deploy to Vercel Hobby (static site + `/api/image` function); Git integration, production on every merge to `main` (D-005); project creation half done (MCP 403, CLI created it unverified, Git link pending); see tooling.md | Must | S | Idea | BMI-001, BMI-014 |
+| BMI-003 | Deploy to Vercel Hobby (static site + `/api/image` function); Git integration, production on every merge to `main` (D-005); authorized by D-012; see tooling.md and the details below | Must | S | Ready | BMI-001, BMI-014 |
 | BMI-004 | Docker image (static site + proxy on Node) built in CI as the exit path | Must | S | Review | BMI-014 |
 
 ### E2. Input
@@ -91,7 +91,7 @@ Approved package from three research reports (quality and CI, security baseline,
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
-| BMI-050 | Go-public checklist (see details): audit, README matches what shipped, merge PR #1, flip public, then GitHub protections | Must | M | Idea | all v1 items, BMI-070 to BMI-073 |
+| BMI-050 | Go-public checklist (see details; order set by D-013): pre-flip checks, flip, protections, CodeRabbit, PR #1 out of draft, corrections, merge | Must | M | In progress | all v1 items, BMI-070 to BMI-073 |
 | BMI-051 | README status line and content match what shipped | Must | S | Review | BMI-040 |
 | BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
 
@@ -148,11 +148,19 @@ Added as a `Should` verification of work already in `Review` (BMI-067, BMI-001).
 - [x] Also run the loop once with `CI=1` so the CI settings (`retries: 1`, no server reuse) are exercised, and report any test that passes only on retry.
 - [x] Lane: quality (read-only unless a fix is needed). `playwright.config.ts` is a shared-file lock: take it before editing.
 
-### BMI-003 — Deploy: criteria added
+### BMI-003 — Deploy to Vercel
 
-Asked for by marketing through the dispatcher; refines this item, not a new one. Ícaro can veto it.
+As a user, I want the app at a public URL so that I can use it without installing anything; as the maintainer, I want production to follow `main` without a manual step.
 
-- [ ] The page carries Open Graph and Twitter card meta tags (title, description, image, URL) so a shared link shows a preview. The tags use the final wording from D-010 (same as BMI-051). The OG image can now be made: the English tagline is decided.
+Authorized by Ícaro (D-012, relayed). Executor: `-f2`, with the Vercel actions he authorized. Current state and the earlier 403 are in [../tooling.md](../tooling.md). Nothing may use another credential to get around a denied step: record it and report to `-aa`.
+
+- [ ] A Vercel project exists for this repo and is confirmed through a read-only check (the earlier CLI creation was never confirmed). Whether Hobby deploys from a private repo is confirmed at this step.
+- [ ] The project is linked to the GitHub repo through Vercel's Git integration: production deploys on merge to `main` (D-005), PRs get preview deployments. If the link needs the Vercel app authorized in the browser, `-f2` asks `-aa` (that step is Ícaro's).
+- [ ] `MAX_BYTES`, `PROXY_TIMEOUT_MS` and `ALLOWED_ORIGINS` are set as in `docs/hosting.md`.
+- [ ] One WAF rate-limit rule on `/api/image`; Vercel Toolbar, Web Analytics and Speed Insights are off.
+- [ ] A preview deployment of `feat/scaffold-and-proxy` loads the app, the `/api/image` proxy answers, and the security headers and CSP from `security-headers.ts` are present on the response. Nothing is promoted to production by hand: the first production deploy is the merge of PR #1 (D-013).
+- [ ] The URL is read and put into the README, the repo's website field and the bug-report form (Q-005). Those edits go through the lanes and `-5b`, not through `-f2`.
+- [ ] The page carries Open Graph and Twitter card meta tags (title, description, image, URL), with the final wording from D-010. The OG image comes from marketing's action 5, unblocked now that the English tagline is decided.
 
 ### BMI-002 — CI and Dependabot
 
@@ -194,18 +202,39 @@ As a user, I want to paste a screenshot with `Ctrl/Cmd+V` so that I skip saving 
 User stories and acceptance criteria are in [specs/i18n.md](specs/i18n.md), requirements R1 to R5.
 
 
+### BMI-070 — what is left (D-011)
+
+Community files are in. Left is GitHub settings, which `-5b` applies now (D-011): labels, squash-only merges, delete branch on merge, suggest updating PR branches.
+
+- [ ] Labels created; squash-only merges and delete-branch-on-merge on; "suggest updating PR branches" on. Read back with `gh api` or `gh repo view` and reported.
+- [ ] Saved replies added by Ícaro by hand (a per-user setting, not available through the repo API).
+
 ### BMI-050 — Go-public checklist
 
-Ordered, from `.local/standards/community.md` and `security.md` (D-004). Every line needs Ícaro's go before the repo flips.
+Ícaro's answer is yes (D-013, relayed). Order, from `.local/standards/community.md` and `security.md` (D-004), reordered by D-013 so CodeRabbit can review PR #1 before the merge. The flip itself waits for `-aa`'s go to `-5b`, and Q-008 is open.
 
-Before the flip:
-- [ ] Full-history gitleaks re-run is clean.
-- [ ] `SECURITY.md` and `CODE_OF_CONDUCT.md` committed with the contact from D-007 (`CODE_OF_CONDUCT.md` in `c5b3bce`).
-- [x] `CLAUDE.md` and `.claude/` stay in the repo (D-008, 2026-11-22). The provenance and license of the skills under `.claude/` (brandkit, design-taste-frontend, no-ai-slop) is still unstated; this decision doesn't cover it.
-- [ ] Third-party license notices in the bundle; README status line and contributing links updated (BMI-051).
-- [ ] Repo description, topics, social preview image; 3 to 5 good first issues.
+Pre-flip, nothing outward-facing:
+- [ ] Full-history `gitleaks` re-run over every branch is clean (quality lane, read-only; report the command and the commit count).
+- [x] `SECURITY.md` and `CODE_OF_CONDUCT.md` committed with the contact from D-007 (`c5b3bce`).
+- [x] `CLAUDE.md` and `.claude/` stay in the repo (D-008).
+- [ ] Origin and license of `brandkit`, `design-taste-frontend` and `no-ai-slop` under `.claude/` settled (Q-008). Blocks the flip.
+- [x] Third-party license notices in the bundle (checked in BMI-052); README status line and contributing links updated (BMI-051, `Review`).
+- [ ] Repo description and topics drafted (marketing lane, wording true to the product: no "open source" claim before the flip) and applied by `-5b`. The social preview image is rendered by the designer from action 5; uploading it is done by hand in GitHub's settings (Ícaro).
+- [ ] BMI-070 settings applied (D-011) and the BMI-073 checklist done by Ícaro.
+- [ ] BMI-003 project exists and a preview deployment passes its checks (not required to flip, but the URL feeds the README).
 
-At the flip, in order: flip public → private vulnerability reporting, push protection, CodeQL default → ruleset on `main` (no force push or deletion, PR required, required checks, linear history) → fork PR workflows need approval → scorecard and dependency-review workflows → confirm Vercel Git fork protection.
+The flip:
+- [ ] `-aa` gives `-5b` the go; flip the repo to public.
+
+After the flip, in this order:
+- [ ] Private vulnerability reporting, push protection, CodeQL default.
+- [ ] Ruleset on `main`: no force push or deletion, PR required, required checks, linear history.
+- [ ] Fork PR workflows need approval; scorecard and dependency-review workflows; confirm Vercel Git fork protection.
+- [ ] CodeRabbit app installed (Ícaro's action).
+- [ ] PR #1 out of draft (CodeRabbit ignores drafts).
+- [ ] CodeRabbit's review answered and the corrections committed, checks green. Findings that change scope go to Ícaro, never applied silently.
+- [ ] Merge PR #1 (authorized by Ícaro only after the line above). With BMI-003 done, this merge starts the first production deploy (D-005, D-013). Then the items in `Review` become `Done` against `main`.
+- [ ] 3 to 5 good first issues (after the flip), and the first tagged release (BMI-071).
 
 ### E7 progress notes (2026-11-22, earlier; the later notes below supersede these where they differ)
 

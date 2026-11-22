@@ -20,6 +20,16 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-008 — Origin and license of three skills under `.claude/`
+
+D-008 keeps `.claude/` in the repo, but `brandkit`, `design-taste-frontend` and `no-ai-slop` (each a single `SKILL.md`, in the history since the initial commit `d9c443b`) state no author, source or license. Once the repo is public, the files and the history are public too, and removing them later means rewriting history.
+
+Options: confirm where each came from and that it can be redistributed (and add attribution or a license note where it's required); or take any with an unclear origin out of the tree and out of the history before the flip.
+
+Recommendation: find the origin of each before the flip; for any that can't be confirmed, remove it from the tree and from the history while the repo is still private, since that is the cheap moment. `-aa` is asking Ícaro now.
+
+Default in force: **the flip waits for the answer.** That isn't a scope cut; it only orders the checklist.
+
 ### Q-006 — Do the Docker image and server bundle need license notices?
 
 Audit finding C: `dist-server/node.js` bundles hono, `@hono/node-server`, ipaddr.js and undici, and the Dockerfile ships it, but only the client build emits `licenses.md`.
@@ -33,6 +43,27 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 The URL doesn't exist yet. Checked 2026-11-22 through the Vercel MCP: the Vercel account has one team and no project for this repo. Creating the project in BMI-003 produces the `*.vercel.app` URL. Then the README, the repo website field and the bug form get it. Not blocking before BMI-003. See [../tooling.md](../tooling.md).
 
 ## Decisions
+
+### D-013 — Go public: yes, with CodeRabbit before the merge (2026-11-22)
+
+**Decision**, as relayed by the orchestrator session (`-aa`) from Ícaro's direct answers to it (PM did not hear them directly): the go-public of BMI-050 is a **yes**. He wants CodeRabbit to review PR #1 before it's merged, and the free CodeRabbit only works on public repos, so the order of BMI-050 changes to: pre-flip checklist, flip, protections, CodeRabbit app installed (Ícaro's action), PR #1 out of draft (CodeRabbit ignores drafts), CodeRabbit's corrections, merge. The merge is authorized by him only after those corrections and with green checks. The flip itself happens only when `-aa` gives `-5b` the go, and one question is still open with him (Q-008, origin and license of three skills).
+**Why:** a second reviewer on the largest PR before it lands on `main`. It reorders the checklist and cuts nothing.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-050 (checklist rewritten), PR #1, D-005 (merging to `main` triggers the first production deploy once BMI-003 is done), BMI-003. Executed by `-5b` (git and GitHub), Ícaro (installing the CodeRabbit app), `-f5` (CodeRabbit session).
+
+### D-012 — Create the Vercel project and deploy (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro ("Faça"): BMI-003 goes ahead, `Ready`. The project is created, linked to the GitHub repo through Vercel's Git integration and deployed, by `-f2` with the Vercel actions Ícaro authorized. If linking to GitHub needs the Vercel app authorized in the browser, `-f2` tells `-aa`.
+**Why:** it unblocks the hosted URL (Q-005), the preview deployments on PRs and BMI-073.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-003, BMI-073, Q-005, D-005. A denied Vercel or GitHub action is recorded and reported; nobody works around it with another credential.
+
+### D-011 — Apply the GitHub repository settings (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro ("Faça"): the GitHub settings of BMI-070 are applied: labels, squash-only merges, delete branch on merge, suggest updating PR branches. `-5b` executes them. Saved replies are a per-user GitHub setting, not a repository one, so they stay Ícaro's to add by hand.
+**Why:** they keep the history linear and the PR flow tidy before the repo is public.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-070.
 
 ### D-010 — Privacy wording and tagline say "image files" and match the URL proxy exception (2026-11-22)
 
