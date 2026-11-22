@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 45 `Must` done · 37 in review · 4 in progress · 1 ready · 0 blocked. Full list in [backlog.md](backlog.md).
+0 of 45 `Must` done · 39 in review · 3 in progress · 0 ready · 0 blocked. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -50,19 +50,20 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 Only items that block something. Questions with a default in force are in decisions.md and don't wait.
 
 - **en/pt-BR tagline differ** since `bbb060c`: `pt-BR` says "…ou como quiser. Ela nunca sai do seu navegador.", `en` still says "…or only the parts you paint… your device". The git-owner session is asking Ícaro whether `en` follows. PM doesn't touch `en.json`.
-- **Q-007:** accept the loosened bundle budgets (45 / 195 kB instead of 35 / 180 kB)? Holds BMI-061 at `In progress`. Default and recommendation in decisions.md.
 - **BMI-050 (go public)** still needs: BMI-051 (README and docs match what shipped), PR #1 merged, and Ícaro's direct go. Q-003 and the `CLAUDE.md` question are closed (D-007, D-008).
-- **Conduct contact:** the address is a gmail account, different from the git identity. PM can't tell from the repo whether it's a project-only mailbox or a personal one; asked Ícaro through `-aa` to confirm before the repo goes public.
-- **D-004, D-006, D-007, D-008** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
+- **D-004, D-006, D-007, D-008, D-009** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
 
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
 
+- Later the same day: D-009 (Ícaro accepts the 45 / 195 kB budgets, relayed by `-aa`) closed Q-007. BMI-061 → `Review` after PM ran `pnpm size` (43.21 / 192.22 kB) and the Chromium e2e (35/35; the first run failed for an unknown reason, the next two passed). BMI-002 → `Review`: `ci.yml` (`08d2384`), Dependabot (`a61f693`) and a green first PR run; the required-checks ruleset stays a BMI-050 step. Ícaro confirmed through `-aa` that the conduct contact is his own choice, aware it will be public; not asked again.
+
 - The PM session changed after the previous one hit its account limit (back 2026-11-26). Git owner is now `-5b`, dispatcher `-75`, frontend `-cc`, server `-f2`, orchestrator `-aa`. Not verified by PM beyond `ListAgents`.
 - D-007 (code of conduct contact set, Q-003 closed) and D-008 (`CLAUDE.md` and `.claude/` stay) logged from Ícaro's direct answers to `-aa`. Both edits to `CODE_OF_CONDUCT.md` and the reverted `.gitignore` are waiting on `-5b`. BMI-050 stays `Idea`; BMI-051, PR #1 and his go remain.
 - BMI-060 → `Review` (`5642e7b`). BMI-061 stays `In progress`: `e2e0eb6` raised the budgets to 45 / 195 kB, which loosens its criterion, so the question went to Ícaro (Q-007). BMI-002 still shows `In progress`; its workflow is committed (`08d2384`) and the PR checks Verify and E2E (Chromium) pass, but the PM hasn't been told by the dispatcher or git owner that it's done, so it's unchanged.
 - BMI-051 gained the privacy-wording criterion (README line 3, `index.html` meta description) without deciding the tagline. BMI-003 gained a meta-tags criterion at marketing's request. PR #1 is still a draft, mergeable.
+- BMI-051 → `In progress` (quality lane, assigned by the new dispatcher `-75`; `README.md` and `docs/hosting.md` have uncommitted changes). `c5b3bce` committed the conduct contact; the `.gitignore` edit no longer shows in `git status`. Nothing is `Ready` now.
 
 ### 2026-11-22 (pre-flip audit)
 

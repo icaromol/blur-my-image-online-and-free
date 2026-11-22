@@ -28,19 +28,18 @@ Default in force: **nothing added to v1.** The image is built in CI as an exit p
 
 Recommendation: before any Docker image is published or pulled by anyone else, add server-bundle notices (the same mechanism, written to `dist-server/`). It's cheap and removes the question. Adding it to v1 is Ícaro's call; say so and it becomes a `Should` item for the server lane.
 
-### Q-007 — Accept the loosened bundle budgets (45 kB initial, 195 kB total)?
-
-`e2e0eb6` raised the `size-limit` budgets from 35 kB to 45 kB (initial JS) and from 180 kB to 195 kB (all JS except the WebP encoder), set just above the measured 43.2 kB and 192.2 kB. `docs/quality.md` explains why: Vue (~26 kB) plus vue-i18n's runtime (~16 kB) already exceed 35 kB, and the 35 kB figure was measured before i18n existed. D-006 approved precompiling the messages to reach 35 kB; it did not approve a higher budget.
-
-Default in force: **the committed 45 / 195 kB budgets stay**, and BMI-061 stays `In progress` with its original criterion (≤ 35 kB, ≤ 180 kB) unedited until Ícaro answers. No feature is dropped either way.
-
-Recommendation: accept 45 / 195 kB. 35 kB can't be met with both libraries, and the limits sitting just above the measured sizes make any growth a visible decision. If accepted, BMI-061's criterion is rewritten to the new numbers and the item goes to `Review`.
-
 ### Q-005 — Hosted URL
 
 The URL doesn't exist yet. Checked 2026-11-22 through the Vercel MCP: the Vercel account has one team and no project for this repo. Creating the project in BMI-003 produces the `*.vercel.app` URL. Then the README, the repo website field and the bug form get it. Not blocking before BMI-003. See [../tooling.md](../tooling.md).
 
 ## Decisions
+
+### D-009 — Bundle budgets set to 45 kB initial and 195 kB total (2026-11-22)
+
+**Decision**, as relayed by the orchestrator session (`-aa`) from Ícaro's direct answer to it (PM did not hear it directly): Ícaro accepts the `size-limit` budgets of 45 kB initial JavaScript and 195 kB for all JavaScript except the WebP encoder (brotli), replacing 35 kB and 180 kB. Closes Q-007.
+**Why:** Vue (~26 kB) and vue-i18n's runtime (~16 kB) alone exceed 35 kB, so the old figure, measured before i18n existed, can't be met. The limits sit just above the measured 43.21 and 192.22 kB, so any growth is a visible decision. No feature is dropped. The README states no size figure; the budget came from the D-004 package.
+**Decided by:** Ícaro, per the orchestrator session. Reversible.
+**Affects:** BMI-061 (criterion rewritten to the new numbers), `docs/quality.md`, D-006 (which aimed at 35 kB).
 
 ### D-008 — `CLAUDE.md` and `.claude/` stay in the repo (2026-11-22)
 

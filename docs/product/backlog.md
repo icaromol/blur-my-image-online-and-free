@@ -8,14 +8,14 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 45 `Must` done, 37 in review, 4 in progress, 1 ready.
+Progress: 0 of 45 `Must` done, 39 in review, 3 in progress, 0 ready, 3 idea (BMI-003, 050, 073).
 
 ### E1. Foundation
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
 | BMI-001 | Scaffold: Vue 3 + Vite + TS, Biome, Vitest, Playwright, husky pre-commit | Must | M | Review | |
-| BMI-002 | CI: check, unit, e2e, Docker build on every PR; Dependabot | Must | S | In progress | BMI-001 |
+| BMI-002 | CI: check, unit, e2e, Docker build on every PR; Dependabot | Must | S | Review | BMI-001 |
 | BMI-003 | Deploy to Vercel Hobby (static site + `/api/image` function); Git integration, production on every merge to `main` (D-005); project creation half done (MCP 403, CLI created it unverified, Git link pending); see tooling.md | Must | S | Idea | BMI-001, BMI-014 |
 | BMI-004 | Docker image (static site + proxy on Node) built in CI as the exit path | Must | S | Review | BMI-014 |
 
@@ -72,7 +72,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
 | BMI-060 | Quality bar: stricter tsconfig flags, Biome rules and per-folder import boundaries, kebab-case file names, coverage thresholds on `src/engine` and `server/proxy`, `docs/quality.md` linked from README | Must | M | Review | BMI-001 |
-| BMI-061 | Performance budget: lazy-load the engine so initial JS stays ≤ 35 kB brotli, `size-limit` in CI, WebP encoder only via `import()` | Must | S | In progress | BMI-040, BMI-002 |
+| BMI-061 | Performance budget: lazy-load the engine so initial JS stays ≤ 45 kB brotli (D-009), `size-limit` in CI, WebP encoder only via `import()` | Must | S | Review | BMI-040, BMI-002 |
 | BMI-062 | Proxy hardening A: one middleware sets `no-store`, `nosniff`, CORP, `Referrer-Policy`, sandbox CSP on every response; image type allowlist with file-signature check, mismatch → 415 | Must | M | Review | BMI-014 |
 | BMI-063 | Proxy hardening B: default ports only, reject URL credentials, block `::/96`, fixed outbound headers, validate `ALLOWED_ORIGINS` at startup | Must | M | Review | BMI-014 |
 | BMI-064 | Proxy platform: `maxDuration: 15`, Docker base image pinned by digest, shared `security-headers.ts` on static responses, split `ssrf.ts` into pure `address.ts` + Node-only `node-fetch.ts` | Must | M | Review | BMI-062 |
@@ -91,7 +91,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
 | BMI-050 | Go-public checklist (see details): audit, README matches what shipped, merge PR #1, flip public, then GitHub protections | Must | M | Idea | all v1 items, BMI-070 to BMI-073 |
-| BMI-051 | README status line and content match what shipped | Must | S | Ready | BMI-040 |
+| BMI-051 | README status line and content match what shipped | Must | S | In progress | BMI-040 |
 | BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
 
 ## Later (post-v1)
@@ -151,7 +151,7 @@ Expanded by D-004 (design in `.local/standards/quality.md`, CI design section):
 - [ ] Workflows: `contents: read`, `persist-credentials: false`, actions pinned by full SHA, timeouts, concurrency cancel.
 - [ ] Required checks on `main` can't be enforced while the repo is private on the Free plan: the ruleset is part of BMI-050.
 
-The git-owner session owns the CI draft and reports when it lands.
+The workflow landed as `08d2384` and Dependabot (npm, GitHub Actions, Docker, weekly, with cooldown) as `a61f693`; the first PR run passed Verify and E2E (Chromium). The required-checks ruleset can only be enforced after the repo goes public, so it is a BMI-050 step. `Review` until PR #1 merges.
 
 ### BMI-011 — Drag and drop
 
@@ -182,7 +182,7 @@ Ordered, from `.local/standards/community.md` and `security.md` (D-004). Every l
 
 Before the flip:
 - [ ] Full-history gitleaks re-run is clean.
-- [ ] `SECURITY.md` and `CODE_OF_CONDUCT.md` committed with the contact from D-007.
+- [ ] `SECURITY.md` and `CODE_OF_CONDUCT.md` committed with the contact from D-007 (`CODE_OF_CONDUCT.md` in `c5b3bce`).
 - [x] `CLAUDE.md` and `.claude/` stay in the repo (D-008, 2026-11-22). The provenance and license of the skills under `.claude/` (brandkit, design-taste-frontend, no-ai-slop) is still unstated; this decision doesn't cover it.
 - [ ] Third-party license notices in the bundle; README status line and contributing links updated (BMI-051).
 - [ ] Repo description, topics, social preview image; 3 to 5 good first issues.
@@ -220,15 +220,13 @@ The server tsconfig flags (`noUncheckedIndexedAccess`, `noImplicitOverride`) lan
 - [x] `tsconfig.server.json` sets both flags and `pnpm check` passes with them.
 - [x] Committed by the git owner (`5642e7b`).
 
-### BMI-061 — what is left (2026-11-22)
+### BMI-061 — committed (2026-11-22)
 
-Owner: the frontend session (now `-cc`; the former `implementar-v1-editor-pixi` is locked until 2026-11-26), because the precompile touches `vite.config.ts`, `package.json` and the i18n loader. The dispatcher must not assign it to a lane while that session works on it (D-006).
+Committed as `e2e0eb6`: i18n messages precompiled (47.0 → 43.2 kB initial). Ícaro accepted budgets of 45 kB initial and 195 kB total instead of 35 / 180 kB (D-009, relayed). `Review` until PR #1 merges to `main`. Owner was the frontend session (D-006).
 
-Committed as `e2e0eb6` (precompiled messages, 47.0 → 43.2 kB), but with the budgets changed to 45 kB and 195 kB. The original criterion below is unchanged on purpose: relaxing it is Ícaro's call (Q-007). `pnpm size` passes only against the new numbers (43.2 / 45 kB, 192.2 / 195 kB). Stays `In progress` until Q-007 is answered and the unchecked criteria below are confirmed (PM hasn't re-run `pnpm size` or the e2e suite; the numbers are from the 2026-11-22 handoff).
-
-- [ ] `pnpm size` passes: initial JS ≤ 35 kB brotli and all JS except the WebP encoder ≤ 180 kB (measured 43.2 kB and 192.2 kB; budgets now 45 / 195 kB, see Q-007).
-- [x] i18n messages precompiled at build time (`e2e0eb6`); `pt-BR` still loads as its own chunk; `en` and `pt-BR` e2e still pass.
-- [ ] The WebP encoder is loaded only through `import()`, and the UI doesn't statically import the PixiJS-heavy effect code.
+- [x] `pnpm size` passes: initial JS ≤ 45 kB brotli and all JS except the WebP encoder ≤ 195 kB (PM re-ran 2026-11-22: 43.21 and 192.22 kB).
+- [x] i18n messages precompiled at build time (`e2e0eb6`); `pt-BR` still loads as its own chunk; Chromium e2e passes (PM ran 2026-11-22: 35/35 on the second and third runs; the first run failed and was not diagnosed).
+- [x] The WebP encoder is loaded only through `import()` (`src/export/encode.ts`), and the renderer and effect code load through `import()` in `src/engine/load-renderer.ts` (reported by `-cc`, PM spot-checked both lines).
 
 ### BMI-052 — pre-flip audit run
 
