@@ -1,0 +1,13 @@
+{
+  "template": "og",
+  "format": ["og-1200x630", "github-1280x640"],
+  "data": {
+    "name": "Blur My Image",
+    "lead": "Blur all of an image or just the parts you paint.",
+    "promise": "Image files never leave your device.",
+    "alt": "A sample order sheet with a painted blur over the street address and city",
+    "s_title": "Order 48213",
+    "s_labels": "Name\nStreet\nCity\nPhone\nEmail\nCard",
+    "s_values": "Alex Sample\n14 Example Street\nSpringfield 00000\n+00 000 000 0000\nalex@example.com\nending 0000"
+  }
+}

@@ -7,6 +7,8 @@ const FORMATS = {
   landscape: { width: 1200, height: 675 },
   square: { width: 1080, height: 1080 },
   portrait: { width: 1080, height: 1350 },
+  "og-1200x630": { width: 1200, height: 630, scale: 1 },
+  "github-1280x640": { width: 1280, height: 640, scale: 1 },
 };
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -32,9 +34,8 @@ function fill(template, data, specPath) {
   return html;
 }
 
-async function render(browser, specPath) {
-  const spec = JSON.parse(await readFile(specPath, "utf8"));
-  const size = FORMATS[spec.format];
+async function render(browser, specPath, spec, format) {
+  const size = FORMATS[format];
   if (!size) {
     throw new Error(
       `${specPath}: format must be one of ${Object.keys(FORMATS).join(", ")}`,
@@ -49,15 +50,15 @@ async function render(browser, specPath) {
   );
 
   const page = await browser.newPage({
-    viewport: size,
-    deviceScaleFactor: 2,
+    viewport: { width: size.width, height: size.height },
+    deviceScaleFactor: size.scale ?? 2,
   });
   // Load the template file first so the filled page keeps a file:// origin and can read brand.css.
   await page.goto(pathToFileURL(templatePath).href);
   await page.setContent(html, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
 
-  const name = `${basename(specPath, extname(specPath))}-${spec.format}.png`;
+  const name = `${basename(specPath, extname(specPath))}-${format}.png`;
   const outPath = join(outDir, name);
   await page.screenshot({ path: outPath });
   await page.close();
@@ -73,8 +74,15 @@ if (specs.length === 0) {
 await mkdir(outDir, { recursive: true });
 const browser = await chromium.launch();
 try {
-  for (const spec of specs) {
-    console.log(await render(browser, spec));
+  for (const specPath of specs) {
+    const spec = JSON.parse(await readFile(specPath, "utf8"));
+    const formats = [spec.format].flat();
+    if (formats.length === 0 || formats.some((f) => !f)) {
+      throw new Error(`${specPath}: format must name at least one format`);
+    }
+    for (const format of formats) {
+      console.log(await render(browser, specPath, spec, format));
+    }
   }
 } finally {
   await browser.close();
