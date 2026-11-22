@@ -39,3 +39,6 @@ marketing/social/out/
 
 # local working notes (never committed)
 .local/
+
+# raw brand sources (large PNGs, kept out of the repo)
+brand/source/
