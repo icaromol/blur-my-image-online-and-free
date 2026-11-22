@@ -1,6 +1,6 @@
 # Blur My Image
 
-Blur an image in your browser. Load it, blur all of it or paint over the parts you want hidden, download it. Free, no account, no watermark. Images you open, drop or paste never leave your device.
+Blur an image in your browser. Load it, blur all of it or paint over the parts you want hidden, download it. Free, no account, no watermark. Image files you open, drop or paste never leave your device.
 
 > **Status: pre-release.** v1 is built and under review. It is not deployed yet. This README is the spec for v1.
 
@@ -96,7 +96,7 @@ This is the same model Photoshop uses for a Smart Filter with a layer mask, and 
 
 **GPU rendering.** Effects run as WebGL fragment shaders through [PixiJS](https://pixijs.com/) v8 and [pixi-filters](https://github.com/pixijs/filters). PixiJS provides the gaussian blur; pixi-filters provides Pixelate. Motion extends the pixi-filters motion blur filter (`EdgeClampedMotionBlurFilter` in `src/engine/motion-blur-filter.ts`) and swaps its shader for a copy that clamps samples to the image edge, so streaks repeat the edge pixels instead of fading to transparent. pixi-filters also has Radial, Zoom, Tilt-Shift and Kawase blur, which covers most of the backlog without writing shaders from scratch. While you paint, the blurred version for the current setting is already rendered, so a stroke only updates a mask texture.
 
-**Preview equals export.** Intensity is defined in source-image pixels, never screen pixels, and the export renders the same operation list at full resolution. What you see zoomed out is what you get in the file.
+**Preview equals export.** The blur size is defined in source-image pixels, never screen pixels, and the export renders the same operation list at the loaded image's resolution. What you see zoomed out is what you get in the file.
 
 **Large images.** The maximum size is the GPU's `MAX_TEXTURE_SIZE`, read at runtime. Larger images are downscaled to fit, and the app says so before you start editing.
 
