@@ -16,7 +16,8 @@
     "urlLabel": "Image URL",
     "urlPlaceholder": "Paste an image link",
     "load": "Load",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "linkNotice": "Links are fetched through our server. Files you open, drop or paste never leave your browser."
   },
   "toolbar": {
     "effect": "Effect",

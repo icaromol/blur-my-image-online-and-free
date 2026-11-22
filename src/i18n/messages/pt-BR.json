@@ -16,7 +16,8 @@
     "urlLabel": "URL da imagem",
     "urlPlaceholder": "Cole o link de uma imagem",
     "load": "Carregar",
-    "loading": "Carregando…"
+    "loading": "Carregando…",
+    "linkNotice": "Links são buscados pelo nosso servidor. Arquivos que você abre, solta ou cola nunca saem do seu navegador."
   },
   "toolbar": {
     "effect": "Efeito",

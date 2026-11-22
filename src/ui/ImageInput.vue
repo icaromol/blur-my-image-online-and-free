@@ -54,9 +54,11 @@ function onSubmit() {
         :placeholder="t('input.urlPlaceholder')"
         autocomplete="off"
         :disabled="loading"
+        aria-describedby="image-url-notice"
       />
       <button type="submit" :disabled="loading || !link.trim()">{{ loading ? t("input.loading") : t("input.load") }}</button>
     </form>
+    <p id="image-url-notice" class="url-notice">{{ t("input.linkNotice") }}</p>
   </section>
 </template>
 
@@ -108,5 +110,11 @@ function onSubmit() {
 .url-form input {
   flex: 1;
   min-width: 0;
+}
+
+.url-notice {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
 }
 </style>
