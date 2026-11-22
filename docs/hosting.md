@@ -31,7 +31,7 @@ On a VPS, Coolify or Dokploy give a Vercel-like dashboard on top of Docker. Hetz
 
 Start on **Vercel Hobby**. It costs nothing, it pauses instead of billing, and the project fits its non-commercial rule today.
 
-Write the proxy so that leaving Vercel means swapping one entry file (see [Portable layout](#portable-layout)), and build the Docker image in CI from day one so the exit path is tested before it's needed.
+Write the proxy so that leaving Vercel means swapping one entry file (see [Portable layout](#portable-layout)), and build the Docker image in CI (`ci.yml`, on `main`) from day one so the exit path is tested before it's needed.
 
 ## Vercel Hobby caveats
 
@@ -40,7 +40,7 @@ Write the proxy so that leaving Vercel means swapping one entry file (see [Porta
    - reject requests whose `Sec-Fetch-Site` isn't `same-origin` or whose `Origin` is another site,
    - enforce the size cap and a fetch timeout,
    - spend the one WAF rate-limit rule on `/api/image`.
-3. **Hitting a limit takes the site down**, in most cases until 30 days have passed. For a free open source tool that's better than a surprise bill, but monitor usage.
+3. **Hitting a limit takes the site down**, in most cases until 30 days have passed. For a free tool that's better than a surprise bill, but monitor usage.
 4. **The 4.5 MB cap belongs to Vercel, not the product.** Keep it in configuration.
 
 ## Portable layout
@@ -55,21 +55,21 @@ server/
     app.ts                 Hono app: GET /api/image?url=  (standard Request/Response/fetch only)
     address.ts             IP classification with ipaddr.js, no Node APIs
     image-type.ts          image allowlist and file-signature check
-    config.ts              MAX_BYTES, MAX_REDIRECTS, TIMEOUT_MS, ALLOWED_ORIGINS from env
+    config.ts              MAX_BYTES, PROXY_TIMEOUT_MS, ALLOWED_ORIGINS from env; redirects fixed at 3
     node-fetch.ts          Node-only fetch: DNS lookup inside the socket, connection pinned to the checked IP
   entries/
     node.ts                @hono/node-server + static dist/ with the page headers, used by Docker
 api/
-  image.ts                 handle(app) from hono/vercel, for Vercel
+  image.ts                 export const GET = (request) => app.fetch(request), for Vercel
 Dockerfile
 vercel.json                page headers (kept equal to security-headers.ts by a test) and maxDuration for api/image.ts
 ```
 
-A Cloudflare Worker entry (`entries/worker.ts`) and a DNS-over-HTTPS resolver are deferred until a move to Cloudflare is actually planned: Workers have no `node:dns`, so `app.ts` would get a fetch that resolves through DoH instead of `node-fetch.ts`. `wrangler.toml` and a `_headers` file generated from `security-headers.ts` come with that move.
+The Cloudflare Worker entry (`server/entries/worker.ts`) and the DNS-over-HTTPS resolver do not exist yet. They are deferred until a move to Cloudflare is actually planned: Workers have no `node:dns`, so `app.ts` would get a fetch that resolves through DoH instead of `node-fetch.ts`. `wrangler.toml` and a `_headers` file generated from `security-headers.ts` come with that move.
 
 Rules:
 
-- **Hono on web-standard APIs.** The same `app.ts` runs on Vercel (`handle(app)`), Cloudflare (`export default app`) and Node (`@hono/node-server`). Moving means changing an entry file of a few lines.
+- **Hono on web-standard APIs.** `app.ts` takes its `fetch` as a parameter and uses no platform API. It runs on Vercel (`export const GET` in `api/image.ts`) and Node (`@hono/node-server`) today. Cloudflare would need the deferred Worker entry and a DoH fetch in place of `node-fetch.ts`.
 - **The proxy URL is configuration** (`VITE_PROXY_URL`, default `/api/image`), so static hosting and the proxy can live on different hosts, for example static on Cloudflare and the proxy on a VPS.
 - **No Vercel-only products** (Blob, Marketplace KV, Image Optimization, Global Config). The app needs none of them.
 - **Security headers defined once.** `security-headers.ts` holds the CSP and the other page headers. `vite preview` serves them (so Playwright runs under the real CSP), `entries/node.ts` applies them to static files, and a unit test fails if `vercel.json` drifts from them. Cloudflare and Netlify would read a `_headers` file generated from the same source.

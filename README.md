@@ -1,8 +1,8 @@
 # Blur My Image
 
-Blur an image in your browser. Load it, blur all of it or paint over the parts you want hidden, download it. Free, no account, no watermark, and the image never leaves your device.
+Blur an image in your browser. Load it, blur all of it or paint over the parts you want hidden, download it. Free, no account, no watermark. Images you open, drop or paste never leave your device.
 
-> **Status: planning.** Nothing is implemented yet. This README is the spec for v1. Everything below describes intended behavior.
+> **Status: pre-release.** v1 is built and under review. It is not deployed yet. This README is the spec for v1.
 
 ## What it does
 
@@ -27,7 +27,7 @@ Accepted formats are whatever your browser can decode: PNG, JPEG, WebP, GIF (fir
 
 Each stroke uses the effect type and intensity selected at the moment you paint it, so one image can have a light gaussian blur on the background and heavy pixelation on a license plate.
 
-**3. Export it** as PNG, JPG, JPEG or WebP at the original resolution. JPG and JPEG are the same format; you pick the extension you want in the filename.
+**3. Export it** at the original resolution, or at the downscaled size if the image was larger than the GPU limit (see [Large images](#how-it-works)). You choose the format from a list: PNG, JPG, JPEG or WebP. JPG and JPEG are the same format; the list sets the file extension. The file is named `<name>-blurred.<ext>`, where `<name>` is the original file name without its extension (for a link, the last part of the URL path; `image` if there is none).
 
 That is the whole product. Features that don't serve those three steps go to the [backlog](#backlog) or get dropped.
 
@@ -35,7 +35,7 @@ That is the whole product. Features that don't serve those three steps go to the
 
 The interface is available in English and Brazilian Portuguese. It follows your browser's language on first visit (any Portuguese variant gets `pt-BR`, everything else gets English), and the language picker in the header overrides it. Your choice is remembered in this browser.
 
-Adding a language means adding one message file; see [docs/product/specs/i18n.md](docs/product/specs/i18n.md).
+Adding a language means adding one message file and one entry in `SUPPORTED_LOCALES` (`src/i18n/locales.ts`); see [docs/product/specs/i18n.md](docs/product/specs/i18n.md).
 
 ## Blur effects
 
@@ -94,7 +94,7 @@ input (file / drop / paste / URL)
 
 This is the same model Photoshop uses for a Smart Filter with a layer mask, and it keeps brush strokes from compounding: painting over the same spot twice with intensity 40 gives intensity 40, not 80.
 
-**GPU rendering.** Effects run as WebGL fragment shaders through [PixiJS](https://pixijs.com/) v8 and [pixi-filters](https://github.com/pixijs/filters). PixiJS provides the gaussian blur; pixi-filters provides Pixelate and Motion, and also Radial, Zoom, Tilt-Shift and Kawase blur, which covers most of the backlog without writing shaders from scratch. While you paint, the blurred version for the current setting is already rendered, so a stroke only updates a mask texture.
+**GPU rendering.** Effects run as WebGL fragment shaders through [PixiJS](https://pixijs.com/) v8 and [pixi-filters](https://github.com/pixijs/filters). PixiJS provides the gaussian blur; pixi-filters provides Pixelate. Motion extends the pixi-filters motion blur filter (`EdgeClampedMotionBlurFilter` in `src/engine/motion-blur-filter.ts`) and swaps its shader for a copy that clamps samples to the image edge, so streaks repeat the edge pixels instead of fading to transparent. pixi-filters also has Radial, Zoom, Tilt-Shift and Kawase blur, which covers most of the backlog without writing shaders from scratch. While you paint, the blurred version for the current setting is already rendered, so a stroke only updates a mask texture.
 
 **Preview equals export.** Intensity is defined in source-image pixels, never screen pixels, and the export renders the same operation list at full resolution. What you see zoomed out is what you get in the file.
 
@@ -110,7 +110,7 @@ This is the same model Photoshop uses for a Smart Filter with a layer mask, and 
 - relies on those header checks only to stop other websites from using the proxy. A script can forge them, so scripted abuse is limited by a rate-limit rule on `/api/image` in the Vercel firewall plus usage alerts, both set up at deploy time,
 - stores nothing about the image and logs nothing itself.
 
-The proxy uses only web-standard `Request`, `Response` and `fetch`, so the same code runs as a Vercel Function, a Cloudflare Worker or a Node server in Docker. Only a few-line entry file differs per platform. See [docs/hosting.md](docs/hosting.md).
+`app.ts` is platform-neutral: it takes a `fetch` function and uses only web-standard `Request` and `Response`. Vercel (`api/image.ts`) and Node in Docker (`server/entries/node.ts`) ship today. Cloudflare Workers would need its own fetch (the Node one in `node-fetch.ts` relies on `node:dns`) and its own entry file. See [docs/hosting.md](docs/hosting.md).
 
 **Export.** PNG and JPEG use the browser's native `canvas.toBlob`. JPEG has no transparency, so transparent pixels are flattened onto white. WebP uses `toBlob` where the browser can encode it. Safari can decode WebP but `toBlob('image/webp')` silently returns a PNG there, so the app feature-detects this and lazy-loads [@jsquash/webp](https://github.com/jamsinclair/jSquash), a WebAssembly build of libwebp, only for those browsers. JPEG and WebP use quality 0.92.
 
@@ -128,7 +128,7 @@ The proxy uses only web-standard `Request`, `Response` and `fetch`, so the same 
 | Unit tests | Vitest | |
 | E2E tests | Playwright | Real browser checks for paste, URL load and export |
 | Package manager | pnpm | |
-| Hosting | Vercel Hobby | Free for a non-commercial project; pauses instead of billing. Docker image built in CI as the tested exit path ([docs/hosting.md](docs/hosting.md)) |
+| Hosting | Vercel Hobby | Free for a non-commercial project; pauses instead of billing. Docker image built and smoke-tested by `ci.yml` on `main` as the tested exit path ([docs/hosting.md](docs/hosting.md)) |
 
 Canvas 2D's `ctx.filter = 'blur()'` was considered and rejected: it only provides gaussian blur, and caniuse lists Safari on iOS as unsupported through 26.5, so it would need a second code path anyway.
 
@@ -139,7 +139,7 @@ Requires Node.js 24 and pnpm.
 ```bash
 pnpm install
 pnpm dev            # dev server at http://localhost:5173
-pnpm check          # Biome (warnings fail) and type check; also runs on pre-commit
+pnpm check          # Biome (warnings fail) and type check
 pnpm test           # unit tests
 pnpm test:coverage  # unit tests with coverage thresholds for src/engine and server/proxy
 pnpm build          # production build in dist/, with third-party licenses in dist/licenses.md
@@ -199,7 +199,7 @@ Not in v1. Ordered by how often the effect or feature shows up across the tools 
 
 Issues and pull requests are welcome. Before opening a PR:
 
-1. Run `pnpm check` and `pnpm test`.
+1. Run `pnpm check` and `pnpm test`. The pre-commit hook runs gitleaks and Biome on the staged files, plus `vue-tsc` when the commit stages a TypeScript or Vue file, `package.json` or a `tsconfig*.json`.
 2. Keep one change per PR.
 3. If you add an effect, include a before/after screenshot in the PR description.
 
