@@ -91,7 +91,7 @@ Approved package from three research reports (quality and CI, security baseline,
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
-| BMI-050 | Go-public checklist (see details; order set by D-013): pre-flip checks, flip, protections, CodeRabbit, PR #1 out of draft, corrections, merge | Must | M | In progress | BMI-070, BMI-072; the merge also needs BMI-073 |
+| BMI-050 | Go-public checklist (see details; order set by D-018): rewrite history, flip, protections, CodeRabbit config, review, corrections, merge | Must | M | In progress | BMI-070, BMI-072; the merge also needs BMI-073 |
 | BMI-051 | README status line and content match what shipped | Must | S | Review | BMI-040 |
 | BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
 
@@ -160,16 +160,21 @@ Authorized by Ícaro (D-012, relayed). Report from `-f2`, 2026-11-22 (full evide
 - [x] The project is linked to the GitHub repo through Vercel's Git integration: production deploys on merge to `main` (D-005), PRs get preview deployments. If the link needs the Vercel app authorized in the browser, `-f2` asks `-aa` (that step is Ícaro's).
 - [x] `MAX_BYTES`, `PROXY_TIMEOUT_MS` and `ALLOWED_ORIGINS` are set (production and preview) as in `docs/hosting.md`.
 - [x] Vercel Toolbar and Web Analytics are off (Speed Insights not reported).
-- [ ] One WAF rate-limit rule on `/api/image`, **urgent: the proxy is publicly reachable without it (Q-010)**. Staged by `-f2` (30 requests per 60 s per IP, deny for 1 minute) but not published: the CLI asks for a human approval to publish. Ícaro approves the publish.
+- [x] One WAF rate-limit rule on `/api/image`: "Rate limit image proxy", 30 requests per 60 s per IP, deny for 1 minute, published and active with 0 pending changes, read back by `-f2` (per `-aa`, 2026-11-22). Caveat: `-f2` made 13 test GETs (all answered 403 by the proxy itself) and never reached the limit, so that the deny actually fires above 30 requests per 60 s is **not proven**.
 - [x] A preview deployment of `feat/scaffold-and-proxy` loads the app (app 200, security headers and CSP present, `/api/image` 200 for an image, 403 for cross-site and internal IPs, 415 for HTML), the `/api/image` proxy answers, and the security headers and CSP from `security-headers.ts` are present on the response. Nothing is promoted to production by hand: the first production deploy is the merge of PR #1 (D-013).
-- [ ] The production URL is `https://blur-my-image.vercel.app` (alias assigned; it already serves the app from a feature-branch deployment, see Q-010). It goes into the README, the repo website field and the bug-report form (Q-005) at go-live, which Ícaro decides (Q-010), not before. The preview URL carries the team slug and never goes into a repo file. It is put into the README, the repo's website field and the bug-report form (Q-005). Those edits go through the lanes and `-5b`, not through `-f2`.
+- [ ] The production URL is `https://blurmyimage.vercel.app` (the project's main domain since 2026-11-22; `https://blur-my-image.vercel.app` redirects to it with a 307). It goes into the README, the repo website field and the bug-report form (Q-005) only when Ícaro says (D-016), not before. The preview URL carries the team slug and never goes into a repo file.
 - [ ] The page carries Open Graph and Twitter card meta tags (title, description, image, URL), with the final wording from D-010. The OG image comes from marketing's action 5, unblocked now that the English tagline is decided.
 
-Open on BMI-003 after the live-alias finding (Q-010, `-f2` and the dispatcher, 2026-11-22; decisions are Ícaro's):
-- [ ] The WAF rate-limit rule is published.
-- [ ] The "Protection Bypass for Automation" secret is revoked.
-- [ ] Decision on the production deployment that already serves the alias from the feature branch (`c380981`, public, 200 without login). It affects the D-013 wording "the first production deploy is the merge of PR #1" and the README text about the URL; both get updated after he decides.
-- [ ] The private team deployment built from `-f2`'s local working-tree upload (307 files, including `.local/` and `.claude/settings.local.json` as source) is removed, and anything secret that was in those files is rotated.
+Open on BMI-003 after the live-alias finding (decided in D-016; the site stays up, its URL stays out of the README and marketing until Ícaro says):
+- [x] The WAF rate-limit rule is published and read back as active (see above). It was first denied in `-f2`'s environment; Ícaro published it himself.
+- [x] The "Protection Bypass for Automation" secret is revoked by Ícaro; `-f2` checked that it no longer appears in the project's API (existence only).
+- [x] The private team deployment built from `-f2`'s local working-tree upload (307 files, including `.local/` and `.claude/settings.local.json` as source) is removed, by `-f2`, only that deployment; read back, it answers 404. Nothing secret was found in it (scans by `-f2` and the dispatcher).
+- [x] Ignored Build Step `test ! -f package.json`: saved by Ícaro in the dashboard and read back by `-f2`, which reports it matches (per `-aa`, 2026-11-22). `-5b` may push the rewritten `main` (D-019); the WAF rule and the revoked bypass secret are still open.
+- [x] `ALLOWED_ORIGINS` (only origins, no secret) lists the new main domain, updated by `-f2`; the old domain only redirects. It takes effect on the next deploy, so the proxy's answer to a request made from the new domain is checked after that deploy.
+- [ ] The rate limit is proven to fire: a short burst of more than 30 requests in 60 s from one address against `/api/image` (our own endpoint, a plain image URL that the proxy already rejects, such as a cross-site request) gets the deny, and the rule stops it after the minute. `-f2`, read-only otherwise; not blocking the flip.
+- [ ] `index.html` `og:url` and `og:image` still point at the old domain, which now redirects; change them to `https://blurmyimage.vercel.app` (ui lane, `-cc`; the og tags criteria above are otherwise done). Checked in the tracked files: these two lines are the only place the old domain appears outside `docs/product/`; neither the README nor `marketing/` cites any URL. Ícaro's rule (D-016) keeps the URL out of the README and marketing; `index.html` carries it in the OG tags on purpose.
+- [x] Decision on the production deployment that serves the alias from the feature branch: it stays up (D-016).
+- [ ] The real production build replaces it with the merge of PR #1, the first official production deploy.
 
 Two more things from the report. A "Protection Bypass for Automation" secret was created on the project by `vercel curl`, and `-f2` couldn't revoke it (reading the secret was denied): Ícaro revokes it in the Vercel dashboard (BMI-073). `vercel.json` gained `"framework": "vite"`, committed as `3e2e77a` by `-5b` (requested by the dispatcher). The push of the docs commit just before it had already triggered a preview without the preset.
 
@@ -232,16 +237,20 @@ User stories and acceptance criteria are in [specs/i18n.md](specs/i18n.md), requ
 
 ### BMI-073 — platform settings, split by when they matter
 
-Not everything here has to be done before the repo is public. The flip doesn't depend on Vercel. What matters is the first production deploy, which is the merge of PR #1 (D-005, D-013). Split, nothing dropped:
+Not everything here has to be done before the repo is public. The flip doesn't depend on Vercel. What matters is the first official production deploy, the merge of PR #1 (D-005, D-017), which now comes before the flip. Split, nothing dropped:
 
-Before the merge of PR #1 (the app goes live):
+Before the merge of PR #1 (the real build goes to production; the alias already serves an earlier build, D-016):
 - [ ] Vercel account: 2FA on (Ícaro, by hand).
-- [ ] Revoke the "Protection Bypass for Automation" secret that `vercel curl` created on the project (Ícaro, in the Vercel dashboard).
-- [ ] Approve publishing the staged WAF rate-limit rule on `/api/image` (BMI-003).
+- [x] The "Protection Bypass for Automation" secret that `vercel curl` created is revoked (Ícaro; existence checked by `-f2`).
+- [x] The WAF rate-limit rule on `/api/image` is published and active (read back by `-f2`).
 - [ ] Vercel project settings from BMI-003: env vars, one WAF rate-limit rule on `/api/image`, Toolbar, Web Analytics and Speed Insights off; usage alerts on (`-f2` for what the tools can set; Ícaro for the rest).
-- [ ] Each README or `docs/hosting.md` claim that only the platform can make true is checked against the live settings, or reworded: 1-hour request-log retention, the 4.5 MB body limit, the rate-limit rule and the usage alerts (quality lane, after BMI-003).
+- [ ] Each README or `docs/hosting.md` claim that only the platform can make true is checked against the platform, or reworded (quality lane). Two parts:
+  - Ready now, no Vercel setting needed: the 1-hour request-log retention on Hobby and the 4.5 MB request and response body limit, checked against Vercel's current documentation (cite the page and the date) and against what `docs/hosting.md` and the README say; reworded where they differ.
+  - Done by the quality lane and approved by the opus reviewer (commit requested from `-5b`; PM didn't re-check the Vercel citations): the 1-hour log retention and the 4.5 MB body limit (streamed responses excepted) agree with Vercel's documentation, and `MAX_BYTES` 4,400,000 matches `config.ts` and `app.ts`.
+  - Three small follow-ups from the reviewer, same kind of work: (1) `docs/hosting.md` says to keep `MAX_BYTES` "below 4.5 MB"; since the limit doesn't apply to streaming, either drop "below 4.5 MB" or give the reason. (2) The README's sentence that "the proxy refuses a larger image itself" is exact only when the size is declared: it is a 413 when the declared size is over the cap, and an aborted stream when an undeclared body passes it (the client sees a failed download); reword. (3) The comment in `server/proxy/config.ts` above `DEFAULT_MAX_BYTES` ("Just under Vercel's 4.5 MB function response limit, which also counts headers") contradicts the documentation; correct the comment (server lane, comment only, no behavior change).
+  - Now checkable: the rate-limit rule claim (the rule is active; that it fires isn't proven yet, see BMI-003). Still waits on usage alerts being set: the usage-alert claim.
 
-After the flip (they only exist on a public repo; they are the BMI-050 list):
+After the flip, which now follows the merge (they only exist on a public repo; they are the BMI-050 list):
 - [ ] GitHub Actions and security settings: private vulnerability reporting, push protection, CodeQL default, fork PR workflows needing approval, the `main` ruleset, scorecard and dependency-review.
 
 ### BMI-070 — what is left (D-011)
@@ -254,32 +263,32 @@ Community files are in. Left is GitHub settings, which `-5b` applies now (D-011)
 
 ### BMI-050 — Go-public checklist
 
-Ícaro's answer is yes (D-013, relayed). Order, from `.local/standards/community.md` and `security.md` (D-004), reordered by D-013 so CodeRabbit can review PR #1 before the merge. The flip itself waits for `-aa`'s go to `-5b` and for the answer to Q-009. BMI-073 gates the merge of PR #1, not the flip.
+Ícaro's answer is yes (D-013). Order set by D-018 (relayed by `-aa`): rewrite the history, flip with `-aa`'s explicit go, protections, `.coderabbit.yaml`, PR #1 ready with a CodeRabbit review, corrections, merge. CodeRabbit's Free plan does no line-by-line review on a private repo; the open-source plan, for a public one, does. The public `main` shows the old README until PR #1 merges.
 
-Pre-flip, nothing outward-facing:
-- [x] Full-history `gitleaks` over every branch is clean: 64 commits, run by the quality lane and re-run by the dispatcher on 2026-11-22. `check-licenses` and `check-dist` pass; no token, Vercel identifier, `.env` or `.local/` is tracked; no AI trailer in the history; the only addresses in files are the code of conduct contact and `@example.com` fixtures. Re-run once more just before the flip if there are new commits.
-- [ ] The author address in the 64 commits becomes public at the flip: Ícaro decides whether to keep it or rewrite the history first (Q-009). Blocks the flip.
-- [x] `SECURITY.md` and `CODE_OF_CONDUCT.md` committed with the contact from D-007 (`c5b3bce`).
-- [x] `CLAUDE.md` and `.claude/` stay in the repo (D-008).
-- [x] The three skills under `.claude/` may be published, nothing removed from the history (D-014; origin still undocumented, Ícaro's own claim).
-- [x] Third-party license notices in the bundle (checked in BMI-052); README status line and contributing links updated (BMI-051, `Review`).
-- [ ] Repo description and topics drafted (marketing lane, wording true to the product: no "open source" claim before the flip) and applied by `-5b`. The social preview image is rendered by the designer from action 5; uploading it is done by hand in GitHub's settings (Ícaro).
-- [ ] BMI-070 settings applied (D-011; saved replies by Ícaro, not blocking).
-- [ ] BMI-003 project exists and a preview deployment passes its checks (not required to flip, but the URL feeds the README).
+Before the flip (repo private):
+- [x] Full-history `gitleaks` over every branch clean: 64 commits, 2026-11-22 (quality lane, re-run by the dispatcher). `check-licenses` and `check-dist` pass; no token, Vercel identifier, `.env` or `.local/` tracked; no AI trailer. Run again after the rewrite.
+- [x] `SECURITY.md` and `CODE_OF_CONDUCT.md` committed with the contact from D-007 (`c5b3bce`). `CLAUDE.md` and `.claude/` stay (D-008) and the three skills may be published (D-014).
+- [x] Third-party license notices in the bundle (BMI-052); README status line, contributing links and wording match what shipped (BMI-051, `Review`).
+- [ ] The Vercel project's Ignored Build Step is `test ! -f package.json` and `-f2` has read the value back (D-019): without an app the build is skipped and the live site stays; with the app it builds. `-f2`'s environment denied it, so Ícaro sets it in the dashboard (Project Settings, Git, Ignored Build Step, Custom, `test ! -f package.json`, Save); today the value is `None`. `-5b` pushes the rewritten `main` only after `-f2` reads the new value back.
+- [ ] History rewritten to the GitHub no-reply address (D-015), by `-5b`: a backup first; the repo's `user.email` set to the no-reply address before any further commit; every author and committer checked; each rewritten commit keeps the same tree; the rewritten `main` (5 commits, no app in it) pushed only after the Ignored Build Step above, because otherwise the Git integration would deploy the repository root statically, taking the site down and serving `/CLAUDE.md` and `/docs/*.md` by URL; `--force-with-lease` on `feat/scaffold-and-proxy`; `gitleaks` re-run; the old-to-new hash map given to PM, who corrects the hashes cited in `docs/product/` and `docs/marketing/`.
+- [ ] Repo description and topics (approved, D-017) applied by `-5b` and read back. The social preview image is uploaded by hand by Ícaro.
+- [ ] BMI-070 settings (D-011 applied; saved replies by Ícaro, not blocking).
+- [x] The WAF rate-limit rule on `/api/image` is published and `-f2` read the active rule back (2026-11-22). It was moved ahead of the flip because the proxy address is easy to find once the repo is public.
+- [ ] `-5b` reports on the rewrite to `-aa`.
 
 The flip:
-- [ ] `-aa` gives `-5b` the go; flip the repo to public.
+- [ ] `-aa` gives `-5b` the explicit go, only after the rewrite is verified and the WAF rule is active and read back; flip the repo to public. The URL stays out of the README and marketing until Ícaro says (D-016).
 
 After the flip, in this order:
 - [ ] Private vulnerability reporting, push protection, CodeQL default.
 - [ ] Ruleset on `main`: no force push or deletion, PR required, required checks, linear history.
 - [ ] Fork PR workflows need approval; scorecard and dependency-review workflows; confirm Vercel Git fork protection.
-- [ ] CodeRabbit app installed (Ícaro's action). Note: a `CodeRabbit` status ("Review skipped: draft pull request") already shows on the PR's commits while the repo is private, so the app may already be active; `-f5` confirms what the private plan covers before this step is treated as needed.
-- [ ] PR #1 out of draft (CodeRabbit ignores drafts).
+- [ ] `.coderabbit.yaml` committed (configuration only, no secret; `-f5` proposes it and the quality lane commits through `-5b`).
+- [ ] BMI-073 pre-merge items done (Vercel 2FA, usage alerts, the platform claims checked; the bypass secret is revoked and the WAF rule is active).
+- [ ] PR #1 out of draft and `@coderabbitai review` posted.
 - [ ] CodeRabbit's review answered and the corrections committed, checks green. Findings that change scope go to Ícaro, never applied silently.
-- [ ] BMI-073 done: the Vercel and platform settings that must exist before the first production deploy.
-- [ ] Merge PR #1 (authorized by Ícaro only after the two lines above). With BMI-003 done, this merge starts the first production deploy (D-005, D-013). Then the items in `Review` become `Done` against `main`.
-- [ ] 3 to 5 good first issues (after the flip), and the first tagged release (BMI-071).
+- [ ] Merge PR #1 (authorized by Ícaro only after the line above). It is the first official production deploy (D-005, D-013); the items in `Review` become `Done` against `main`; the link unfurl check of BMI-003 follows.
+- [ ] 3 to 5 good first issues, and the first tagged release (BMI-071).
 
 ### E7 progress notes (2026-11-22, earlier; the later notes below supersede these where they differ)
 

@@ -49,14 +49,33 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 
 Only items that block something. Questions with a default in force are in decisions.md and don't wait.
 
-- **Tagline and privacy wording:** decided, see D-010. The final `pt-BR` text is shown to Ícaro before the merge (BMI-051).
-- **Q-010:** the live alias, the unpublished WAF rule and the ignored files uploaded to Vercel. Needs his go for the Vercel actions; recommendation in decisions.md.
-- **BMI-050 (go public):** Ícaro said yes (D-013). Waiting on `-aa`'s go to `-5b` for the flip and on the answer to Q-009 (the author address in the history). After the flip he installs the CodeRabbit app; the merge of PR #1 comes after CodeRabbit's corrections.
-- **D-004, D-006, D-007, D-008, D-009** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
+- **Nothing waits on a question to Ícaro right now.** Tagline and privacy wording, Q-009 and Q-010 are decided (D-010, D-015, D-016); the WAF rule and the bypass revocation are done.
+- **BMI-050 (go public):** Ícaro said yes (D-013), order in D-018. The flip waits on `-aa`'s go to `-5b`, which waits on the verified history rewrite (D-015). Still his own actions later: Vercel 2FA and usage alerts (BMI-073), saved replies (BMI-070), the social preview upload, installing the CodeRabbit app after the flip, and the go to merge PR #1 after CodeRabbit's corrections.
+- **D-004 and D-006 to D-019** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
 
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- Read back by `-f2` (per `-aa`): the WAF rate-limit rule is published and active (30 requests per 60 s per IP, deny for 1 minute, 0 pending changes); the bypass secret is gone from the project's API (Ícaro revoked it); `ALLOWED_ORIGINS` lists the new domain from the next deploy. The 13 test requests never reached the limit, so that it fires is not proven (new optional check on BMI-003). Preconditions of `-aa`'s go for the flip: the WAF is done; only the verified rewrite is left.
+
+- Per `-aa`: the push of the rewritten `main` is released to `-5b` (D-019 executed); the WAF rule blocks only the flip, not the `main` push. `-f2` checks after the push that Vercel skipped the build. The new domain stays in the product docs as is (Ícaro's side, via `-aa`).
+
+- Per `-aa`: `-f2` read back the Ignored Build Step and it matches (D-019 done); `-5b` may now push the rewritten `main`. `ALLOWED_ORIGINS` is to list the new domain (`-f2`, BMI-003). Still open on BMI-003: the WAF rule published and the bypass secret revoked, both Ícaro's, and the `og:url` / `og:image` domain swap (ui lane).
+
+- Per `-aa`, from Ícaro: the Ignored Build Step is saved in the dashboard (D-019 executed, `-f2` still reads it back), and the project's main domain is now `https://blurmyimage.vercel.app` (PM read 200; the old `blur-my-image.vercel.app` answers 307 to it). The URL stays out of the README and marketing until he says. `index.html` still has the old domain in `og:url` and `og:image`: added to BMI-003 for the ui lane; `-f2` also checks `ALLOWED_ORIGINS` against the new domain. Buffer: Ícaro connected X, a LinkedIn page and a LinkedIn profile, not the three channels of `docs/marketing/channels.md`; `-aa` is guiding the choice and nothing is recorded as in use until he confirms.
+
+- D-019 not executed: `-f2`'s environment denied the Ignored Build Step change, so it is Ícaro's to set in the dashboard. The value reads `None`; production is not protected until he does, and `-5b` holds the push of `main`. Needs Ícaro now: the Ignored Build Step and the WAF rule publish, both in the Vercel dashboard.
+
+- D-019 (relayed by `-aa`): `-f2` sets the Vercel Ignored Build Step to `test ! -f package.json` before `-5b` pushes the rewritten `main`; without it the push would deploy the repository root statically, taking the site down and serving `/CLAUDE.md` and `/docs/*.md` by URL. `-5b` waits for `-f2`'s read-back; Ícaro sets it in the dashboard if `-f2`'s environment blocks it.
+
+- BMI-050: `-aa`'s go for the flip now waits on two things, the rewrite verified and the WAF rule published and read back as active by `-f2`. The rule is still staged; it needs Ícaro to publish it or to allow the permission for `-f2`. No new decision from him is needed.
+
+- **Correction to D-016:** the WAF rule is decided but **not published**. `-f2`'s environment denied `vercel firewall publish` (the CLI gate doesn't take a relayed authorization) and `-f2` didn't work around it, so the rule is staged and `/api/image` has no rate limit. Ícaro publishes it in the dashboard or allows the permission. The deployment with the uploaded files is removed (404). Open on BMI-003 and BMI-073 as a pre-merge item.
+
+- D-018 (relayed by `-aa`): the fallback Ícaro accepted in advance took effect. `-f5` confirmed CodeRabbit's Free plan on a private repo only summarizes; the open-source plan reviews line by line. Final order: rewrite, flip (only with `-aa`'s explicit go after `-5b`'s report), protections, `.coderabbit.yaml`, PR #1 ready with `@coderabbitai review`, corrections, merge. D-017's order is superseded. The public `main` carries the old README from the flip until the merge.
+
+- Ícaro's answers, relayed by `-aa`: D-015 (rewrite the history to his GitHub no-reply address before the flip; `-5b` executes and gives the hash map), D-016 (Q-010: publish the WAF rule and keep the site up; remove the deployment with the uploaded ignored files; he revokes the bypass secret; the URL stays out of the README and marketing until he says) and D-017 (new order: rewrite, PR #1 out of draft, private CodeRabbit review, corrections, merge, then flip with `-aa`'s go). Q-009 and Q-010 closed. BMI-050 rewritten for the new order. `team.md` records that nobody runs `vercel deploy` from the working tree. New asks to the executors: settle the Vercel effect of pushing a rewritten `main` (5 commits, no app) and set the repo `user.email` before any new commit.
 
 - BMI-003's OG tags part is done: `fa822b8` (nine tags and `public/og-image.png`, approved by the reviewer, committed locally, not pushed). Left on BMI-003: the Q-010 items, the WAF rule, the bypass secret and the link unfurl check after a production deploy.
 

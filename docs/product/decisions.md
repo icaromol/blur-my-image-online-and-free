@@ -20,29 +20,6 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
-### Q-010 — The production alias already serves a feature branch, and the proxy has no rate limit yet
-
-Found 2026-11-22 from `-f2`'s report, then checked by PM with a plain `GET`: `https://blur-my-image.vercel.app/` answers 200 with the app and its CSP, and `/api/image` is reachable (403 without a URL). Per `-f2`, a production deployment built from the branch commit `c380981` has served the alias publicly since 16:06, so the app is live before PR #1 is merged. That contradicts the plan in D-013 and in BMI-003 ("the first production deploy is the merge"), and the earlier statement here that the alias would serve the app only after the merge was wrong. How it became production, per `-f2` (read-only, from the deployment record; the record is the evidence, the explanation is an inference): it came from the Git integration, not from a CLI deploy. It was created 3 seconds after the commit, is marked `PROMOTED` to production although the project's production branch is `main`, and was the first deployment the project ever had. The likely reason is that a project's first deployment becomes production whatever its branch; `-f2` couldn't confirm that in the docs or the dashboard. `-f2` never ran `--prod` or `promote`; its only local deploy came after, as a preview. So the alias keeps serving that first build until a later production deployment, which is the merge to `main`. Later feature-branch pushes make previews. Two more facts:
-
-- The WAF rate-limit rule on `/api/image` is staged and **not published**, so the URL proxy is open to the internet without a rate limit.
-- `-f2`'s local `vercel deploy` also uploaded git-ignored files (`.local/`, `.claude/settings.local.json`) to Vercel. Per `-f2` they aren't exposed through any URL; what they contain wasn't read by `-f2`. The dispatcher then ran `gitleaks` over `.local/`, `.claude/` (with `settings.local.json`), `coverage/` and `test-results/`, read-only and masked: no credential found, and `settings.local.json` holds only `permissions` and one MCP server entry, no credential. Gitleaks doesn't catch sensitive text without a credential shape (names and addresses in the handoffs, for example), so the uploaded copy still holds private working notes.
-
-Options: (a) publish the WAF rule now and keep the live alias as an early soft launch; (b) take the alias off the feature deployment until the merge; (c) either of those plus deleting the deployment that holds the uploaded ignored files and rotating anything secret that was in them.
-
-Recommendation: publish the WAF rule now regardless (it was a pre-merge requirement anyway, BMI-073), delete the deployment that carries the uploaded ignored files (the scan found nothing to rotate, but the copy still holds the handoff notes). For the soft launch: acceptable only once the rule is published; otherwise take the alias off the feature deployment until it is. Marketing keeps its pre-launch posture (no "try it now" posts) until Ícaro says the app is live. Publishing the rule and deleting a deployment are Vercel actions that need his go.
-
-Default in force: **no Vercel action is taken until he answers**, and no marketing post mentions the live URL.
-
-### Q-009 — The author address in the commit history becomes public at the flip
-
-All 64 commits (every branch) carry the same author and committer address, the maintainer's own, found by the dispatcher's pre-flip scan on 2026-11-22. A public repo shows it in every commit. Rewriting the history afterwards doesn't take it back from clones and caches.
-
-Options: leave it (it is the identity the commits were made under and the PR is attributed to it); or, before the flip, rewrite the 64 commits to a GitHub no-reply address and force-push. A rewrite changes every commit hash: the `backlog.md`, `status.md` and `decisions.md` cite hashes, PR #1 and its checks run again, and the local and CI clones need a refresh. It is cheap now and not possible later.
-
-Recommendation: Ícaro decides, knowing which address it is and whether he is fine with it being public; if it's one he'd rather keep private, rewrite before the flip. The address is deliberately not written here.
-
-Default in force: **the flip waits for his answer.** Ordering, not a scope cut.
-
 ### Q-006 — Do the Docker image and server bundle need license notices?
 
 Audit finding C: `dist-server/node.js` bundles hono, `@hono/node-server`, ipaddr.js and undici, and the Dockerfile ships it, but only the client build emits `licenses.md`.
@@ -53,9 +30,45 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 
 ### Q-005 — Hosted URL
 
-The URL is `https://blur-my-image.vercel.app` (alias assigned by BMI-003, 2026-11-22, per `-f2`). It does serve the app today, from a feature-branch deployment (see Q-010). The README, the repo website field and the bug form get it at go-live. Not blocking. See [../tooling.md](../tooling.md).
+The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the project's main domain on 2026-11-22, per `-aa`; the earlier `https://blur-my-image.vercel.app` answers 307 to it (PM read both with a plain `GET`). The README, the repo website field and the bug form get it only when Ícaro says (D-016). Not blocking.
 
 ## Decisions
+
+### D-019 — Ignored Build Step on the Vercel project before the rewritten `main` is pushed (2026-11-22)
+
+**Decision**, as relayed by the orchestrator session (`-aa`) from Ícaro's direct answer (PM did not hear it directly): before `-5b` pushes the rewritten `main`, `-f2` sets the project's Ignored Build Step to `test ! -f package.json`. A tree with no `package.json` (today's `main`) is skipped and the live site stays; a tree with the app builds as usual, also after the merge. `-5b` pushes `main` only after `-f2` reads the value back. `-f2`'s environment denied the change (a PATCH of `commandForIgnoringBuildStep`, "Destructive or Unwanted Actions"), and a relayed authorization doesn't change that, so **the execution is Ícaro's** (he saved it in the dashboard, 2026-11-22, per `-aa`; the read-back by `-f2` is still to come): Project Settings, Git, Ignored Build Step, Custom, command `test ! -f package.json`, Save. Read back by `-f2` right after the denial: the value is `None`, so production is **not protected yet**, and `-5b` must not push `main` until `-f2` reads the new value back. This replaces any earlier acceptance of the site going down, which was given without the exposure below.
+**Why:** pushing `main` would otherwise trigger a static deployment of the repository root (no app, no build), taking the site down and serving files such as `/CLAUDE.md` and `/docs/*.md` by URL.
+**Decided by:** Ícaro, per the orchestrator session. Reversible.
+**Affects:** BMI-050 (a step before pushing the rewritten `main`), BMI-003 and BMI-073 (a Vercel project setting), D-015.
+
+### D-018 — Final order: rewrite, flip, protections, CodeRabbit config, review, merge (2026-11-22)
+
+**Decision**, as relayed by the orchestrator session (`-aa`), the fallback Ícaro had accepted in advance: `-f5` confirmed that on the CodeRabbit Free plan with a private repo CodeRabbit only writes a summary and does no line-by-line review; the open-source plan, for a public repo, does review. So the order of D-017 changes to: (1) rewrite the commits (D-015); (2) flip the repo to public, only with `-aa`'s explicit go, after `-5b`'s report on the rewrite; (3) the BMI-050 protections; (4) `.coderabbit.yaml` committed; (5) PR #1 out of draft and `@coderabbitai review`; (6) the corrections; (7) merge. Supersedes D-017's order; D-015, D-016 and the rest of D-013 stand.
+**Why:** a code review before the merge needs a public repo; Ícaro chose the order with this fallback foreseen.
+**Decided by:** Ícaro, per the orchestrator session (PM did not hear it directly).
+**Affects:** BMI-050 (reordered again), BMI-073, README on `main`: the public `main` shows the old README ("planning, nothing implemented") from the flip until PR #1 merges, which PM flagged before and Ícaro's order accepts. No review comments exist yet, so the history rewrite loses nothing.
+
+### D-017 — New order for going public: rewrite, review privately, merge, then flip (2026-11-22)
+
+**Decision**, as relayed by the orchestrator session (`-aa`) from Ícaro's direct answer (PM did not hear it directly), revising the order in D-013 (its premise, that CodeRabbit reviews private PRs, didn't hold; D-018 changes the order again): (1) rewrite the history to the GitHub no-reply address (D-015); (2) PR #1 comes out of draft; (3) CodeRabbit reviews it while the repo is still private (a `CodeRabbit` status already shows on the PR); (4) its corrections are made; (5) PR #1 is merged; (6) only then the repo flips to public, with `-aa`'s go, so the public `main` is born with the new README. The merge stays the first "official" production deploy. The repo description and topics drafted in `docs/marketing/repo-metadata.md` are approved and `-5b` applies them.
+**Why:** CodeRabbit turned out to review private PRs, so the flip no longer has to come before the review, and a flip after the merge doesn't show the old README on `main`.
+**Decided by:** Ícaro, per the orchestrator session. Reversible until the flip.
+**Affects:** BMI-050 (checklist reordered again), BMI-073 (the pre-merge items), D-013 (its order is superseded; the rest of it stands).
+
+### D-016 — Vercel: publish the rate-limit rule, keep the site up, remove the uploaded-files deployment (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answers, closing Q-010: (a) the WAF rule on `/api/image` (30 requests per 60 s per IP, deny for 1 minute) is to be published and the site **stays up** (**decided, not executed**: see the correction below); its URL does not go into the README or any marketing text until he says; (b) the deployment that carries the files uploaded by `-f2`'s local deploy is removed, by `-f2`, and only that one (done and read back: it answers 404); (c) revoking the "Protection Bypass for Automation" secret is his own action in the Vercel dashboard; (d) confirmed that Hobby builds from a private repo. The other finding, the author address of the commits, was decided in D-015.
+**Correction (2026-11-22, from `-aa`):** the rule was **not** published. `-f2`'s environment denied `vercel firewall publish` (the CLI's approval gate doesn't accept an authorization relayed by another session) and `-f2` did not work around it. The rule stays staged and `/api/image` has no rate limit. Ícaro decided to publish it; he publishes it himself in the Vercel dashboard (Firewall, Review changes, Publish) or allows the permission in `-f2`'s environment. Nothing here says "published" until `-f2` reads the active rule back. **Update (2026-11-22, from `-aa`):** done and read back. The rule "Rate limit image proxy" is published and active on `/api/image` (30 requests per 60 s per IP, deny for 1 minute, 0 pending changes), the bypass secret no longer appears in the project's API (Ícaro revoked it; `-f2` only checked that it is gone), and `ALLOWED_ORIGINS` lists the new domain from the next deploy. Caveat: `-f2`'s 13 test requests never reached the limit, so that the deny fires above 30 requests per 60 s is not proven.
+**Why:** the proxy had no rate limit while reachable; the uploaded copy held internal handoff notes. Background: the project's first Git deployment was promoted to production by the Vercel Git integration (`-f2`, read-only evidence), not by a CLI deploy, so the alias has served a feature-branch build since 16:06.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-003, BMI-073, Q-005 (the URL stays out of the README until he says), D-013, `team.md` (nobody runs `vercel deploy` from the working tree).
+
+### D-015 — Rewrite the history to the GitHub no-reply address before the flip (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answer, closing Q-009: the commits are rewritten to his GitHub no-reply address before the flip. `-5b` does it with a backup, a verification and `--force-with-lease`, and gives PM the old-to-new hash map so the docs can be corrected. The address isn't written in these docs.
+**Why:** the author address would be public in every commit once the repo is public.
+**Decided by:** Ícaro, per the orchestrator session. Irreversible for the old hashes.
+**Affects:** every commit hash cited in `docs/product/` and `docs/marketing/`, PR #1 (force-push, checks rerun), BMI-050. Two things to settle before pushing: `main` holds 5 of the commits and has no app in it, so pushing a rewritten `main` makes the Vercel Git integration build a production deployment from an app-less tree while the site is meant to stay up; and the repo's `user.email` must be the no-reply address first, or the next commit exposes the old one. `-5b` and `-f2` settle the first with Ícaro's go (one option is turning off deployment creation on the project while `main` is pushed, then back on).
 
 ### D-014 — The three `.claude/` skills may be published (2026-11-22)
 
@@ -69,7 +82,7 @@ The URL is `https://blur-my-image.vercel.app` (alias assigned by BMI-003, 2026-1
 **Decision**, as relayed by the orchestrator session (`-aa`) from Ícaro's direct answers to it (PM did not hear them directly): the go-public of BMI-050 is a **yes**. He wants CodeRabbit to review PR #1 before it's merged, and the free CodeRabbit only works on public repos, so the order of BMI-050 changes to: pre-flip checklist, flip, protections, CodeRabbit app installed (Ícaro's action), PR #1 out of draft (CodeRabbit ignores drafts), CodeRabbit's corrections, merge. The merge is authorized by him only after those corrections and with green checks. The flip itself happens only when `-aa` gives `-5b` the go, and Q-008 (origin and license of three skills) was open when this was recorded; D-014 closed it.
 **Why:** a second reviewer on the largest PR before it lands on `main`. It reorders the checklist and cuts nothing.
 **Decided by:** Ícaro, per the orchestrator session.
-**Affects:** BMI-050 (checklist rewritten), PR #1, D-005 (merging to `main` triggers the first production deploy once BMI-003 is done), BMI-003. Executed by `-5b` (git and GitHub), Ícaro (installing the CodeRabbit app), `-f5` (CodeRabbit session).
+**Affects:** BMI-050 (checklist rewritten; the order is superseded by D-017), PR #1, D-005 (merging to `main` triggers the first production deploy once BMI-003 is done), BMI-003. Executed by `-5b` (git and GitHub), Ícaro (installing the CodeRabbit app), `-f5` (CodeRabbit session).
 
 ### D-012 — Create the Vercel project and deploy (2026-11-22)
 

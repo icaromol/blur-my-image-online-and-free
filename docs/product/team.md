@@ -24,6 +24,10 @@ These files get written by more than one lane's work. Only one lane may touch ea
 
 When a lane needs one that another lane holds, its item waits. A lane can still take other eligible work.
 
+## Vercel
+
+Nobody runs `vercel deploy` from the working tree: it uploads git-ignored files (`.local/`, `.claude/settings.local.json`) as the deployment's source. Git sends what is committed, and the Git integration makes the deployments (D-016).
+
 ## Not lanes
 
 | Who | Role |
