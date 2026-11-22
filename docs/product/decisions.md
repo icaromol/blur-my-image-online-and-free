@@ -20,6 +20,14 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-023 — The in-app redaction warning promises too much
+
+The app's own warning (`en.json` line 47, `pt-BR.json` line 47) says: "Pixelated text can sometimes be recovered. For passwords or document numbers, use a high intensity." The opus reviewer read the 2016 study (PoPETs, Hill, Zhou, Saul and Shacham) and found no absolute safe threshold: mosaic accuracy falls as the grid nears the letters' size, and it recovered 24 px text up to a Gaussian radius of 45 px; its authors concluded that pixelation and blur aren't viable for redacting text. Bishop Fox's Unredacter post describes a search that renders guesses in the same font, and recommends black bars. So "use a high intensity" gives the same weak assurance as the README's false "roughly 20 px". It is the product's own text in two languages, so Ícaro decides, and it touches BMI-104 (a solid box, today in `Later`).
+
+Options: (a) reword now, no new feature: say that blur and pixelation aren't safe ways to hide text that must stay secret and that covering it or cropping it out is; (b) as (a), and move BMI-104 (the solid box) into v1 so the app offers what the warning recommends; (c) leave the sentence.
+
+Recommendation: (a) now, since a warning that overstates safety is a defect in the promise the product makes; and put (b) to him as a separate scope question, because adding the solid box to v1 changes the milestone. Default in force: **(c) until he answers**, with the fix to the README and the research notes going ahead (BMI-086), because those are plain factual errors.
+
 ### Q-022 — When may the app's URL be public: canonical, sitemap, README, marketing?
 
 D-016 says the URL stays out of the README and marketing until Ícaro says. Meanwhile `index.html` already carries it (`og:url` and `og:image`, on the repository that is public now), and the landing pages need the real host for `canonical` and `sitemap.xml` (decision 3 of `docs/marketing/landing/seo.md`, read through `-75`; PM hasn't read the file). So the URL is already discoverable, and the question is when it stops being a secret to the places that matter.

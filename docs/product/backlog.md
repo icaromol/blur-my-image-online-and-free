@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 48 `Must` done, 43 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-076, after the merge), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 and BMI-081 (`Should`, `Review`), BMI-082 (`Should`, `Ready`, after the merge), BMI-083 (`Should`, `Idea`) and BMI-084 (`Should`, `Ready`) and BMI-085 (`Should`, `Idea`).
+Progress: 0 of 49 `Must` done, 43 in review, 4 in progress (BMI-003, 050, 066, 070), 2 ready (BMI-076 after the merge, BMI-086), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 and BMI-081 (`Should`, `Review`), BMI-082 (`Should`, `Ready`, after the merge), BMI-083 (`Should`, `Idea`) and BMI-084 and BMI-087 (`Should`, `Ready`) and BMI-085 (`Should`, `Idea`).
 
 ### E1. Foundation
 
@@ -100,6 +100,8 @@ Approved package from three research reports (quality and CI, security baseline,
 | --- | --- | --- | --- | --- | --- |
 | BMI-084 | Complete landing page copy in English, after research (competitors, search intent per persona, conversion patterns), drafted in `docs/marketing/landing/`; building the page is BMI-078 and is not part of this item | Should | M | Ready | |
 | BMI-085 | Landing pages built (a home and three use-case pages as static HTML in a Vite multi-page build, no new dependency), with the technical SEO the SEO file lists: per-page canonical, `robots.txt`, `sitemap.xml`, a real `<h1>`, `<html lang>`, a minimal `WebApplication` block; from the copy of BMI-084; after the merge of PR #2 | Should | L | Idea | BMI-084, BMI-078, the merge of PR #2, Q-022 |
+| BMI-086 | Correct statements that are false or imprecise and already public: the "roughly 20 px" figure and the Unredacter wording in the README and in the project and marketing notes, and the README's account of which links use the proxy; before the merge of PR #2 | Must | S | Ready | |
+| BMI-087 | A proxied download cut at the proxy's cap, with no declared size, shows the generic error; the user should learn that the image is too large for the proxy | Should | S | Ready | |
 
 ### E6. Launch readiness
 
@@ -149,7 +151,7 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-137 | Image loading by link on phones: the real ceiling is decoding memory, not the 100 MiB cap (a compressed file of tens of MB can exceed 100 megapixels, over 400 MB as RGBA, and end in `decode_failed`; a body just under the cap sits whole in a Blob, kept in RAM on iOS Safari and able to reload the tab); a lower or device-aware cap, or a clearer message when decoding fails on a very large file | Quality | Idea |
 | BMI-135 | Playwright config: don't silently reuse another process's server on port 4173 outside CI (`reuseExistingServer`); no evidence yet that this caused the 2026-11-22 failure (BMI-074) | Quality | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-086`; later effects `BMI-109`, features `BMI-129`, other later `BMI-138`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-088`; later effects `BMI-109`, features `BMI-129`, other later `BMI-138`.
 
 ---
 
@@ -392,6 +394,25 @@ Spec: [specs/hosted-analytics.md](specs/hosted-analytics.md). Decided by Ícaro 
 - [ ] `e2e/privacy.spec.ts` passes unchanged against the default build; a second case lists the exact extra requests allowed on the hosted build.
 - [ ] README (privacy section and line 80, which changes unless the experiment shows no cookies), the app's one-line notice (`en` and `pt-BR`, shown to Ícaro) and `docs/hosting.md` say what is true; the key-parity test, check, unit and e2e tests and `pnpm size` pass.
 
+### BMI-086 — False or imprecise statements that are already public
+
+Found by the opus reviewer while reading the landing copy against the sources, relayed by `-75` (2026-11-22); PM read README line 58, `en.json` line 47, the README's URL sentence (line 78) and the repo's homepage field, and didn't re-read the study. The repo is public and PR #2 is about to merge, so these go into PR #2 before the merge, or the merge waits.
+
+- [ ] **README line 58**: it says the 2016 study "found text stayed recognizable unless the blur radius or mosaic block size exceeded roughly 20 px". The reviewer read the paper (PoPETs 2016, Hill, Zhou, Saul, Shacham): there is no absolute threshold; mosaic accuracy falls as the grid nears the font size; blurred 24 px text was recovered up to a Gaussian radius of 45 px; the authors concluded that mosaic and blur aren't viable for redacting text. Suggested text: "A 2016 study recovered pixelated text until the blocks grew close to the size of the letters, and read blurred text at blur radii of up to 45 px; its authors concluded that pixelation and blur are not safe ways to redact text." The Unredacter sentence stops saying "brute force": Bishop Fox describes a search that renders guesses in the same font. The advice "use heavy Pixelate as a minimum" goes too (see Q-023 for the in-app twin); "prefer a solid box (on the backlog)" stays only as a statement about the backlog.
+- [ ] **README line 78**: "the single exception is loading by URL when the remote server doesn't allow cross-origin access" is imprecise: an `http://` link always goes through the proxy, because the page's CSP is `connect-src 'self' https:`. The sentence says so.
+- [ ] The same figure and wording in `docs/research.md` (and the Unredacter line there), `docs/marketing/channels.md` line 161 and `docs/marketing/plans/2026-11-pre-launch.md` line 39 are corrected the same way; the draft post `marketing/social/posts/2026-11-24-blur-is-not-redaction.md` carries it too and keeps its blocking note until it is fixed. The marketing files are the marketing lane's.
+- [ ] `docs/marketing/audience.md` line 17 and the evidence of P2 cite Autotrader and Jalopnik for reasons the sources don't support (carsales is verified for cloning; Autotrader advises not to cover the plate; the Jalopnik page is a 404). This joins the list of `audience.md` edits that wait for Ícaro's direct yes (the dispatcher asked `-aa`).
+- [ ] The in-app warning (`en.json` and `pt-BR.json`, line 47) is **not** in this item: it is Ícaro's (Q-023).
+- [ ] The GitHub repository's About field shows the app's domain, the earlier `blur-my-image.vercel.app`, while D-016 keeps the URL out until Ícaro says (PM read it with `gh`). The owner clears or keeps it: `-5b` asks `-aa`.
+
+### BMI-087 — A proxied download cut at the proxy's cap
+
+The reviewer found, in the code (PM didn't run it): when the proxy cuts its stream at `MAX_BYTES` (4,400,000 bytes) and the origin server declared no size, `proxied.blob()` rejects with an error the app doesn't recognize, and the user sees "Something went wrong. Try again."; the `too_large` 413 comes only when the origin declares the size (`server/proxy/app.ts` near line 203). Ui lane, `Should`.
+
+- [ ] Reproduce it with a test: a proxied response whose body is cut, with no declared size.
+- [ ] The user is told the image is too large to load by link (the existing `too_large` code, or a new code if the wording has to say that the proxy has a lower limit than the browser's direct fetch), in `en` and `pt-BR`; a new `pt-BR` string is shown to Ícaro.
+- [ ] A network drop in the middle of a direct download must not be mislabelled: the message only says "too large" when the cut is known to come from the proxy's cap.
+
 ### BMI-085 — Landing pages built
 
 Split out of the SEO findings for BMI-084 (via `-75`; PM hasn't read `docs/marketing/landing/seo.md`). Ui lane, with the marketing lane's copy; after the merge of PR #2, in a PR of its own; `L`, so it is split before it becomes `Ready`. Not before Q-022: the pages need the real host.
@@ -413,6 +434,7 @@ Asked for by Ícaro (relayed by `-aa`, 2026-11-22). Marketing lane (strategist, 
 - [ ] **Complete English copy** in `docs/marketing/landing/`, one file per section or one file with sections: hero; how it works (the three steps of the README); the privacy proof, with the sentence from D-010 and the honest exception for links (the same wording as the app's notice); use-case sections (blur a license plate, pixelate a screenshot, blur a face); an FAQ; the call to action; meta title and description; structured data.
 - [ ] The copy matches what the app does today: effects, formats, the 100 MiB link cap and the proxy exception are true statements or absent; the "blur is not redaction" warning is present.
 - [ ] Facts from the research the copy must respect (via `-75`; PM didn't read the research): the 100 MiB cap is for the browser's direct fetch only; through our proxy the cap is `MAX_BYTES`, 4,400,000 bytes (about 4.2 MiB), so the copy gives both numbers only in the FAQ, never the hero (Q-021); the CSP is `connect-src 'self' https:` (PM checked `security-headers.ts`), so the copy never says "guaranteed by the CSP", and a DevTools check shows only the behavior of the action that was run; face and plate searches are dominated by automatic detection and the product has a brush, so the section says "no automatic detection" up front; Google no longer shows an FAQ rich result (read 2026-11-22), so FAQ markup earns nothing, and the app rich result needs `offers.price` and a rating or review that don't exist and are not invented; nothing about phones until a test on a real device, nothing about analytics until BMI-082.
+- [ ] Copy items from the reviewer's pass: `[APP-URL]` is split into `[EDITOR-URL]` and `[HOME-URL]` (BMI-085); a "check it yourself" instruction goes out only after someone has run it on the live site; the use-case pages repeat 28 to 36% of their sentences, which the correction round reduces; the claims table doesn't repeat the "roughly 20 px" figure (BMI-086).
 - [ ] Three adjustments to `docs/marketing/audience.md` that the strategist proposes (not made yet): the automatic-detection objection in P2 and P3, the CSP and clean-tab caveat in P1, and the "no analytics cookies" pillar checked against D-029 before the copy leaves draft. They are edits to the marketing lane's file; the dispatcher asks Ícaro's direct yes for them, as it did for the earlier lines.
 - [ ] The `no-ai-slop` rules are applied and the reviewer (opus) approves before anything is committed; the list of files goes to `-5b` after that.
 - [ ] A source is cited in the copy only if someone has read it: the SEO notes cite two articles nobody read (a Buffalo study on face recognition and a techpolicy.press piece), so the copy leaves them out unless they are read first. Every claim is linked in `claims-check.md` to the code or the README.
