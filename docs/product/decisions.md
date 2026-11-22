@@ -22,7 +22,7 @@ Recommendation: launch in English; once the app has real visits, add Portuguese 
 
 ### Q-016 — Three design choices in the brand kit (BMI-075)
 
-The designer's kit (`d897bb6`, approved by the opus reviewer) leaves three choices for Ícaro:
+The designer's kit (`2a8d07a`, approved by the opus reviewer) leaves three choices for Ícaro:
 
 1. **The wordmark**: redrawn in Liberation Sans Bold (an open font, so it's clean vector text), or kept as the original lettering from his logo.
 2. **The accent**: one blue in two tones (one for use on white, one on black) as the only accent.
