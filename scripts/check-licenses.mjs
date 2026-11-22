@@ -60,7 +60,7 @@ const failures = [
 ];
 
 if (failures.length > 0) {
-  console.error("License check failed:\n" + [...new Set(failures)].join("\n"));
+  console.error(`License check failed:\n${[...new Set(failures)].join("\n")}`);
   process.exit(1);
 }
 const count = (o) => Object.values(o).reduce((n, list) => n + list.length, 0);

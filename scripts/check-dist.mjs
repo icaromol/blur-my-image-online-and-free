@@ -66,7 +66,7 @@ if (scanned === 0) {
 }
 if (hits.length > 0) {
   console.error(
-    "Analytics or tracking references found in the build:\n" + hits.join("\n"),
+    `Analytics or tracking references found in the build:\n${hits.join("\n")}`,
   );
   process.exit(1);
 }
