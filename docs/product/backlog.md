@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 48 `Must` done, 42 in review, 4 in progress (BMI-003, 050, 066, 070), 2 ready (BMI-073 for the README wording, BMI-076 after the merge), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 (`Should`, `Review`) and BMI-081 (`Should`, `Ready`).
+Progress: 0 of 48 `Must` done, 42 in review, 4 in progress (BMI-003, 050, 066, 070), 2 ready (BMI-073 for the README wording, BMI-076 after the merge), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 and BMI-081 (`Should`, `Review`).
 
 ### E1. Foundation
 
@@ -105,7 +105,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-077 | Address CodeRabbit's findings on PR #2: nine corrections in the ui, server and quality lanes; Ícaro's three answers added (D-025, D-026); a locale-race fix added after round 3 | Must | M | Review | the CodeRabbit review of PR #2 |
 | BMI-079 | Privacy notice under the link field (his wording, `en` and `pt-BR`), associated with the field for assistive tech, with unit and e2e tests; README privacy text states it | Must | S | Review | |
 | BMI-080 | Document that the 30 requests per 60 s rate limit exists only on Vercel (WAF) and that anyone running Node or Docker must put their own limit in front; record the WAF test result in the docs | Should | S | Review | |
-| BMI-081 | The Vercel WAF deny comes back as plain text "Forbidden", not the proxy's JSON: see how the front reacts, propose a "too many requests" message with an i18n code, and note that a shared IP (school, carrier NAT) can hit the limit | Should | S | Ready | |
+| BMI-081 | The Vercel WAF deny comes back as plain text "Forbidden", not the proxy's JSON: see how the front reacts, propose a "too many requests" message with an i18n code, and note that a shared IP (school, carrier NAT) can hit the limit | Should | S | Review | |
 
 ## Later (post-v1)
 
@@ -268,6 +268,8 @@ User stories and acceptance criteria are in [specs/i18n.md](specs/i18n.md), requ
 
 ### BMI-073 — platform settings, split by when they matter
 
+**Wording problem found 2026-11-22:** the sentences the lane committed in `a9f8966` say "no usage alert is set up, so the owner has to check usage on the Vercel dashboard" (`docs/hosting.md` caveat 3) and "Usage alerts are still planned, not set up" (the rate-limit paragraph), but Ícaro says he turned the usage notifications on. They assert what nobody can verify and contradict his word. PM's instruction was to promise no alerts, not to say there are none. The fix is a new commit: say only that Hobby pauses the project when a limit is hit, with no bill, that the project doesn't depend on any alert, and that the owner can check usage on the Vercel dashboard; neither "set up" nor "not set up".
+
 Status: **Ready** for the quality lane's wording task (2026-11-22). `-f2` read back, read-only, what the API shows: Vercel PR comments off (`onPullRequest` and `onCommit` false); the Ignored Build Step is `test ! -f package.json`; the WAF rule is enabled with no pending changes (`/api/image`, fixed window 30 requests per 60 s per IP, deny for 1 minute), and its test (40 GETs, the first 30 answered by the proxy with its 403 `forbidden_origin`, the 31st on denied with `x-vercel-mitigated: deny` and the body "Forbidden", the block gone about 63 s later) agrees; the bypass secret is gone; fork protection is on; the Toolbar and Web Analytics are off; the team plan is Hobby. **Nobody can read** the usage alerts (the API doesn't expose them, and Hobby has no Spend Management: a limit that is hit pauses the project, with no bill, and usage emails are account notifications set in the dashboard), the account's 2FA, or whether Speed Insights is off (its object carries an id but no on or off date). Ícaro says he did them; he confirms those three by eye (Settings, Notifications; Security; the project's Speed Insights toggle). What is left for a lane: the README and `docs/hosting.md` sentence on usage alerts is reworded to what is true (Hobby pauses the project when a limit is hit; nothing promises alerts the maintainer's account may or may not send), with BMI-080.
 
 Not everything here has to be done before the repo is public. The flip doesn't depend on Vercel. What matters is the first official production deploy, the merge of PR #2 (D-005, D-017), which now comes before the flip. Split, nothing dropped:
@@ -358,11 +360,13 @@ Delivered as `34f304f` (`README.md`, `docs/hosting.md`; PM confirmed the commit 
 
 When the WAF denies, Vercel answers with plain text "Forbidden", not the proxy's JSON error, so the front may show only a generic error. Ui lane. A shared address (a school, a carrier NAT) can reach 30 requests per minute for several people.
 
-- [ ] Read how `src/input/url.ts` and the error mapping handle a non-JSON 403 from `/api/image` (a cross-site 403 from the proxy is JSON with a code); describe what the user sees today.
-- [ ] Propose a message for "too many requests" through an i18n error code, `en` and `pt-BR` (Ícaro corrects `pt-BR` strings, so the proposal is shown to him before it merges), and the change that tells the two 403s apart; no new library.
-- [ ] A test for the denied case, and a sentence in `docs/hosting.md` about shared addresses. If telling the two apart needs a change in the proxy's contract, stop and ask before doing it.
+- [x] Read how `src/input/url.ts` and the error mapping handle a non-JSON 403 from `/api/image` (a cross-site 403 from the proxy is JSON with a code); describe what the user sees today.
+- [x] Propose a message for "too many requests" through an i18n error code, `en` and `pt-BR` (Ícaro corrects `pt-BR` strings, so the proposal is shown to him before it merges), and the change that tells the two 403s apart; no new library.
+- [x] A test for the denied case, and a sentence in `docs/hosting.md` about shared addresses. If telling the two apart needs a change in the proxy's contract, stop and ask before doing it.
 
 Delivered by `-cc` and verified by the dispatcher (2026-11-22, per `-75`; not committed yet, with the opus reviewer; PM hasn't read the code): `src/input/url.ts` turns a proxy answer with status 429, or with the header `x-vercel-mitigated: deny`, into the error `rate_limited`, checked before the body is read; a plain-text 403 without that header stays `load_failed`, so the app never says "too many requests" by mistake; the proxy's own JSON 403 with its code works as before; nothing changes in `server/` or in the proxy's contract. Proposed messages, for Ícaro to correct the `pt-BR` before the merge: `en` "Too many requests from your network right now. Try again in about a minute."; `pt-BR` "Muitas solicitações vindas da sua rede agora. Tente de novo em cerca de um minuto." Gate: check clean, 303 tests, e2e 42/42, size 43.69 of 45 kB initial (1.31 kB of room) and 192.8 of 195 kB. The quality lane writes the shared-address sentence in `docs/hosting.md` in one pass with the usage-alert sentence of BMI-073.
+
+Committed (2026-11-22, local on the feature branch): `3aa1445` (`url.ts`, `url.test.ts`, `en.json`, `pt-BR.json`, `e2e/input.spec.ts`) and `a9f8966` (README and `docs/hosting.md`: the shared-address sentence, and that the app recognizes the block only when the proxy is on the same origin). Gate on the last state, per `-75`: check clean in 105 files, 303 tests, e2e 42/42, size 43.69 of 45 kB initial (1.31 kB of room) and 192.8 of 195 kB. The reviewer's decisions: the `429` branch stays (the proxy never returns 429; Vercel Hobby denies with a 403 plus the header because a 429 opens an upgrade notice; a limiter of one's own usually answers 429 or 503); a `x-vercel-mitigated` header with another value (such as `challenge`, from attack or bot modes) stays `load_failed`, so the app never says "too many requests" falsely; the recognition holds only with the proxy on the same origin, which is documented. Two optional observations not applied, no urgency: cancel the response body in the block branch (as `readDirect` does) and rewrite the "plain text" comment in `url.ts` near line 96. The `pt-BR` text still needs Ícaro's eyes before the merge (the reviewer's variation: "Tente de novo daqui a um minuto"). `Review` until PR #2 merges.
 
 ### BMI-076 — Scorecard and dependency-review workflows
 
