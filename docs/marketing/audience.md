@@ -50,8 +50,8 @@ Fictional composites built from the evidence above. Use them to check whether a 
 - **Who:** support agent, QA tester, developer or technical writer, 22 to 45, desktop, Chrome or Firefox. Pastes screenshots into Jira, Zendesk, Slack, GitHub issues or docs several times a week.
 - **Job to be done:** "When I need to share a screenshot that shows customer or company data, I want to hide those parts in seconds, so I can send it without breaking policy or leaking anything."
 - **Today:** Snagit or Greenshot if the company pays, a black box in Paint, or the first search result, often feeling uneasy about uploading.
-- **What wins them:** `Ctrl+V` straight from the clipboard, brush-on pixelate, keyboard shortcuts, nothing uploaded and a way to verify it (no network requests in the DevTools Network tab; **after BMI-050 only:** open source code they can read, since the repo is private until then and "open source" can't be said before it's public). Honesty that blur isn't redaction reads as competence to this group.
-- **Objections:** "How do I know it doesn't upload?" → a DevTools network check, which works today. **After BMI-050 only:** add "and the code is open source". The check has one expected exception: loading by URL goes through the proxy (see the "Private by construction" pillar). "Will it leave text readable?" → strong pixelate defaults and the in-app warning.
+- **What wins them:** `Ctrl+V` straight from the clipboard, brush-on pixelate, keyboard shortcuts, nothing uploaded and a way to verify it (no request uploads the image: after the page loads, the DevTools Network tab shows no POST and no request to another site, only the app's own code files, because PixiJS loads after first paint and the WebP encoder loads on Safari export; **after BMI-050 only:** open source code they can read, since the repo is private until then and "open source" can't be said before it's public). Honesty that blur isn't redaction reads as competence to this group.
+- **Objections:** "How do I know it doesn't upload?" → a DevTools network check, once the site is live (BMI-003). **After BMI-050 only:** add "and the code is open source". The check applies to images opened from a file, drop or paste, and has one expected exception: loading by URL goes through the proxy (see the "Private by construction" pillar). "Will it leave text readable?" → strong pixelate defaults and the in-app warning.
 - **Words they search:** blur screenshot, pixelate text in image, redact screenshot online, hide sensitive info in image, blur part of image.
 
 ### P2. The private seller (secondary)
@@ -60,7 +60,7 @@ Fictional composites built from the evidence above. Use them to check whether a 
 - **Job to be done:** "When I post photos of my car or home, I want to hide the plate, house number or family photos on the wall, so strangers and bots can't use them."
 - **Today:** a thumb over the plate, an emoji sticker, or a phone editor's markup tool.
 - **What wins them:** three steps, no account, no watermark on photos they're about to publish. "Works on a phone" is **unproven**: the README doesn't state it. Don't claim it until real-device testing is done and a README line exists.
-- **Objections:** "Is it really free?" → no watermark and no account, stated up front. "Will it shrink my photo?" → exports at the original resolution.
+- **Objections:** "Is it really free?" → no watermark and no account, stated up front. "Will it shrink my photo?" → exports at the original resolution unless the image is larger than the graphics card can handle; then the app says so before you start and the download is the scaled size (README "Large images").
 - **Words they search:** blur license plate, hide number plate in photo, blur part of a picture, blur house number.
 
 ### P3. The careful parent or school volunteer (secondary)
@@ -83,16 +83,16 @@ Fictional composites built from the evidence above. Use them to check whether a 
 
 **For** people who need to hide part of an image before sharing it, **Blur My Image** is a browser tool that blurs or pixelates in three steps. **Unlike** Canva, Kapwing or upload-based blur sites, it never uploads the image (except when loaded by URL, which goes through a proxy; see the "Private by construction" pillar), needs no account, adds no watermark and strips location metadata on export.
 
-One-line version: *Blur or pixelate any part of an image. It never leaves your device.* The one exception is loading by URL through the proxy (see the "Private by construction" pillar); any copy longer than this line that covers privacy or URL loading must say so.
+One-line version: *Blur or pixelate any part of an image. Images you open, drop or paste never leave your device.* The scope ("open, drop or paste") is what keeps the line true, because loading by URL goes through the proxy (see the "Private by construction" pillar). **Provisional:** the wording stays provisional until Ícaro answers the open en/pt-BR tagline question in `docs/product/status.md`. Note that `src/i18n/messages/en.json` `tagline` still reads "It never leaves your device." without the scope.
 
 ## Messaging pillars
 
 | Pillar | Proof that exists today (README) | Don't say |
 | --- | --- | --- |
-| Private by construction | Processing in the browser; EXIF dropped on export; no analytics cookies. One exception, per the README: loading by URL when the remote server doesn't allow cross-origin access sends the image once through a stateless proxy that keeps nothing and whose code logs nothing, but Vercel keeps its standard request log (method, path including the image URL, status, IP, user agent) for 1 hour. State this wherever URL loading or "never leaves your device" is mentioned | "100% anonymous", "military-grade", "secure redaction", or "never leaves your device" with no mention of the URL-loading exception where privacy is the claim |
-| Free without catches | No account, no watermark, original resolution | "unlimited forever" (hosting may change) |
+| Private by construction | Processing in the browser; EXIF dropped on export; no analytics cookies. One exception, per the README: loading by URL when the remote server doesn't allow cross-origin access sends the image once through a stateless proxy that keeps nothing and whose code logs nothing, but Vercel keeps its standard request log (method, path including the image URL, status, IP, user agent) for 1 hour. State this wherever URL loading or "never leaves your device" is mentioned | "100% anonymous", "military-grade", "secure redaction", or "never leaves your device" with no mention of the URL-loading exception |
+| Free without catches | No account, no watermark; original resolution unless the image is larger than the graphics card can handle, in which case the app says so before you start and the download is the scaled size | "unlimited forever" (hosting may change) |
 | Fast for one job | Paste, brush, download; Photoshop shortcuts | "the most powerful editor" |
-| Honest about limits | In-app warning that blur isn't redaction, with the PETS 2016 study | Any implication that blurred text is unrecoverable |
+| Honest about limits | In-app warning next to Pixelate that pixelated text can be recovered; the README cites the PETS 2016 study | Any implication that blurred text is unrecoverable |
 
 ## How to keep this file current
 

@@ -12,9 +12,9 @@ A 2016 PETS study found that blurred or pixelated text stayed recognizable unles
 
 Tools such as Unredacter go further and reconstruct pixelated text by brute force.
 
-If you paste screenshots into support tickets, that changes what a light blur over a customer's email address is worth. It looks like it hides the address. Below that threshold, the study found the text was still recognizable.
+If you paste screenshots into support tickets, that changes what a light blur over a customer's email address is worth. It looks like it hides the address.
 
-I'm building a browser tool that blurs or pixelates part of an image, and this is what I'm designing around. Next to the Pixelate option the app will show a warning that blur is not redaction. For a password or a document number, the advice will be heavy pixelate as a minimum and a solid box once I've built one. The solid box isn't built yet. It's on the backlog.
+I'm building a browser tool that blurs or pixelates part of an image, and this is what I'm designing around. Next to the Pixelate option the app will warn that pixelated text can sometimes be recovered, and that passwords or document numbers need a high intensity. A solid box for real redaction is on the backlog.
 
 ## bluesky
 
@@ -24,7 +24,7 @@ Blurred text isn't always hidden. A 2016 PETS study found it stayed recognizable
 
 A 2016 PETS study found blurred or pixelated text stayed recognizable unless the blur radius or mosaic block size went past roughly 20 px. Tools like Unredacter rebuild pixelated text by brute force.
 
-I'm building a blur tool that will warn about this next to the Pixelate option. The advice will be heavy pixelate as a minimum for anything sensitive, and a solid box once I've built it. It's on the backlog.
+I'm building a blur tool that will warn about this next to the Pixelate option. The advice will be a high intensity for anything sensitive, and a solid box, which is on the backlog.
 
 #privacy #infosec
 
@@ -40,12 +40,14 @@ Alt text (Bluesky, Mastodon; adjust to the render): Two copies of the same line 
 
 ## notes (not for publishing)
 
+BLOCKING before publish: verify the 20 px figure and whether "recognizable" means by people or by software in popets-2016-0047, then name the paper in the LinkedIn version.
+
 Counts: Bluesky about 253 of 300. Mastodon about 410 of 500 including hashtags. LinkedIn about 1,050 of 3,000. Counted by hand, so recount in Buffer.
 
 Sources
 - Roughly 20 px, "radius or block size exceeded": README, section "Blur is not redaction", which links the [2016 study](https://crysp.petsymposium.org/popets/2016/popets-2016-0047.pdf).
 - Unredacter and "brute force": same README section, linking [Bishop Fox](https://bishopfox.com/blog/unredacter-tool-never-pixelation).
-- Warning next to Pixelate, "heavy Pixelate as a minimum", solid box "(on the backlog)": same README section and the Backlog list ("Solid box for real redaction").
+- Warning next to Pixelate: `src/i18n/messages/en.json` line 46, key `effects.pixelate.warning`: "Pixelated text can sometimes be recovered. For passwords or document numbers, use a high intensity." The posts paraphrase it and say "will", since the post is pre-launch. Solid box "(on the backlog)": README Backlog list ("Solid box for real redaction").
 - "PETS 2016" label: channels.md uses it for the same study.
 
 Could not verify
