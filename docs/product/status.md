@@ -58,7 +58,7 @@ Only items that block something. Questions with a default in force are in decisi
 
 ### 2026-11-22 (new PM session, handoff)
 
-- **Q-010 opened:** the production alias already serves a feature-branch deployment (per `-f2`, since 16:06; PM got 200 with the app and its CSP), the WAF rate-limit rule is still unpublished, and `-f2`'s local `vercel deploy` uploaded git-ignored files to Vercel. Hobby building from a private repo is proven (all 6 PR deployments `READY`). No Vercel action and no marketing post about the URL until Ícaro answers.
+- **Q-010 opened (cause found: the first Git deployment of the project was promoted to production by the Vercel Git integration; `-f2` ran no `--prod`):** the production alias already serves a feature-branch deployment (per `-f2`, since 16:06; PM got 200 with the app and its CSP), the WAF rate-limit rule is still unpublished, and `-f2`'s local `vercel deploy` uploaded git-ignored files to Vercel. Hobby building from a private repo is proven (all 6 PR deployments `READY`). No Vercel action and no marketing post about the URL until Ícaro answers.
 
 - BMI-003's OG tags part is `Ready` for `-cc`: the OG image is approved by the reviewer and verified by the dispatcher. New `Later` item BMI-136 (the marketing brand CSS imports Google Fonts at render time; the app is not affected).
 
