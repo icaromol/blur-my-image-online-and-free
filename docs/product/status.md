@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 45 `Must` done · 39 in review · 3 in progress · 0 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+0 of 45 `Must` done · 40 in review · 2 in progress · 0 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -56,6 +56,8 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- BMI-051 → `Review` again (`758fc6b`, D-010 wording in README, `index.html`, `en.json`, `pt-BR.json`). Still open and not blocking `Review`: Ícaro reads the `pt-BR` tagline before the merge (optional reviewer alternative "Seus arquivos de imagem…"), and marketing quotes the final wording.
 
 - D-010 (Ícaro: "ajustar tudo", relayed by `-aa`): README, `index.html` and both taglines say "Image files … never leave your device", consistent with the URL proxy exception. BMI-051 → `In progress` again, with the new criteria; BMI-003's OG image is unblocked. `en.json` and `pt-BR.json` may be edited, through the ui lane.
 

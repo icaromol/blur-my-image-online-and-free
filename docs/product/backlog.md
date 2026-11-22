@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 45 `Must` done, 39 in review, 3 in progress (BMI-051, 066, 070), 0 ready, 3 idea (BMI-003, 050, 073). Also BMI-074 (`Should`, `Done`).
+Progress: 0 of 45 `Must` done, 40 in review, 2 in progress (BMI-066, 070), 0 ready, 3 idea (BMI-003, 050, 073). Also BMI-074 (`Should`, `Done`).
 
 ### E1. Foundation
 
@@ -92,7 +92,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
 | BMI-050 | Go-public checklist (see details): audit, README matches what shipped, merge PR #1, flip public, then GitHub protections | Must | M | Idea | all v1 items, BMI-070 to BMI-073 |
-| BMI-051 | README status line and content match what shipped (reopened by D-010: final privacy wording and taglines) | Must | S | In progress | BMI-040 |
+| BMI-051 | README status line and content match what shipped | Must | S | Review | BMI-040 |
 | BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
 
 ## Later (post-v1)
@@ -260,12 +260,15 @@ Split out of BMI-050 so a worker can do the read-only part. It doesn't depend on
 
 Committed as `5117278` (`README.md`, `docs/hosting.md`, `index.html`), verified by the dispatcher and approved by the opus reviewer; PM spot-checked README lines 3, 30 and `index.html` line 6 and found no "open source" wording left in README or hosting.md. `Review` until PR #1 merges to `main`.
 
-Reopened by D-010 (2026-11-22): the criteria already committed in `5117278` stay checked; the final wording below is not done. `In progress` until it's committed.
+Reopened by D-010 and committed as `758fc6b` (`README.md`, `index.html`, `en.json`, `pt-BR.json`); verified by the dispatcher (check, 229 unit tests, e2e 35/35, size 43.24 / 192.26 kB) and approved by the opus reviewer. PM confirmed the commit touches those four files on the branch. `Review` until PR #1 merges to `main`.
 
-- [ ] `README.md` line 3 and the `index.html` meta description (line 6) say "Image files you open, drop or paste never leave your device." (quality lane for the README; `index.html` through the ui lane, `-cc`).
-- [ ] `en.json` and `pt-BR.json` line 4 (`app.tagline`): `en` ends with the same idea ("…Image files never leave your device."); `pt-BR` is consistent with the URL proxy exception, for example "Desfoque a imagem inteira ou como quiser. Os arquivos de imagem nunca saem do seu navegador." (PM's proposal; the worker may improve it). Ui lane (`-cc`). The `pt-BR` text is shown to Ícaro before the merge. The key-parity test, `pnpm check`, unit and e2e still pass.
-- [ ] `README.md` line 99 says the export renders "at full resolution"; it reads "at the loaded image's resolution" (reviewer's wording), consistent with the downscale exception on line 30.
-- [ ] `docs/marketing` text that quotes the old tagline or sentence is checked against the final wording (reported to the dispatcher, who routes it to marketing; PM doesn't edit those files).
+- [x] `README.md` line 3 and the `index.html` meta description say "Image files you open, drop or paste never leave your device."
+- [x] `app.tagline` in `en.json` ("…Image files never leave your device.") and `pt-BR.json` ("…Os arquivos de imagem nunca saem do seu navegador.").
+- [x] `README.md` line 99: "at the loaded image's resolution" and "The blur size is defined in source-image pixels, never screen pixels".
+
+Open, not holding `Review`:
+- Ícaro reads the `pt-BR` tagline before PR #1 merges (asked through `-aa`; default: it stays as committed). The reviewer's optional alternative is "Seus arquivos de imagem nunca saem do seu navegador", which points more clearly at the user's own files.
+- Marketing text that quotes the old tagline or the provisional sentence is checked against the final wording. Not a code change: the marketing lane's correction round does it, waiting on Ícaro's yes via `-aa`.
 
 - [x] The status line says pre-release (v1 built and under review, not deployed) and no longer "planning, nothing implemented". It keeps marketing in its pre-launch posture: no "try it now" until BMI-003 gives a live URL. The live wording is set at go-public (BMI-050).
 - [x] The proxy portability sentence says `app.ts` is platform-neutral, Vercel and Node ship, and Cloudflare would need its own fetch and entry.
