@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 46 `Must` done, 40 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-073), 0 idea. Also BMI-074 (`Should`, `Done`) and BMI-075 (`Should`, `Ready`).
+Progress: 0 of 47 `Must` done, 40 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-073), 0 idea. Also BMI-074 (`Should`, `Done`) and BMI-075 (`Should`, `Ready`).
 
 ### E1. Foundation
 
@@ -91,7 +91,7 @@ Approved package from three research reports (quality and CI, security baseline,
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
-| BMI-075 | Brand kit: vector logos (black, white, blue accent), minimal palette with contrast checked, favicon, OG image base, marketing CSS, short guide; app theme not included | Should | M | Ready | |
+| BMI-075 | Brand kit: vector logos (black, white, blue accent), minimal palette with contrast checked, favicon, OG image base, marketing CSS, short guide; app theme not included | Should | M | Review | |
 
 ### E6. Launch readiness
 
@@ -101,6 +101,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-051 | README status line and content match what shipped | Must | S | Review | BMI-040 |
 | BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
 | BMI-076 | Scorecard and dependency-review workflows (split out of BMI-050's post-flip list): `.github/workflows/`, actions pinned by SHA, in a PR of their own after the merge of PR #2 | Must | S | Ready | the merge of PR #2 |
+| BMI-077 | Address CodeRabbit's findings on PR #2: nine corrections in the ui, server and quality lanes; three need Ícaro (Q-015) | Must | M | Ready | the CodeRabbit review of PR #2 |
 
 ## Later (post-v1)
 
@@ -132,7 +133,7 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-136 | Marketing templates: `marketing/social/templates/brand.css` imports Google Fonts at render time (a network request on every render, for the `tip.html` template); self-host the font or drop the import. Only matters if `tip.html` is used; the app is not affected | Quality | Idea |
 | BMI-135 | Playwright config: don't silently reuse another process's server on port 4173 outside CI (`reuseExistingServer`); no evidence yet that this caused the 2026-11-22 failure (BMI-074) | Quality | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-077`; later effects `BMI-109`, features `BMI-127`, other later `BMI-137`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-078`; later effects `BMI-109`, features `BMI-127`, other later `BMI-137`.
 
 ---
 
@@ -160,7 +161,7 @@ Added as a `Should` verification of work already in `Review` (BMI-067, BMI-001).
 
 As the maintainer, I want one visual identity (minimalist, black and white, blue as the accent) so that the repo, the link preview and the posts look like one product.
 
-Requested by Ícaro (D-020, relayed by `-aa`) and confirmed as described by him (D-021). Lane: marketing, with the designer. Source: the two raw logos in `brand/source/` (stacked 1254x1254, horizontal 1983x793): raster, off-white background, compression artifacts. The logos are Ícaro's and may be published under MIT (D-022).
+Requested by Ícaro (D-020, relayed by `-aa`) and confirmed as described by him (D-021). Committed locally as `d897bb6` (29 files, `brand/` without `source/`, `brand.css` and `og.html`), verified by the dispatcher and approved by the opus reviewer after one correction round; `Review`. Left, with Ícaro's confirmation (Q-016): three designer choices; after them the ui lane copies the new OG image to `public/og-image.png`, puts the favicon in `public/` and links it from `index.html`. Lane: marketing, with the designer. Source: the two raw logos in `brand/source/` (stacked 1254x1254, horizontal 1983x793): raster, off-white background, compression artifacts. The logos are Ícaro's and may be published under MIT (D-022).
 
 - [ ] Vector logos as SVG: the pixel-block mark (grey blocks fading into the black block) plus the wordmark "Blur My Image", in black, in white (reverse) and with the blue accent, each in stacked and horizontal versions. The symbol may keep the shape of Ícaro's mark; the wordmark may start from his wordmark, or be redrawn in a free font (SIL OFL) for a clean vector, the designer's call (D-022: the logos are his and may be published under MIT).
 - [ ] A minimal palette: black, white, greys and one blue accent. Every foreground and background pair actually used has its WCAG AA contrast checked and written down. The tokens live in one file.
@@ -287,6 +288,25 @@ Community files are in. Left is GitHub settings, which `-5b` applies now (D-011)
 - [x] Labels created; squash-only merges, delete-branch-on-merge and "suggest updating PR branches" are on. `-5b` read them back with `gh api` and found them already applied (labels: accepted, accessibility, bug, documentation, duplicate, effect, enhancement, good first issue, help wanted, needs-info, needs-triage, out-of-scope).
 - [ ] The default squash commit message is the pull request title only (`squash_merge_commit_message` is `PR_BODY` today; the title-only value is `BLANK`). It is in the approved community package ("default message 'Pull request title'", D-004) and `CONTRIBUTING.md` already tells contributors the PR title becomes the commit on `main`; release-please and the title check depend on it. Applied by `-5b` with `gh api`, then read back.
 - [ ] Saved replies added by Ícaro by hand (a per-user setting, not available through the repo API).
+
+### BMI-077 — CodeRabbit's findings on PR #2
+
+CodeRabbit reviewed PR #2 on 2026-11-22: one review, 10 inline comments and 2 outside the diff (12 findings: 2 Major, 8 Minor, 3 Trivial counting the two outside the diff, per `-5b`). PM read the inline comments on GitHub. The merge waits for these (D-013, D-018). Each fix goes on the branch, each finding gets an answer on the PR (fixed, or why not), and findings that change scope go to Ícaro (Q-015), never applied silently. None of the fixes touches a shared-lock file.
+
+Corrections inside what the README already promises (no scope change):
+- [ ] **Major**, quality lane: `scripts/check-licenses.mjs` drops parentheses when it evaluates a license expression, so `(MIT OR Apache-2.0) AND GPL-3.0-only` passes on `MIT`. Keep the grouping and operator precedence (CodeRabbit suggests a parser such as `spdx-expression-parse`; check the project's dependencies first) and add a test that rejects that expression.
+- [ ] **Major**, ui lane: `src/ui/editor.ts` around line 106 (outside the diff): a slower, older image load can replace the current one. A load that is no longer the latest is dropped.
+- [ ] **Minor**, ui lane: `src/ui/editor.ts` line 178: the download reads the file name after the encode `await`; another load can change it meanwhile, so the name can belong to another image. Read it before the await.
+- [ ] **Minor**, ui lane: `src/ui/editor.ts` line 189 (outside the diff): the export format is read after encoding starts; snapshot it before.
+- [ ] **Minor**, ui lane: `src/i18n/index.ts`: a failed dynamic import of a locale makes `setLocale` reject, and `src/main.ts` awaits it before mounting, leaving a blank page. Keep the current locale and mount.
+- [ ] **Minor**, ui lane: `src/input/decode.ts`: the resize `createImageBitmap` has no error handling, so a failure shows the generic error and leaks the source bitmap. Turn it into `decode_failed` and release the bitmap.
+- [ ] **Minor**, ui lane: `src/input/url.ts`: a timeout on the direct fetch (the size cap is Q-015, part 2).
+- [ ] **Trivial**, server lane, tests only: `server/proxy/app.test.ts` adds redirect-hop cases for each guard the first hop enforces (port, credentials, internal addresses); `server/proxy/config.test.ts` adds `*`, `https://a.example,*` and a trailing empty entry to the `ALLOWED_ORIGINS` rejection cases.
+- [ ] **Trivial**, no code: `server/proxy/app.ts`: the same-origin gate doesn't stop a non-browser client that sends the header, so the rate limit is what limits it. Answer on the PR: the WAF rule (30 requests per 60 s per IP) is that limit. If the code comment or `docs/hosting.md` doesn't say this, add one sentence.
+
+Needs Ícaro, none started (Q-015): the release-please token, a size cap on the direct fetch, and the tagline wording.
+
+The checks (Verify, E2E Chromium, Conventional Commits title) must be green after the fixes. `-5b` answers each CodeRabbit comment through `gh`.
 
 ### BMI-076 — Scorecard and dependency-review workflows
 

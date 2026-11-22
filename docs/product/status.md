@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 46 `Must` done · 40 in review · 4 in progress · 2 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+0 of 47 `Must` done · 40 in review · 4 in progress · 3 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -50,13 +50,16 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 Only items that block something. Questions with a default in force are in decisions.md and don't wait.
 
 - **Nothing waits on a question to Ícaro right now.** Tagline and privacy wording, Q-009 and Q-010 are decided (D-010, D-015, D-016); the WAF rule and the bypass revocation are done.
-- **Nothing waits on a question about the CodeRabbit review now:** the path filters worked (D-023).- **Q-014:** the Vercel bot's public PR comment with the project ID and team slug. Recommendation in decisions.md.
+- **Q-015:** three CodeRabbit findings that aren't plain corrections (release-please token, a size cap on the direct fetch, the tagline wording). Recommendations in decisions.md.
+- **Q-016:** three design choices in the brand kit.- **Q-014:** the Vercel bot's public PR comment with the project ID and team slug. Recommendation in decisions.md.
 - **BMI-050 (go public):** Ícaro said yes (D-013), order in D-018. The flip waits on `-aa`'s go to `-5b`, which waits on the verified history rewrite (D-015). Still his own actions later: Vercel 2FA and usage alerts (BMI-073), saved replies (BMI-070), the social preview upload, installing the CodeRabbit app after the flip, and the go to merge PR #2 after CodeRabbit's corrections.
 - **D-004 and D-006 to D-019** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
 
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- **CodeRabbit finished PR #2:** 12 findings (2 Major, 8 Minor, 3 Trivial counting two outside the diff; per `-5b`, and PM read the inline comments). Tracked as BMI-077 (`Must`, `Ready`; the `Must` count goes to 47): nine corrections for the ui, server and quality lanes, among them the two Major ones (the license check ignoring parentheses; a stale image load replacing the current one). Three need Ícaro (Q-015): a token for release-please PRs (credential), a size cap on the direct fetch, and the tagline wording (his wording from D-010). BMI-075 (brand kit, `d897bb6`) is `Review`; its three design choices are Q-016.
 
 - CodeRabbit is now reviewing PR #2 ("Review in progress", per `-5b`): the `.coderabbit.yaml` of `57e170d` filters out `docs/`, `marketing/`, `.claude/`, markdown and `public/`, so the file count fits the free plan. D-023 closes Q-013. Findings that change scope go to Ícaro; the rest are corrections on the branch; the merge only after them and with green checks.
 

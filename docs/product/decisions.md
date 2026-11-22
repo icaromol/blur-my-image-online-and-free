@@ -20,6 +20,26 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-016 — Three design choices in the brand kit (BMI-075)
+
+The designer's kit (`d897bb6`, approved by the opus reviewer) leaves three choices for Ícaro:
+
+1. **The wordmark**: redrawn in Liberation Sans Bold (an open font, so it's clean vector text), or kept as the original lettering from his logo.
+2. **The accent**: one blue in two tones (one for use on white, one on black) as the only accent.
+3. **The icons** (180, 192 and 512 px): a blue bar on a dark tile.
+
+Recommendation: keep his original lettering for the logo itself, since it is his brand and D-022 lets the kit start from it, and use Liberation Sans Bold only for running text in the templates; accept the two-tone blue (a single blue can't meet contrast on both white and black); accept the dark tile with a blue bar for the icons. He looks at the rendered files in `brand/`, not at this text.
+
+Default in force: **the kit stays as committed and nothing from it reaches `public/` or `index.html`** until he answers.
+
+### Q-015 — Three CodeRabbit findings need Ícaro (credential, limit, wording)
+
+Of the 12 findings on PR #2 (BMI-077), nine are corrections inside what the README already promises. Three aren't, and PM doesn't decide them:
+
+1. **Release PRs and the required checks** (`.github/workflows/release-please.yml`). The `main` ruleset requires Verify, E2E (Chromium) and the Conventional Commits title; release-please opens its release PR with the default `GITHUB_TOKEN`, and a PR made by that token doesn't start those workflows, so the release PR would wait on checks that never run. Options: a fine-grained token or GitHub App token kept as a repo secret (creating it is Ícaro's action); closing and reopening the release PR by hand to trigger the checks, a common workaround that needs no secret; or letting a bypass actor merge release PRs, which weakens the ruleset. Recommendation: close and reopen by hand when the first release PR appears, no secret, and note it for the maintainer; revisit if releases become frequent. Default: the workflow stays as it is. No release exists before the merge of PR #2, so nothing waits.
+2. **A cap on the direct cross-origin fetch** (`src/input/url.ts`). The direct fetch has no timeout and no size cap, unlike the proxy. A timeout only prevents a stalled host from keeping the app loading forever, so it is a correction. A size cap would reject some images the app accepts today (large images are downscaled, per the README). Recommendation: a timeout of the same order as the proxy's, and no size cap. Default: timeout only.
+3. **The tagline wording** (`src/i18n/messages/en.json` and `pt-BR.json`, line 4). CodeRabbit suggests scoping "Image files never leave your device" to files the user opens, drops or pastes, like the README and the meta description, because a URL load goes through the proxy. The wording is the one Ícaro chose (D-010) and approved in `pt-BR` (D-010). The README, the meta description and the app's own notice already state the URL exception. Recommendation: keep his wording and answer the finding on the PR; the claim holds for the user's own files. Default: the taglines stay as approved.
+
 ### Q-014 — The Vercel bot commented on PR #2 with the project ID and the team slug
 
 Per `-aa` (relayed): the Vercel bot posted a public comment on PR #2 that contains the project ID and the team slug. The repo is public now, so anyone can read it. The slug already appears in Vercel's preview URLs, and the project ID isn't a secret by Vercel's own account, but the project's rule is to keep Vercel identifiers out of public places, and the bot will comment on every later PR.
