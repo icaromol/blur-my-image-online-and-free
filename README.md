@@ -97,7 +97,7 @@ This is the same model Photoshop uses for a Smart Filter with a layer mask, and 
 - accepts only `http` and `https` URLs,
 - resolves the hostname and refuses private, loopback and link-local addresses (SSRF protection), re-checking after each redirect, with at most 3 redirects,
 - requires an `image/*` content type,
-- caps the response size with a configurable limit (`MAX_BYTES`, default 4.5 MB, the Vercel Function response body limit) and times out slow fetches,
+- caps the response size with a configurable limit (`MAX_BYTES`, default 4,400,000 bytes, just under the 4.5 MB Vercel Function response body limit to leave room for headers) and times out slow fetches,
 - rejects cross-site callers (`Sec-Fetch-Site` / `Origin` checks) so it can't be used as a public proxy, behind a platform rate limit,
 - stores and logs nothing about the image.
 
