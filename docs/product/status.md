@@ -50,12 +50,15 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 Only items that block something. Questions with a default in force are in decisions.md and don't wait.
 
 - **Tagline and privacy wording:** decided, see D-010. The final `pt-BR` text is shown to Ícaro before the merge (BMI-051).
+- **Q-010:** the live alias, the unpublished WAF rule and the ignored files uploaded to Vercel. Needs his go for the Vercel actions; recommendation in decisions.md.
 - **BMI-050 (go public):** Ícaro said yes (D-013). Waiting on `-aa`'s go to `-5b` for the flip and on the answer to Q-009 (the author address in the history). After the flip he installs the CodeRabbit app; the merge of PR #1 comes after CodeRabbit's corrections.
 - **D-004, D-006, D-007, D-008, D-009** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
 
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- **Q-010 opened:** the production alias already serves a feature-branch deployment (per `-f2`, since 16:06; PM got 200 with the app and its CSP), the WAF rate-limit rule is still unpublished, and `-f2`'s local `vercel deploy` uploaded git-ignored files to Vercel. Hobby building from a private repo is proven (all 6 PR deployments `READY`). No Vercel action and no marketing post about the URL until Ícaro answers.
 
 - BMI-003's OG tags part is `Ready` for `-cc`: the OG image is approved by the reviewer and verified by the dispatcher. New `Later` item BMI-136 (the marketing brand CSS imports Google Fonts at render time; the app is not affected).
 

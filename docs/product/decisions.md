@@ -20,6 +20,19 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-010 — The production alias already serves a feature branch, and the proxy has no rate limit yet
+
+Found 2026-11-22 from `-f2`'s report, then checked by PM with a plain `GET`: `https://blur-my-image.vercel.app/` answers 200 with the app and its CSP, and `/api/image` is reachable (403 without a URL). Per `-f2`, a production deployment built from the branch commit `c380981` has served the alias publicly since 16:06, so the app is live before PR #1 is merged. That contradicts the plan in D-013 and in BMI-003 ("the first production deploy is the merge"), and the earlier statement here that the alias would serve the app only after the merge was wrong. Two more facts:
+
+- The WAF rate-limit rule on `/api/image` is staged and **not published**, so the URL proxy is open to the internet without a rate limit.
+- `-f2`'s local `vercel deploy` also uploaded git-ignored files (`.local/`, `.claude/settings.local.json`) to Vercel. Per `-f2` they aren't exposed through any URL; what they contain, and whether any of it is secret, isn't known to PM.
+
+Options: (a) publish the WAF rule now and keep the live alias as an early soft launch; (b) take the alias off the feature deployment until the merge; (c) either of those plus deleting the deployment that holds the uploaded ignored files and rotating anything secret that was in them.
+
+Recommendation: publish the WAF rule now regardless (it was a pre-merge requirement anyway, BMI-073), delete the deployment that carries the uploaded ignored files, and have `-f2` list what was in them so anything secret is rotated. For the soft launch: acceptable only once the rule is published; otherwise take the alias off the feature deployment until it is. Marketing keeps its pre-launch posture (no "try it now" posts) until Ícaro says the app is live. Publishing the rule and deleting a deployment are Vercel actions that need his go.
+
+Default in force: **no Vercel action is taken until he answers**, and no marketing post mentions the live URL.
+
 ### Q-009 — The author address in the commit history becomes public at the flip
 
 All 64 commits (every branch) carry the same author and committer address, the maintainer's own, found by the dispatcher's pre-flip scan on 2026-11-22. A public repo shows it in every commit. Rewriting the history afterwards doesn't take it back from clones and caches.
@@ -40,7 +53,7 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 
 ### Q-005 — Hosted URL
 
-The URL is `https://blur-my-image.vercel.app` (alias assigned by BMI-003, 2026-11-22, per `-f2`). It serves the app only after PR #1 is merged, so the README, the repo website field and the bug form get it at go-live, not before. Not blocking. See [../tooling.md](../tooling.md).
+The URL is `https://blur-my-image.vercel.app` (alias assigned by BMI-003, 2026-11-22, per `-f2`). It does serve the app today, from a feature-branch deployment (see Q-010). The README, the repo website field and the bug form get it at go-live. Not blocking. See [../tooling.md](../tooling.md).
 
 ## Decisions
 
