@@ -269,8 +269,7 @@ Reopened by D-010 and committed as `758fc6b` (`README.md`, `index.html`, `en.jso
 Done after `Review`:
 - Ícaro read and approved the `pt-BR` tagline as committed (relayed by `-aa`, 2026-11-22; the reviewer's "Seus arquivos…" variant is not used). Logged in D-010.
 
-Open, not holding `Review`:
-- Marketing text that quotes the old tagline or the provisional sentence is checked against the final wording. Not a code change: the marketing lane's last copy round does it; Ícaro authorized that round (relayed by `-aa`).
+Marketing text that quoted the old tagline or the provisional sentence now matches D-010: `cb39247` (audience and three posts) and `ad82c2e` (pre-launch plan), approved by the opus reviewer after Ícaro's direct yes for those lines (relayed by `-aa`). PM spot-checked that the plan marks the tagline as settled by D-010 and found no old wording left under `docs/marketing` or `marketing`. Nothing open on this item except the merge of PR #1.
 
 - [x] The status line says pre-release (v1 built and under review, not deployed) and no longer "planning, nothing implemented". It keeps marketing in its pre-launch posture: no "try it now" until BMI-003 gives a live URL. The live wording is set at go-public (BMI-050).
 - [x] The proxy portability sentence says `app.ts` is platform-neutral, Vercel and Node ship, and Cloudflare would need its own fetch and entry.

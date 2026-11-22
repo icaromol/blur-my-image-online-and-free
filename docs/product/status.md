@@ -57,6 +57,8 @@ Only items that block something. Questions with a default in force are in decisi
 
 ### 2026-11-22 (new PM session, handoff)
 
+- BMI-051's marketing criterion closed: `cb39247` and `ad82c2e` align the marketing text with D-010. BMI-051 has nothing open except the merge of PR #1. No item is `Ready` for any lane; BMI-066 waits for 2026-11-28.
+
 - Ícaro approved the committed `pt-BR` tagline (D-010, relayed by `-aa`) and authorized the last marketing copy round. The pre-merge read is done. What needs him now: merging PR #1 when he wants, BMI-070 (GitHub settings) and the BMI-050 go. Still on the board for him, with defaults in force: Q-006, BMI-003 (creating the Vercel project) and the BMI-073 checklist.
 
 - BMI-051 → `Review` again (`758fc6b`, D-010 wording in README, `index.html`, `en.json`, `pt-BR.json`). Still open and not blocking `Review`: Ícaro reads the `pt-BR` tagline before the merge (optional reviewer alternative "Seus arquivos de imagem…"), and marketing quotes the final wording.
