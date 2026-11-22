@@ -56,6 +56,8 @@ Only items that block something. Questions with a default in force are in decisi
 
 ### 2026-11-22 (new PM session, handoff)
 
+- **BMI-080 is `Review`:** `34f304f` (README and `docs/hosting.md`) says the 30 per 60 s limit exists only on Vercel and that the proxy code and the image have none, and records the 40-GET WAF test. PM confirmed the commit and the sentences. The usage-alert sentence (BMI-073) is not in it and is still the lane's one task.
+
 - Ícaro's answers, relayed by `-aa`: Vercel 2FA is on; usage notifications are on (his word; nobody can read either). **Speed Insights and analytics: he did not confirm them off.** He wants metrics on the hosted site, nothing of it in the open-source code, and may keep the project running with it later. Q-018 asks him how; nothing changes in Vercel or in the code meanwhile (default: everything off). Facts relayed by `-aa`: Hobby is for personal non-commercial use, so any revenue needs Pro or another host (Docker is the tested exit); Web Analytics is cookieless, served from the site's own domain, 50,000 events a month on Hobby and pauses when exceeded. The promise to keep them off is in the README (line 80), `docs/tooling.md`, BMI-003 and `e2e/privacy.spec.ts`; turning any on needs his decision, the README, the CSP and the privacy test updated. BMI-073's remaining task is the quality lane's wording of the usage-alert sentence.
 
 - **BMI-077 is `Review` again:** the locale-race fix is committed as `785982f`, approved by the reviewer and verified by the dispatcher (295 tests, e2e 37/37, size 43.54 of 45 kB and 192.56 of 195 kB). In progress now: BMI-079 (ui, the link notice) and BMI-080 (quality, docs); BMI-081 waits for BMI-079 because both touch the message files.

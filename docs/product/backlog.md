@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 48 `Must` done, 41 in review, 4 in progress (BMI-003, 050, 066, 070), 3 ready (BMI-073 for the README wording, BMI-076 after the merge, BMI-079), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 and BMI-081 (`Should`, `Ready`).
+Progress: 0 of 48 `Must` done, 41 in review, 4 in progress (BMI-003, 050, 066, 070), 3 ready (BMI-073 for the README wording, BMI-076 after the merge, BMI-079), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 (`Should`, `Review`) and BMI-081 (`Should`, `Ready`).
 
 ### E1. Foundation
 
@@ -104,7 +104,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-076 | Scorecard and dependency-review workflows (split out of BMI-050's post-flip list): `.github/workflows/`, actions pinned by SHA, in a PR of their own after the merge of PR #2 | Must | S | Ready | the merge of PR #2 |
 | BMI-077 | Address CodeRabbit's findings on PR #2: nine corrections in the ui, server and quality lanes; Ícaro's three answers added (D-025, D-026); a locale-race fix added after round 3 | Must | M | Review | the CodeRabbit review of PR #2 |
 | BMI-079 | Privacy notice under the link field (his wording, `en` and `pt-BR`), associated with the field for assistive tech, with unit and e2e tests; README privacy text states it | Must | S | Ready | |
-| BMI-080 | Document that the 30 requests per 60 s rate limit exists only on Vercel (WAF) and that anyone running Node or Docker must put their own limit in front; record the WAF test result in the docs | Should | S | Ready | |
+| BMI-080 | Document that the 30 requests per 60 s rate limit exists only on Vercel (WAF) and that anyone running Node or Docker must put their own limit in front; record the WAF test result in the docs | Should | S | Review | |
 | BMI-081 | The Vercel WAF deny comes back as plain text "Forbidden", not the proxy's JSON: see how the front reacts, propose a "too many requests" message with an i18n code, and note that a shared IP (school, carrier NAT) can hit the limit | Should | S | Ready | |
 
 ## Later (post-v1)
@@ -346,9 +346,11 @@ As a user pasting a link, I want to be told that the link goes through a server 
 
 The 30 requests per 60 s limit is a WAF rule on Vercel; the proxy code has none. Quality lane, docs only, in PR #2.
 
-- [ ] `README.md` and `docs/hosting.md` say that the limit exists only on Vercel and that anyone running the Node entry or the Docker image has to put their own limit in front.
-- [ ] The result of the WAF test is recorded in `docs/hosting.md`: 40 GETs, the 31st was denied (`x-vercel-mitigated: deny`), the block lasted about a minute and lifted by itself (per `-aa`; the test was run by `-f2`).
-- [ ] No claim says the proxy limits requests by itself.
+- [x] `README.md` and `docs/hosting.md` say that the limit exists only on Vercel and that anyone running the Node entry or the Docker image has to put their own limit in front.
+- [x] The result of the WAF test is recorded in `docs/hosting.md`: 40 GETs, the 31st was denied (`x-vercel-mitigated: deny`), the block lasted about a minute and lifted by itself (per `-aa`; the test was run by `-f2`).
+- [x] No claim says the proxy limits requests by itself.
+
+Delivered as `34f304f` (`README.md`, `docs/hosting.md`; PM confirmed the commit and that the diff says the rule exists only on Vercel, that the proxy code has no limit of its own, that the image has none either, and records the 40-GET test). Approved by the reviewer, per `-75`. `Review` until PR #2 merges. It does not touch the usage-alert sentence of BMI-073.
 
 ### BMI-081 — What the user sees when the rate limit denies
 
