@@ -20,18 +20,6 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
-### Q-016 — Three design choices in the brand kit (BMI-075)
-
-The designer's kit (`2a8d07a`, approved by the opus reviewer) leaves three choices for Ícaro:
-
-1. **The wordmark**: redrawn in Liberation Sans Bold (an open font, so it's clean vector text), or kept as the original lettering from his logo.
-2. **The accent**: one blue in two tones (one for use on white, one on black) as the only accent.
-3. **The icons** (180, 192 and 512 px): a blue bar on a dark tile.
-
-Recommendation: keep his original lettering for the logo itself, since it is his brand and D-022 lets the kit start from it, and use Liberation Sans Bold only for running text in the templates; accept the two-tone blue (a single blue can't meet contrast on both white and black); accept the dark tile with a blue bar for the icons. He looks at the rendered files in `brand/`, not at this text.
-
-Default in force: **the kit stays as committed and nothing from it reaches `public/` or `index.html`** until he answers.
-
 ### Q-012 — Allow `ossf/scorecard-action` in the Actions allowlist?
 
 The post-flip checklist (BMI-050) asked for a scorecard workflow and a dependency-review workflow, and neither exists. The repo's Actions allowlist has GitHub's own actions and a short list of third-party ones (pnpm/action-setup, release-please-action, zizmor-action, action-semantic-pull-request). `actions/dependency-review-action` is GitHub's, so it's allowed; `ossf/scorecard-action` is third-party and isn't.
@@ -53,6 +41,13 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the project's main domain on 2026-11-22, per `-aa`; the earlier `https://blur-my-image.vercel.app` answers 307 to it (PM read both with a plain `GET`). The README, the repo website field and the bug form get it only when Ícaro says (D-016). Not blocking.
 
 ## Decisions
+
+### D-027 — Brand kit: his original lettering, the two-tone blue and the icons are accepted (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answers, closing Q-016: (1) the wordmark is **his original lettering**, vectorized from `brand/source/logo-horizontal.png` (1983x793); Liberation Sans stays for running text only. The designer redoes the SVGs (horizontal and stacked, four colorways each) and touches the mark only if it has to change; vectorizing uses a mature tool (potrace or an equivalent) and the result is compared side by side with the original at small sizes. (2) The blue is two tones, `#0d62b8` on light backgrounds and `#7cc4ff` on dark ones, as the only accent: accepted. (3) The icons (favicon, apple-touch, 192, 512), as drawn now with a dark background and a light blue bar: accepted. (4) Applying the identity to the site (`index.html`, `public/`, the OG image) is a PR of its own after the merge of PR #2; the kit is a PR of its own too (`feat/brand-kit`), not part of #2. The app's color theme is still to be decided with him later.
+**Why:** it is his logo and his brand, and D-022 lets the kit start from it.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-075 (criteria changed), BMI-078 (new), `brand/README.md` (the note about the Liberation wordmark becomes history; `OFL.txt` stays while Liberation is used for text).
 
 ### D-026 — CC-BY-3.0 accepted for development tools only, so the license check can use a maintained SPDX parser (2026-11-22)
 

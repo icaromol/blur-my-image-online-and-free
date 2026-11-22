@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 47 `Must` done, 40 in review, 5 in progress (BMI-003, 050, 066, 070, 077), 1 ready (BMI-076, after the merge), 1 blocked (BMI-073, on Ícaro's own actions). Also BMI-074 (`Should`, `Done`) and BMI-075 (`Should`, `Review`).
+Progress: 0 of 47 `Must` done, 40 in review, 5 in progress (BMI-003, 050, 066, 070, 077), 1 ready (BMI-076, after the merge), 1 blocked (BMI-073, on Ícaro's own actions). Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `In progress`) and BMI-078 (`Should`, `Idea`).
 
 ### E1. Foundation
 
@@ -91,7 +91,8 @@ Approved package from three research reports (quality and CI, security baseline,
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
-| BMI-075 | Brand kit: vector logos (black, white, blue accent), minimal palette with contrast checked, favicon, OG image base, marketing CSS, short guide; app theme not included | Should | M | Review | |
+| BMI-075 | Brand kit: vector logos (his original lettering, vectorized; black, white, blue accent), minimal palette with contrast checked, favicon, OG image base, marketing CSS, short guide; app theme not included | Should | M | In progress | |
+| BMI-078 | Apply the brand to the site: favicon and apple-touch icon in `public/`, the link tags in `index.html`, the new OG image; in a PR of its own after the merge of PR #2 and the kit | Should | S | Idea | BMI-075, the merge of PR #2 |
 
 ### E6. Launch readiness
 
@@ -133,7 +134,7 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-136 | Marketing templates: `marketing/social/templates/brand.css` imports Google Fonts at render time (a network request on every render, for the `tip.html` template); self-host the font or drop the import. Only matters if `tip.html` is used; the app is not affected | Quality | Idea |
 | BMI-135 | Playwright config: don't silently reuse another process's server on port 4173 outside CI (`reuseExistingServer`); no evidence yet that this caused the 2026-11-22 failure (BMI-074) | Quality | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-078`; later effects `BMI-109`, features `BMI-127`, other later `BMI-137`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-079`; later effects `BMI-109`, features `BMI-127`, other later `BMI-137`.
 
 ---
 
@@ -161,9 +162,9 @@ Added as a `Should` verification of work already in `Review` (BMI-067, BMI-001).
 
 As the maintainer, I want one visual identity (minimalist, black and white, blue as the accent) so that the repo, the link preview and the posts look like one product.
 
-Requested by Ícaro (D-020, relayed by `-aa`) and confirmed as described by him (D-021). **The kit does not go into PR #2** (`-aa`, 2026-11-22): its 29 files would push the PR back over CodeRabbit's limit of 100. It goes in a PR of its own after the merge of PR #2; the commit was moved off the feature branch to `feat/brand-kit` (done by `-5b`, 2026-11-22), and nothing from it reaches `public/` or `index.html`. Committed as `2a8d07a` on the local branch `feat/brand-kit`, off PR #2 (29 files, `brand/` without `source/`, `brand.css` and `og.html`), verified by the dispatcher and approved by the opus reviewer after one correction round; `Review`. Left, with Ícaro's confirmation (Q-016): three designer choices; after them the ui lane copies the new OG image to `public/og-image.png`, puts the favicon in `public/` and links it from `index.html`. Lane: marketing, with the designer. Source: the two raw logos in `brand/source/` (stacked 1254x1254, horizontal 1983x793): raster, off-white background, compression artifacts. The logos are Ícaro's and may be published under MIT (D-022).
+Requested by Ícaro (D-020, relayed by `-aa`) and confirmed as described by him (D-021). **The kit does not go into PR #2** (`-aa`, 2026-11-22): its 29 files would push the PR back over CodeRabbit's limit of 100. It goes in a PR of its own after the merge of PR #2; the commit was moved off the feature branch to `feat/brand-kit` (done by `-5b`, 2026-11-22), and nothing from it reaches `public/` or `index.html`. Committed as `2a8d07a` on the local branch `feat/brand-kit`, off PR #2 (29 files, `brand/` without `source/`, `brand.css` and `og.html`), verified by the dispatcher and approved by the opus reviewer after one correction round; `Review`. Ícaro answered the three design choices (D-027): his original lettering is vectorized instead of the Liberation redraw, so the SVGs are redone (`In progress`); the two-tone blue and the icons are accepted. Putting the favicon in `public/`, linking it from `index.html` and the new OG image are BMI-078, a PR of its own after the merge of PR #2. Lane: marketing, with the designer. Source: the two raw logos in `brand/source/` (stacked 1254x1254, horizontal 1983x793): raster, off-white background, compression artifacts. The logos are Ícaro's and may be published under MIT (D-022).
 
-- [ ] Vector logos as SVG: the pixel-block mark (grey blocks fading into the black block) plus the wordmark "Blur My Image", in black, in white (reverse) and with the blue accent, each in stacked and horizontal versions. The symbol may keep the shape of Ícaro's mark; the wordmark may start from his wordmark, or be redrawn in a free font (SIL OFL) for a clean vector, the designer's call (D-022: the logos are his and may be published under MIT).
+- [ ] Vector logos as SVG (D-027): the wordmark is Ícaro's **original lettering**, vectorized from `brand/source/logo-horizontal.png` (1983x793) with a mature tool (potrace or an equivalent) and compared side by side with the original at small sizes; horizontal and stacked versions, four colorways each (black, white reverse, and the two blue tones); the pixel mark changes only if it has to. Liberation Sans Bold is used for running text only (the guide's note about a Liberation wordmark is history; `OFL.txt` stays while the font is used for text).
 - [ ] A minimal palette: black, white, greys and one blue accent. Every foreground and background pair actually used has its WCAG AA contrast checked and written down. The tokens live in one file.
 - [ ] Favicon: an SVG and PNG sizes, produced under `brand/`. Putting them in `public/` and linking them from `index.html` is a small follow-up for the ui lane (`-cc`), because both belong to that lane.
 - [ ] The OG image base and `marketing/social/templates/brand.css` use the new tokens, replacing the provisional CSS. The OG image stays 1200x630 and readable at small sizes, and the new render is reviewed before it replaces the committed `public/og-image.png`.

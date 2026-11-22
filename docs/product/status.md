@@ -50,12 +50,13 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 Only items that block something. Questions with a default in force are in decisions.md and don't wait.
 
 - **Nothing waits on a question to Ícaro right now.** Tagline and privacy wording, Q-009 and Q-010 are decided (D-010, D-015, D-016); the WAF rule and the bypass revocation are done.
-- **Q-016:** three design choices in the brand kit.
 - **D-004 and D-006 to D-019** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
 
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- D-027 (Ícaro, relayed by `-aa`) closes Q-016: the wordmark is his original lettering, vectorized with a mature tool (potrace or equivalent) and compared with the original at small sizes; the two-tone blue (`#0d62b8` on light, `#7cc4ff` on dark) and the icons are accepted. BMI-075 is `In progress` again to redo the SVGs; applying the brand to the site is the new BMI-078, a PR of its own after the merge of PR #2; the kit is its own PR (`feat/brand-kit`). The app's color theme stays for later.
 
 - `-5b` moved the brand kit to the local branch `feat/brand-kit` (`2a8d07a`) and pushed the feature branch without it (fast-forward); the 11 local commits changed hash and the ones cited in these docs were corrected from his map. CodeRabbit reviewed 91 of 140 files (under its limit of 100); a second round is running. The PR reply draft stays with `-5b`, to post only on `-aa`'s order.
 
