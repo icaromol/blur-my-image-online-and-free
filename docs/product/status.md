@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 45 `Must` done · 40 in review · 4 in progress · 1 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+0 of 46 `Must` done · 40 in review · 4 in progress · 2 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -56,6 +56,8 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- **Repo public, app live, no announcement.** Ícaro confirmed the flip directly in `-5b`'s session; `-aa` checked it without a login. Ruleset `main` is active with no bypass and requires Verify, E2E (Chromium) and the Conventional Commits title; private vulnerability reporting, secret scanning and push protection are on; fork PR approval covers all external contributors. The app answers at `https://blurmyimage.vercel.app` (a feature-branch build; the URL is not in the README or any marketing text). PR #2 stays a draft until `-aa` says; CodeRabbit reviews it as a draft (`drafts: true` in the `.coderabbit.yaml` that goes through PR #2). BMI-076 (scorecard and dependency-review workflows, a split of BMI-050's list, after the merge) is new: `Must` goes from 45 to 46; CodeQL also waits for the merge; Vercel fork protection is `-f2`'s read-only check.
 
 - **The repository is public** (by `-5b`; PM read `visibility: PUBLIC`, the description, 11 topics, the active ruleset on `main` and secret scanning plus push protection as enabled). Per `-5b`: vulnerability reporting on, fork PR approval for all external contributors; CodeQL not possible yet (`main` has no code); no scorecard or dependency-review workflow exists. `main` now takes changes only through PRs. Remaining on BMI-050: `.coderabbit.yaml`, PR #2 out of draft with a CodeRabbit review, corrections, merge, then CodeQL, the two workflows (Q-012 for scorecard), Vercel fork protection, good first issues and the first release. Residual: pre-rewrite SHAs fetchable (accepted), local backup tags and the hash map hold the old address on disk only.
 

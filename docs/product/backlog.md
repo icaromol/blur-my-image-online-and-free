@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 45 `Must` done, 40 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-073), 0 idea. Also BMI-074 (`Should`, `Done`) and BMI-075 (`Should`, `Ready`).
+Progress: 0 of 46 `Must` done, 40 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-073), 0 idea. Also BMI-074 (`Should`, `Done`) and BMI-075 (`Should`, `Ready`).
 
 ### E1. Foundation
 
@@ -100,6 +100,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-050 | Go-public checklist (see details; order set by D-018): rewrite history, flip, protections, CodeRabbit config, review, corrections, merge | Must | M | In progress | BMI-070, BMI-072; the merge also needs BMI-073 |
 | BMI-051 | README status line and content match what shipped | Must | S | Review | BMI-040 |
 | BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
+| BMI-076 | Scorecard and dependency-review workflows (split out of BMI-050's post-flip list): `.github/workflows/`, actions pinned by SHA, in a PR of their own after the merge of PR #2 | Must | S | Ready | the merge of PR #2 |
 
 ## Later (post-v1)
 
@@ -131,7 +132,7 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-136 | Marketing templates: `marketing/social/templates/brand.css` imports Google Fonts at render time (a network request on every render, for the `tip.html` template); self-host the font or drop the import. Only matters if `tip.html` is used; the app is not affected | Quality | Idea |
 | BMI-135 | Playwright config: don't silently reuse another process's server on port 4173 outside CI (`reuseExistingServer`); no evidence yet that this caused the 2026-11-22 failure (BMI-074) | Quality | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-076`; later effects `BMI-109`, features `BMI-127`, other later `BMI-137`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-077`; later effects `BMI-109`, features `BMI-127`, other later `BMI-137`.
 
 ---
 
@@ -285,6 +286,14 @@ Community files are in. Left is GitHub settings, which `-5b` applies now (D-011)
 - [ ] The default squash commit message is the pull request title only (`squash_merge_commit_message` is `PR_BODY` today; the title-only value is `BLANK`). It is in the approved community package ("default message 'Pull request title'", D-004) and `CONTRIBUTING.md` already tells contributors the PR title becomes the commit on `main`; release-please and the title check depend on it. Applied by `-5b` with `gh api`, then read back.
 - [ ] Saved replies added by Ícaro by hand (a per-user setting, not available through the repo API).
 
+### BMI-076 — Scorecard and dependency-review workflows
+
+Split out of BMI-050's post-flip list (same scope, now trackable; the `Must` count goes from 45 to 46). Quality lane, in a PR of its own after the merge of PR #2: `main` takes changes only through PRs, the workflows need the code on `main`, and PR #2 shouldn't grow. Not assignable before that merge.
+
+- [ ] A dependency-review workflow on pull requests, using `actions/dependency-review-action` (a GitHub action, allowed), pinned by full SHA, `permissions` minimal, `persist-credentials: false`, timeout, concurrency, like the existing workflows.
+- [ ] A scorecard workflow with `ossf/scorecard-action`, pinned by SHA, only once Ícaro adds it to the Actions allowlist (Q-012); until then the item is half done on purpose.
+- [ ] Both pass the existing workflow audit (zizmor) and appear as checks without being added to the required ones unless Ícaro says.
+
 ### BMI-050 — Go-public checklist
 
 Ícaro's answer is yes (D-013). Order set by D-018 (relayed by `-aa`): rewrite the history, flip with `-aa`'s explicit go, protections, `.coderabbit.yaml`, PR #2 ready with a CodeRabbit review, corrections, merge. CodeRabbit's Free plan does no line-by-line review on a private repo; the open-source plan, for a public one, does. The public `main` shows the old README until PR #2 merges.
@@ -302,18 +311,18 @@ Before the flip (repo private):
 
 The flip:
 - [x] The new PR is open (PR #2, draft, replaces the closed PR #1) and `-aa` gave `-5b` the go.
-- [x] **The repository is public** (2026-11-22, by `-5b`; PM read `visibility: PUBLIC`, the description and 11 topics, an active ruleset on `main` and the secret-scanning settings with a plain read). The URL stays out of the README and marketing until Ícaro says (D-016).
+- [x] **The repository is public** (2026-11-22, by `-5b`; Ícaro confirmed the flip directly in `-5b`'s session; `-aa` confirmed it without a login and PM read `visibility: PUBLIC`, the description and 11 topics, and the secret-scanning settings). Ruleset `main` is active with no bypass and requires Verify, E2E (Chromium) and the Conventional Commits title; private vulnerability reporting is on. The URL stays out of the README and marketing until Ícaro says (D-016).
 
 After the flip, in this order (state per `-5b`, partly read back by PM):
 - [x] Vulnerability reporting, secret scanning and push protection are on (PM read secret scanning and push protection as enabled; the private-reporting switch isn't in that response, so it rests on `-5b`'s word). Dependabot security updates are enabled.
-- [ ] CodeQL default setup: not possible yet, `main` has no code. Turn it on after the merge of PR #2.
+- [ ] CodeQL default setup: only after the merge of PR #2, since `main` has no code today.
 - [x] Ruleset on `main` active (PM read it): a pull request is required for every change to `main`.
 - [x] Fork PR workflows need approval from all external contributors (per `-5b`).
-- [ ] Scorecard and dependency-review workflows: they don't exist in the repo. Files to write after the merge of PR #2 (they need the code on `main`; `main` now takes changes only through PRs) in `.github/workflows/`, actions pinned by SHA, quality lane. `actions/dependency-review-action` is a GitHub action; `ossf/scorecard-action` is third-party and isn't on the Actions allowlist (Q-012). Dependency review can go first.
-- [ ] Vercel Git fork protection confirmed (`-f2` or Ícaro).
-- [ ] `.coderabbit.yaml` committed on the feature branch (configuration only, no secret; `-f5` proposes it, the quality lane commits through `-5b`).
+- [ ] Scorecard and dependency-review workflows: tracked as BMI-076, in a PR of their own after the merge so PR #2 doesn't grow.
+- [ ] Vercel Git fork protection confirmed (`-f2`, by a read-only check).
+- [ ] `.coderabbit.yaml` committed on the feature branch, so it goes through PR #2 (configuration only, no secret, `drafts: true` so CodeRabbit reviews while the PR is a draft; `-f5` proposes it, the quality lane commits through `-5b`).
 - [ ] BMI-073 pre-merge items done (Vercel 2FA, usage alerts, the platform claims checked; the bypass secret is revoked and the WAF rule is active).
-- [ ] PR #2 out of draft and `@coderabbitai review` posted (`-aa` says when).
+- [ ] CodeRabbit reviews PR #2 while it is still a draft (`drafts: true`); the PR leaves draft only when `-aa` says. The merge needs green checks, because `main` now requires them.
 - [ ] CodeRabbit's review answered and the corrections committed, checks green. Findings that change scope go to Ícaro, never applied silently.
 - [ ] Merge PR #2 (authorized by Ícaro only after the line above). It is the first official production deploy (D-005, D-013); the items in `Review` become `Done` against `main`; the link unfurl check of BMI-003 follows.
 - [ ] 3 to 5 good first issues, and the first tagged release (BMI-071).
