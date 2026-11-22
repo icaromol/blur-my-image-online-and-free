@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 48 `Must` done · 41 in review · 4 in progress · 3 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+0 of 48 `Must` done · 42 in review · 4 in progress · 2 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -55,6 +55,8 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- **BMI-079 is `Review`:** the notice under the link field is committed as `88a920a` and the README's privacy section cites it (`107808f`). PM confirmed the texts in both languages are Ícaro's exact words, the `aria-describedby` association and the new unit and e2e tests; the gate result (check, tests, e2e, contrast, size) is `-75`'s to report. BMI-081 can start now that the message files are free.
 
 - **BMI-080 is `Review`:** `34f304f` (README and `docs/hosting.md`) says the 30 per 60 s limit exists only on Vercel and that the proxy code and the image have none, and records the 40-GET WAF test. PM confirmed the commit and the sentences. The usage-alert sentence (BMI-073) is not in it and is still the lane's one task.
 

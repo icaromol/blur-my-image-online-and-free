@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 48 `Must` done, 41 in review, 4 in progress (BMI-003, 050, 066, 070), 3 ready (BMI-073 for the README wording, BMI-076 after the merge, BMI-079), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 (`Should`, `Review`) and BMI-081 (`Should`, `Ready`).
+Progress: 0 of 48 `Must` done, 42 in review, 4 in progress (BMI-003, 050, 066, 070), 2 ready (BMI-073 for the README wording, BMI-076 after the merge), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 (`Should`, `Review`) and BMI-081 (`Should`, `Ready`).
 
 ### E1. Foundation
 
@@ -103,7 +103,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
 | BMI-076 | Scorecard and dependency-review workflows (split out of BMI-050's post-flip list): `.github/workflows/`, actions pinned by SHA, in a PR of their own after the merge of PR #2 | Must | S | Ready | the merge of PR #2 |
 | BMI-077 | Address CodeRabbit's findings on PR #2: nine corrections in the ui, server and quality lanes; Ícaro's three answers added (D-025, D-026); a locale-race fix added after round 3 | Must | M | Review | the CodeRabbit review of PR #2 |
-| BMI-079 | Privacy notice under the link field (his wording, `en` and `pt-BR`), associated with the field for assistive tech, with unit and e2e tests; README privacy text states it | Must | S | Ready | |
+| BMI-079 | Privacy notice under the link field (his wording, `en` and `pt-BR`), associated with the field for assistive tech, with unit and e2e tests; README privacy text states it | Must | S | Review | |
 | BMI-080 | Document that the 30 requests per 60 s rate limit exists only on Vercel (WAF) and that anyone running Node or Docker must put their own limit in front; record the WAF test result in the docs | Should | S | Review | |
 | BMI-081 | The Vercel WAF deny comes back as plain text "Forbidden", not the proxy's JSON: see how the front reacts, propose a "too many requests" message with an i18n code, and note that a shared IP (school, carrier NAT) can hit the limit | Should | S | Ready | |
 
@@ -337,10 +337,12 @@ Added after CodeRabbit's third round (2026-11-22, per `-5b` and `-75`; PM didn't
 
 As a user pasting a link, I want to be told that the link goes through a server so that I don't assume the "never leaves your browser" promise covers it. D-028 (relayed from Ícaro): `en` "Links are fetched through our server. Files you open, drop or paste never leave your browser."; `pt-BR` "Links são buscados pelo nosso servidor. Arquivos que você abre, solta ou cola nunca saem do seu navegador." Lane ui, in PR #2, no new scope (the README already says links go through the proxy). Goes together with the locale-race fix already in BMI-077.
 
-- [ ] The notice sits under the link field, in both locales, from the message files (no inline text), with a style that matches the rest of the page.
-- [ ] Assistive tech: the text is tied to the field (`aria-describedby`), not only visual; the axe e2e still passes at WCAG 2.2 AA, with the contrast checked.
-- [ ] A unit test for the component and an e2e that finds the notice in `en` and `pt-BR`.
-- [ ] The README's privacy text mentions the notice, and the key-parity test, `pnpm check`, the unit and e2e suites and `pnpm size` pass (1.5 kB of room in the initial JavaScript).
+- [x] The notice sits under the link field, in both locales, from the message files (no inline text), with a style that matches the rest of the page.
+- [x] Assistive tech: the text is tied to the field (`aria-describedby`), not only visual; the axe e2e still passes at WCAG 2.2 AA, with the contrast checked.
+- [x] A unit test for the component and an e2e that finds the notice in `en` and `pt-BR`.
+- [x] The README's privacy text mentions the notice, and the key-parity test, `pnpm check`, the unit and e2e suites and `pnpm size` pass (1.5 kB of room in the initial JavaScript).
+
+Delivered as `88a920a` (`en.json`, `pt-BR.json`, `ImageInput.vue`, `image-input.test.ts` and `e2e/link-notice.spec.ts`) and `107808f` (the README's privacy section cites the notice). PM confirmed the commits, the exact texts in both message files, `aria-describedby="image-url-notice"` on the field and the new unit and e2e tests. Not yet reported to PM: the gate (check, tests, e2e, axe contrast, size); `-75` confirms it. `Review` until PR #2 merges.
 
 ### BMI-080 — The rate limit is Vercel's, not the proxy's
 
