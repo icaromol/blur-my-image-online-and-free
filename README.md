@@ -31,6 +31,12 @@ Each stroke uses the effect type and intensity selected at the moment you paint 
 
 That is the whole product. Features that don't serve those three steps go to the [backlog](#backlog) or get dropped.
 
+## Languages
+
+The interface is available in English and Brazilian Portuguese. It follows your browser's language on first visit (any Portuguese variant gets `pt-BR`, everything else gets English), and the language picker in the header overrides it. Your choice is remembered in this browser.
+
+Adding a language means adding one message file; see [docs/product/specs/i18n.md](docs/product/specs/i18n.md).
+
 ## Blur effects
 
 v1 ships the three effects people reach for most. The ranking comes from comparing what Photoshop, Illustrator and the free online blur tools all have in common (details in [docs/research.md](docs/research.md)).
@@ -113,6 +119,7 @@ The proxy uses only web-standard `Request`, `Response` and `fetch`, so the same 
 | Build | Vite | Standard for Vue, fast dev server |
 | Rendering | PixiJS 8 + pixi-filters | Maintained WebGL engine with the blur filters already written |
 | WebP fallback | @jsquash/webp | libwebp in WASM, loaded only where native encoding is missing |
+| i18n | vue-i18n | Official Vue i18n library; typed keys, plurals and number formatting, locales loaded on demand |
 | URL proxy | Hono, deployed as one Vercel Function | The only server code; web-standard APIs keep it portable |
 | Lint + format | Biome | One tool, one config |
 | Unit tests | Vitest | |
@@ -150,6 +157,7 @@ src/
   engine/     renderer, effect definitions, operation list, masks
   export/     format encoders and download
   ui/         Vue components
+  i18n/       locale setup and message files (en, pt-BR)
 server/
   proxy/      Hono app, SSRF checks, config (platform-agnostic)
   entries/    node.ts (Docker), worker.ts (Cloudflare)
@@ -158,12 +166,13 @@ api/
 docs/
   research.md
   hosting.md
+  product/    backlog, status, decisions, feature specs
 Dockerfile
 ```
 
 The frontend reads the proxy location from `VITE_PROXY_URL` (default `/api/image`), so static hosting and the proxy can be split across platforms.
 
-Adding an effect means adding one entry to `src/engine/effects.ts`: its id, label, controls and a function that builds the PixiJS filter from intensity and image size. Nothing else should need to change.
+Adding an effect means adding one entry to `src/engine/effects.ts` (its id, controls and a function that builds the PixiJS filter from intensity and image size) plus its label in each file under `src/i18n/messages/`. Nothing else should need to change.
 
 ## Backlog
 
