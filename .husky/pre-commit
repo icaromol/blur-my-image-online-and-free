@@ -3,7 +3,19 @@ if ! command -v gitleaks >/dev/null 2>&1; then
   exit 1
 fi
 gitleaks git --pre-commit --staged --redact --verbose --no-banner
-pnpm exec biome check --staged --no-errors-on-unmatched
-if git diff --cached --name-only | grep -qE '\.(ts|mts|cts|vue)$|(^|/)(package\.json|tsconfig[^/]*\.json)$'; then
-  pnpm exec vue-tsc --build
+
+# Check exactly what is being committed, not the working tree, so unfinished work elsewhere can't change the result.
+root=$(pwd)
+snapshot=$(mktemp -d)
+trap 'rm -rf "$snapshot"' EXIT
+git checkout-index --all --prefix="$snapshot/"
+ln -s "$root/node_modules" "$snapshot/node_modules"
+cd "$snapshot"
+
+staged=$(git -C "$root" diff --cached --name-only --diff-filter=ACMR)
+if [ -n "$staged" ]; then
+  echo "$staged" | tr '\n' '\0' | xargs -0 "$root/node_modules/.bin/biome" check --no-errors-on-unmatched --files-ignore-unknown=true
+fi
+if echo "$staged" | grep -qE '\.(ts|mts|cts|vue)$|(^|/)(package\.json|tsconfig[^/]*\.json)$'; then
+  "$root/node_modules/.bin/vue-tsc" --build
 fi
