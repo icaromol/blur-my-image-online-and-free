@@ -20,6 +20,14 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-014 — The Vercel bot commented on PR #2 with the project ID and the team slug
+
+Per `-aa` (relayed): the Vercel bot posted a public comment on PR #2 that contains the project ID and the team slug. The repo is public now, so anyone can read it. The slug already appears in Vercel's preview URLs, and the project ID isn't a secret by Vercel's own account, but the project's rule is to keep Vercel identifiers out of public places, and the bot will comment on every later PR.
+
+Recommendation: turn off the Vercel pull-request comments in the project's Git settings (previews still deploy; the GitHub status check stays), and have `-5b` delete the existing comment. Both are small and reversible; the first is a Vercel setting, so it needs Ícaro's go.
+
+Default in force: **no change** until he answers; PRs from `-5b` keep getting the comment meanwhile.
+
 ### Q-013 — CodeRabbit skipped PR #2 for size: how does the PR get its review?
 
 Per `-5b` (relayed, not seen by PM): CodeRabbit skipped PR #2 because it changes 134 files and the free plan's limit is 100, so no review happened. PM counted 136 files between `main` and the branch: about 100 under `src/`, `server/`, `e2e/`, `scripts/` and the root configs (the app, the proxy and its tests), and about 35 that aren't app code (`docs/`, `marketing/`, `.claude/`, `.github/ISSUE_TEMPLATE`, a PNG). Ícaro's condition (D-013, D-018) was that PR #2 is merged only after CodeRabbit's corrections, so this needs his decision.
@@ -31,6 +39,8 @@ Options:
 - **D. A paid CodeRabbit plan** with a higher limit, which is a purchase and his alone.
 
 Recommendation: A first, because it costs a file and one check; if the limit counts filtered files too, B (two PRs, the app PR kept under 100 with the filters). C only if he decides the second reviewer isn't worth the split.
+
+Update from `-aa` (2026-11-22): CodeRabbit's message was "134 files exceed the limit of 100", the free plan's limit and not a private-repo one. `-aa`, `-f5` and `-5b` are trying option A now: path filters that take `docs/`, `marketing/`, `.claude/`, markdown and `public/` out of the review while code, security and CI files stay in. If it still skips, the options are B (split), C (merge without CodeRabbit's review, which needs Ícaro's direct yes) or D (a paid plan).
 
 Default in force: **PR #2 isn't merged and stays a draft**, and nothing is split or bought without his word.
 

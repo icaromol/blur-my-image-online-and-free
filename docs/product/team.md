@@ -28,6 +28,8 @@ When a lane needs one that another lane holds, its item waits. A lane can still 
 
 Nobody runs `vercel deploy` from the working tree: it uploads git-ignored files (`.local/`, `.claude/settings.local.json`) as the deployment's source. Git sends what is committed, and the Git integration makes the deployments (D-016).
 
+Fork PRs: Git fork protection is on, so a fork PR's build waits for a team member and gets no environment variables first. Authorize a fork PR's deployment only after reading its diff, above all `vercel.json`, `api/`, `server/` and `package.json`: authorizing runs the fork's code in the build with the variables. The same rule goes into `docs/hosting.md` (BMI-073).
+
 ## Not lanes
 
 | Who | Role |

@@ -50,13 +50,16 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 Only items that block something. Questions with a default in force are in decisions.md and don't wait.
 
 - **Nothing waits on a question to Ícaro right now.** Tagline and privacy wording, Q-009 and Q-010 are decided (D-010, D-015, D-016); the WAF rule and the bypass revocation are done.
-- **Q-013:** how PR #2 gets its review after CodeRabbit skipped it for size. Recommendation in decisions.md.
+- **Q-013:** how PR #2 gets its review after CodeRabbit skipped it for size (path filters being tried first). Recommendation in decisions.md.
+- **Q-014:** the Vercel bot's public PR comment with the project ID and team slug. Recommendation in decisions.md.
 - **BMI-050 (go public):** Ícaro said yes (D-013), order in D-018. The flip waits on `-aa`'s go to `-5b`, which waits on the verified history rewrite (D-015). Still his own actions later: Vercel 2FA and usage alerts (BMI-073), saved replies (BMI-070), the social preview upload, installing the CodeRabbit app after the flip, and the go to merge PR #2 after CodeRabbit's corrections.
 - **D-004 and D-006 to D-019** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
 
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- CodeRabbit's skip was the free plan's 100-file limit, not a private-repo one. `-aa`, `-f5` and `-5b` are trying path filters (option A of Q-013) first. The maintainer rule for fork PRs is in `team.md` and goes into `docs/hosting.md` (BMI-073). New Q-014: the Vercel bot's public comment on PR #2 carries the project ID and team slug; recommendation: turn off the Vercel PR comments and delete the existing one, both with Ícaro's go.
 
 - Vercel Git fork protection is on (read-only check by `-f2`, not tested with a real fork PR): a fork PR's build waits for a team member and gets no environment variables first; the three proxy variables exist only in production and preview, as sensitive. A maintainer rule goes into `docs/hosting.md` (BMI-073): read the diff, above all `vercel.json`, `api/`, `server/` and `package.json`, before authorizing a fork PR's deployment.
 
