@@ -20,6 +20,10 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-024 — Do the three use-case pages stay, now that the home is the app screen?
+
+D-032 makes the landing the app's own screen with the copy underneath. BMI-085 planned a home and three use-case pages (blur a license plate, pixelate a screenshot, blur a face) as static pages. Question for Ícaro: do the use-case pages stay as separate pages that the app screen links to, or does everything live on the one screen (sections, no separate pages)? The SEO notes favour separate pages (one query intent per page), at the price of more files to keep true; one screen is simpler and ranks for fewer queries. Recommendation: keep the three use-case pages, small, linked from the sections under the app, since each search intent (plate, screenshot, face) deserves its own answer. Default in force: BMI-085 stays an `Idea` and nothing is built; the copy of BMI-084 is written for the home first.
+
 ### Q-023 — The in-app redaction warning promises too much
 
 The app's own warning (`en.json` line 47, `pt-BR.json` line 47) says: "Pixelated text can sometimes be recovered. For passwords or document numbers, use a high intensity." The opus reviewer read the 2016 study (PoPETs, Hill, Zhou, Saul and Shacham) and found no absolute safe threshold: mosaic accuracy falls as the grid nears the letters' size, and it recovered 24 px text up to a Gaussian radius of 45 px; its authors concluded that pixelation and blur aren't viable for redacting text. Bishop Fox's Unredacter post describes a search that renders guesses in the same font, and recommends black bars. So "use a high intensity" gives the same weak assurance as the README's false "roughly 20 px". It is the product's own text in two languages, so Ícaro decides, and it touches BMI-104 (a solid box, today in `Later`).
@@ -33,12 +37,6 @@ Recommendation: (a) now, since a warning that overstates safety is a defect in t
 D-016 says the URL stays out of the README and marketing until Ícaro says. Meanwhile `index.html` already carries it (`og:url` and `og:image`, on the repository that is public now), and the landing pages need the real host for `canonical` and `sitemap.xml` (decision 3 of `docs/marketing/landing/seo.md`, read through `-75`; PM hasn't read the file). So the URL is already discoverable, and the question is when it stops being a secret to the places that matter.
 
 Recommendation: release it with the go-live, in one step after the merge of PR #2: the first production deploy of the final build, the landing pages (BMI-085) and the README/marketing line, with the canonical and the sitemap built from the same host. Before that nothing changes. Default in force: the URL stays out of the README and marketing, `canonical` and `sitemap.xml` aren't built, and no post cites it.
-
-### Q-021 — Five choices for the landing page copy (BMI-084)
-
-The strategist's research (`docs/marketing/landing/research.md`: 19 pages from 18 sites, with URL and date) leaves five choices for Ícaro; the dispatcher follows the strategist's recommendation in the draft until he answers. (1) Is the landing a **page of its own** with a button to the editor, or the app's screen with the copy underneath? It decides whether the hero has a drop zone. Recommended: a page of its own. (2) The FAQ states **both link limits**: 100 MiB for the browser's direct fetch and about 4.2 MiB (`MAX_BYTES`, 4,400,000 bytes) when the link goes through our proxy; the README names only the second. Recommended: yes, in the FAQ only, not in the hero. (3) The FAQ states Vercel's **1-hour request log** (already in the README). Recommended: yes. (4) The face section says "**no automatic detection**", since searches for faces and plates are dominated by auto-detection tools and the product has a brush. Recommended: yes, said up front. (5) The page says **nothing about phones** until a test on a real device, and **nothing about analytics** until BMI-082 is decided and built. Recommended: both.
-
-Default in force: the strategist's recommendations, in the draft only; nothing is published.
 
 ### Q-020 — What does "overlapping images" mean? (a future spec, blocks nothing)
 
@@ -57,6 +55,13 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the project's main domain on 2026-11-22, per `-aa`; the earlier `https://blur-my-image.vercel.app` answers 307 to it (PM read both with a plain `GET`). The README, the repo website field and the bug form get it only when Ícaro says (D-016). Not blocking.
 
 ## Decisions
+
+### D-032 — Landing choices (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answers, closing Q-021, exactly as he gave them: (1) the landing is **the app's screen with the copy underneath**, against PM's recommendation of a page of its own; the hero has the editor's drop zone, there is no separate home page with a button. (2) In the FAQ he ticked **only** "the FAQ states both link limits": 100 MiB for the browser's direct fetch, and about 4.2 MiB (`MAX_BYTES`, 4,400,000 bytes) through the proxy. He did **not** tick "the FAQ states Vercel's 1-hour request log" nor "the face section opens with 'no automatic detection'": both are treated as **not wanted** in the FAQ and at the start of the face section. That doesn't take the 1-hour log out of the README, which carries it by D-004 item 1 and keeps it; it only concerns the landing. If the landing needs the detection notice, PM asks him again. (3) Silence about phones and about analytics: yes.
+**Why:** his choices. The README stays the full statement; the landing stays short.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-084 (criteria changed), BMI-085 (reshaped), Q-024.
 
 ### D-031 — Preview modes and the editable effect stack come after v1, in that order (2026-11-22)
 
