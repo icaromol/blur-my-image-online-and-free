@@ -50,12 +50,15 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 Only items that block something. Questions with a default in force are in decisions.md and don't wait.
 
 - **Nothing waits on a question to Ícaro right now.** Tagline and privacy wording, Q-009 and Q-010 are decided (D-010, D-015, D-016); the WAF rule and the bypass revocation are done.
+- **Q-013:** how PR #2 gets its review after CodeRabbit skipped it for size. Recommendation in decisions.md.
 - **BMI-050 (go public):** Ícaro said yes (D-013), order in D-018. The flip waits on `-aa`'s go to `-5b`, which waits on the verified history rewrite (D-015). Still his own actions later: Vercel 2FA and usage alerts (BMI-073), saved replies (BMI-070), the social preview upload, installing the CodeRabbit app after the flip, and the go to merge PR #2 after CodeRabbit's corrections.
 - **D-004 and D-006 to D-019** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
 
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- **CodeRabbit skipped PR #2 for size** (per `-5b`: 134 files against the free plan's limit of 100; PM counts 136 between `main` and the branch, about 100 of them app code and about 35 not). Ícaro's condition was a merge only after CodeRabbit's corrections, so Q-013 asks him how the PR gets its review: path filters, a split into smaller PRs, accepting no review, or a paid plan. Default: PR #2 stays a draft and unmerged.
 
 - **Repo public, app live, no announcement.** Ícaro confirmed the flip directly in `-5b`'s session; `-aa` checked it without a login. Ruleset `main` is active with no bypass and requires Verify, E2E (Chromium) and the Conventional Commits title; private vulnerability reporting, secret scanning and push protection are on; fork PR approval covers all external contributors. The app answers at `https://blurmyimage.vercel.app` (a feature-branch build; the URL is not in the README or any marketing text). PR #2 stays a draft until `-aa` says; CodeRabbit reviews it as a draft (`drafts: true` in the `.coderabbit.yaml` that goes through PR #2). BMI-076 (scorecard and dependency-review workflows, a split of BMI-050's list, after the merge) is new: `Must` goes from 45 to 46; CodeQL also waits for the merge; Vercel fork protection is `-f2`'s read-only check.
 

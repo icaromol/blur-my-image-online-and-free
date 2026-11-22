@@ -322,7 +322,7 @@ After the flip, in this order (state per `-5b`, partly read back by PM):
 - [ ] Vercel Git fork protection confirmed (`-f2`, by a read-only check).
 - [ ] `.coderabbit.yaml` committed on the feature branch, so it goes through PR #2 (configuration only, no secret, `drafts: true` so CodeRabbit reviews while the PR is a draft; `-f5` proposes it, the quality lane commits through `-5b`).
 - [ ] BMI-073 pre-merge items done (Vercel 2FA, usage alerts, the platform claims checked; the bypass secret is revoked and the WAF rule is active).
-- [ ] CodeRabbit reviews PR #2 while it is still a draft (`drafts: true`); the PR leaves draft only when `-aa` says. The merge needs green checks, because `main` now requires them.
+- [ ] CodeRabbit reviews PR #2 while it is still a draft (`drafts: true`). **It skipped PR #2 for size** (134 files against the free plan's 100; PM counts 136): Q-013 decides how the PR gets its review (path filters, a split into smaller PRs, accepting no review, or a paid plan). The PR leaves draft only when `-aa` says; the merge needs green checks, because `main` now requires them.
 - [ ] CodeRabbit's review answered and the corrections committed, checks green. Findings that change scope go to Ícaro, never applied silently.
 - [ ] Merge PR #2 (authorized by Ícaro only after the line above). It is the first official production deploy (D-005, D-013); the items in `Review` become `Done` against `main`; the link unfurl check of BMI-003 follows.
 - [ ] 3 to 5 good first issues, and the first tagged release (BMI-071).
