@@ -23,6 +23,12 @@ const SAMPLES: Record<string, number[]> = {
   "image/bmp": [..."BM\0\0"].map((c) => c.charCodeAt(0)),
 };
 
+function sample(type: string): number[] {
+  const bytes = SAMPLES[type];
+  if (!bytes) throw new Error(`no sample bytes for ${type}`);
+  return bytes;
+}
+
 function image(body: Uint8Array = PNG, headers: Record<string, string> = {}) {
   return new Response(body, {
     headers: { "content-type": "image/png", ...headers },
@@ -130,7 +136,7 @@ describe("file signature", () => {
 
   it("rejects a body whose signature differs from the declared type", async () => {
     const res = await proxy(async () =>
-      image(new Uint8Array(SAMPLES["image/jpeg"]), {
+      image(new Uint8Array(sample("image/jpeg")), {
         "content-type": "image/png",
       }),
     )("https://example.com/a.png");
@@ -238,8 +244,8 @@ describe("proxy privacy", () => {
       referer: "https://blur.example/page",
       "x-forwarded-for": "203.0.113.9",
     });
-    const [, init] = fetch.mock.calls[0];
-    expect(init.headers).toEqual({
+    const init = fetch.mock.calls[0]?.[1];
+    expect(init?.headers).toEqual({
       "user-agent":
         "BlurMyImageProxy/1 (+https://github.com/icaromol/blur-my-image-online-and-free)",
       accept:
@@ -389,7 +395,7 @@ describe("upstream response", () => {
     ["image/webp", "image/webp"],
   ])("relabels %s as %s", async (upstream, canonical) => {
     const res = await proxy(async () =>
-      image(new Uint8Array(SAMPLES[canonical]), { "content-type": upstream }),
+      image(new Uint8Array(sample(canonical)), { "content-type": upstream }),
     )("https://example.com/a.png");
     expect(res.status).toBe(200);
     expect(res.headers.get("content-type")).toBe(canonical);

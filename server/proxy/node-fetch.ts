@@ -19,7 +19,8 @@ export const publicOnlyLookup: LookupFunction = (
       return;
     }
     const blocked = addresses.find((entry) => !isPublicAddress(entry.address));
-    if (blocked || addresses.length === 0) {
+    const [first] = addresses;
+    if (blocked || !first) {
       callback(
         new BlockedTargetError("resolved", blocked?.address ?? hostname),
         "",
@@ -30,7 +31,7 @@ export const publicOnlyLookup: LookupFunction = (
     if (options.all) {
       callback(null, addresses);
     } else {
-      callback(null, addresses[0].address, addresses[0].family);
+      callback(null, first.address, first.family);
     }
   });
 };

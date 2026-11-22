@@ -16,7 +16,8 @@ export const SIGNATURE_BYTES = 64;
 
 export function canonicalDeclaredType(header: string | null) {
   if (header === null || header.includes(",")) return undefined;
-  const type = header.split(";")[0].trim().toLowerCase();
+  const [rawType = ""] = header.split(";");
+  const type = rawType.trim().toLowerCase();
   return Object.hasOwn(DECLARED_TYPES, type) ? DECLARED_TYPES[type] : undefined;
 }
 
