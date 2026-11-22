@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 48 `Must` done · 43 in review · 4 in progress · 1 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+0 of 50 `Must` done · 45 in review · 4 in progress · 1 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -55,6 +55,12 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- **BMI-088 and BMI-086 are `Review`; BMI-084's drafts are committed.** Local on the feature branch, not pushed: `c00002d` (the warning for every effect, with `aria-describedby="effects-warning"` on the radio group and the tests; PM confirmed the commit and the attribute), `a3f312f` (the study wording and no more intensity advice), `ec54b1f` (the README says an `http://` link always goes through the proxy; "keeps nothing" became "doesn't keep a copy of the image" in the landing and in the README line 78) and `2b1492d` (the landing and use-case drafts and the research, waiting for Q-024). The dispatcher's gate on the tree at `ec54b1f`: check clean, 307 tests, build, e2e 50/50, size 43.8 of 45 kB and 192.96 of 195 kB. What closes before the merge: `-aa`'s go to push, CodeRabbit's fifth round and a clean-copy check. BMI-087 stays off PR #2, on its own branch after the merge.
+
+- **A defect in the landing drafts** (a critique Ícaro asked for, checked by `-aa`; PM grepped it): three use-case pages and one row of the claims table say the proxy "keeps nothing", which overstates it (Vercel's log keeps the path with the image URL, the IP and the user agent for 1 hour). The lane fixes it (the "doesn't keep a copy of the image" wording, plus a rule in the claims table) and the reviewer reads it; the rest of the critique goes to Ícaro first. PM did not edit the marketing files.
+
+- **Ícaro accepted the README lines 47 and 58 and the `aria-describedby`** (relayed by `-aa`): "Obscuring faces and plates; not for text that must stay secret" and "The app shows this warning with every effect." Cleared to proceed: the reviewer's final read, the commit list to `-5b`, the push, CodeRabbit on the final head and the merge with green checks, after `-aa`'s word.
 
 - **BMI-088 approved again by the opus reviewer after D-034** (via `-75`): the final `pt-BR`, the warning for the three effects in both languages, one `effects.warning` key, six axe tests and an e2e per language, contrast 7.4:1 and 9.8:1; gate check, 307 tests, e2e 49/49, size within budget. Open items from it: the warning's `aria-describedby` on the group of effect radios is part of the item (D-034 asked for "aria without repeated noise"); `README.md` line 47 (the Pixelate line) also changed, a text change PM didn't see Ícaro authorize, so `-aa` tells him; the staging of the JSON hunks is delicate (the removal of `effects.pixelate.warning` and the addition of `effects.warning` go together). A final read by the reviewer over the whole set comes next, then the commit list.
 
