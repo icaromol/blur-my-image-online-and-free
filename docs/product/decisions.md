@@ -20,6 +20,20 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-018 — Page-view metrics on the hosted site (Speed Insights, analytics)
+
+Ícaro didn't confirm that Speed Insights and analytics are off. Per `-aa`: he wants metrics on the **hosted** site (Vercel's measurement), nothing of it in the open-source code, and he may keep the project running with it in the future. Nothing changes in Vercel or in the code until he decides (his and `-aa`'s call).
+
+Where the current promise lives (PM checked): `README.md` line 80, "No analytics cookies, no tracking pixels"; `docs/tooling.md` and BMI-003, which say to keep the Vercel Toolbar, Web Analytics and Speed Insights off because they inject third-party scripts, against the privacy promise; and `e2e/privacy.spec.ts`, which proves the page makes no third-party requests and sets no cookies. The first point of that list came from the security report, not from D-000, whatever the label.
+
+Facts `-aa` checked (relayed): the Vercel Hobby plan is for personal, non-commercial use (fair use), so any revenue, an ad or a paid plan, needs Pro or another host (the Docker image is the tested way out); Web Analytics has no cookies, serves its script from the site's own domain, allows 50,000 events a month on Hobby and pauses when that is exceeded; the sources disagree about cookies in Speed Insights, which is not confirmed. PM adds, unchecked: Web Analytics usually needs a script tag or a package in the page, so keeping it out of the open-source code may need a build-time switch for the hosted build only; someone checks the documentation before any plan is made.
+
+Options: (a) keep everything off, as promised today; (b) Web Analytics only on the hosted deployment, with the README's privacy text, the CSP and `e2e/privacy.spec.ts` changed on purpose and a line in the app saying the host counts page views without cookies; (c) a privacy-friendly analytics service of another company, which is a third-party script and the same changes plus a processor to name; (d) server-side numbers only (the proxy's request counts from Vercel's runtime logs and the WAF), with no script in the page.
+
+Recommendation: (a) until the launch decision, then (b) if he wants page-view numbers, only on the hosted build, with the privacy text honest about it. (d) is a free source for the proxy's usage in the meantime. Whatever he picks, turning any of these on is his decision plus an update of the README, the CSP and the privacy test.
+
+Default in force: **everything stays off** and nothing changes in the code or in Vercel.
+
 ### Q-012 — Allow `ossf/scorecard-action` in the Actions allowlist?
 
 The post-flip checklist (BMI-050) asked for a scorecard workflow and a dependency-review workflow, and neither exists. The repo's Actions allowlist has GitHub's own actions and a short list of third-party ones (pnpm/action-setup, release-please-action, zizmor-action, action-semantic-pull-request). `actions/dependency-review-action` is GitHub's, so it's allowed; `ossf/scorecard-action` is third-party and isn't.

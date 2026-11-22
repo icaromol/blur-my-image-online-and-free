@@ -273,10 +273,10 @@ Status: **Ready** for the quality lane's wording task (2026-11-22). `-f2` read b
 Not everything here has to be done before the repo is public. The flip doesn't depend on Vercel. What matters is the first official production deploy, the merge of PR #2 (D-005, D-017), which now comes before the flip. Split, nothing dropped:
 
 Before the merge of PR #2 (the real build goes to production; the alias already serves an earlier build, D-016):
-- [ ] Vercel account: 2FA on (Ícaro, by hand).
+- [x] Vercel account: 2FA on (Ícaro, by hand; his word, nobody can read it).
 - [x] The "Protection Bypass for Automation" secret that `vercel curl` created is revoked (Ícaro; existence checked by `-f2`).
 - [x] The WAF rate-limit rule on `/api/image` is published and active (read back by `-f2`).
-- [ ] Vercel project settings from BMI-003: env vars, one WAF rate-limit rule on `/api/image`, Toolbar, Web Analytics and Speed Insights off; usage alerts on (`-f2` for what the tools can set; Ícaro for the rest).
+- [x] Vercel project settings from BMI-003 (read back by `-f2`, 2026-11-22): the environment variables, the WAF rate-limit rule, the Toolbar and Web Analytics off. Usage notifications are on (Ícaro's word; nobody can read them). **Speed Insights is not confirmed off**: Ícaro wants page-view metrics on the hosted site, so the decision is Q-018 and nothing changes meanwhile.
 - [ ] Each README or `docs/hosting.md` claim that only the platform can make true is checked against the platform, or reworded (quality lane). Two parts:
   - Ready now, no Vercel setting needed: the 1-hour request-log retention on Hobby and the 4.5 MB request and response body limit, checked against Vercel's current documentation (cite the page and the date) and against what `docs/hosting.md` and the README say; reworded where they differ.
   - Done by the quality lane and approved by the opus reviewer (commit requested from `-5b`; PM didn't re-check the Vercel citations): the 1-hour log retention and the 4.5 MB body limit (streamed responses excepted) agree with Vercel's documentation, and `MAX_BYTES` 4,400,000 matches `config.ts` and `app.ts`.
@@ -285,7 +285,7 @@ Before the merge of PR #2 (the real build goes to production; the alias already 
   - New, from `-f2` and the dispatcher: a short maintainer rule in `docs/hosting.md`, without the app URL: authorize a fork PR's deployment on Vercel only after reading its diff, above all `vercel.json`, `api/`, `server/` and `package.json`, because authorizing runs the fork's code in the build with the environment variables. Quality lane, doc only; `CONTRIBUTING.md` is for contributors and doesn't carry it.
   - One test to back the README sentence (reviewer, via the dispatcher; server lane, test only, no behavior change): `server/proxy/app.test.ts` covers a declared `Content-Length` over the cap (413) and an undeclared body that passes it (aborted stream), but not a body that declares a size under the cap and then sends more bytes, which `limitBytes` cuts and the README now describes ("when the body grows past it"). Add that case, for example declare 8 bytes and send 17 and expect `arrayBuffer()` to reject.
   - Still open on this item: the usage-alert claim (the README says "planned") until the alerts are set.
-  - Now checkable: the rate-limit rule claim (the rule is active; that it fires isn't proven yet, see BMI-003). Still waits on usage alerts being set: the usage-alert claim.
+  - Checkable now: the rate-limit claim (the rule is active and the test shows it fires, BMI-003) and the usage-alert claim, worded only with what is true: Hobby pauses the project when a limit is hit, with no bill, and nothing promises alerts (Ícaro turned usage notifications on, but nobody can read that setting). The README must not claim analytics are off beyond what Q-018 leaves; line 80 ("No analytics cookies, no tracking pixels") stays true while everything is off.
 
 After the flip, which now follows the merge (they only exist on a public repo; they are the BMI-050 list):
 - [ ] GitHub Actions and security settings: private vulnerability reporting, push protection, CodeQL default, fork PR workflows needing approval, the `main` ruleset, scorecard and dependency-review.
