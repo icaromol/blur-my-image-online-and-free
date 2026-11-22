@@ -36,12 +36,14 @@ Write the proxy so that leaving Vercel means swapping one entry file (see [Porta
 ## Vercel Hobby caveats
 
 1. **Non-commercial only.** Adding ads, and possibly a donation button, requires Pro or moving off. This is the most likely migration trigger, before traffic.
-2. **The image proxy can be abused.** Anyone could use `/api/image` as a free proxy and drain the quota. Hobby allows 3 custom firewall rules, only 1 of them a rate limit. A community thread from October 2026 also reports that choosing a 429 response for that rule opens a Pro upgrade prompt. Defenses that don't depend on the platform:
+2. **The image proxy can be abused.** Anyone could use `/api/image` as a free proxy and drain the quota. Hobby allows 3 custom firewall rules, only 1 of them a rate limit. A community thread from October 2026 also reports that choosing a 429 response for that rule opens a Pro upgrade prompt. Defenses (the first two don't depend on the platform):
    - reject requests whose `Sec-Fetch-Site` isn't `same-origin` or whose `Origin` is another site,
    - enforce the size cap and a fetch timeout,
-   - spend the one WAF rate-limit rule on `/api/image`.
+   - spend the one WAF rate-limit rule on `/api/image`: 30 requests per 60 seconds per IP. The rule exists only on Vercel. The proxy code has no rate limit of its own.
 3. **Hitting a limit takes the site down**, in most cases until 30 days have passed. For a free tool that's better than a surprise bill, but monitor usage.
 4. **The 4.5 MB body limit belongs to Vercel, not the product.** It applies to request bodies and to responses that aren't streamed. The proxy only takes GET requests and streams its response, so its own cap, `MAX_BYTES` (4,400,000 by default), is the one that decides. Keep it in configuration and under 4.5 MB, so it stays valid if the response is ever buffered.
+
+The rate-limit rule from caveat 2 was tested by hand on the live deployment with a burst of 40 GET requests to `/api/image`. The 31st was denied with the response header `x-vercel-mitigated: deny`, and the block lifted by itself after about a minute. A denied request gets the platform's plain text "Forbidden", not the proxy's JSON error. Usage alerts are still planned, not set up.
 
 ### Reviewing pull requests from forks
 
@@ -82,7 +84,7 @@ Rules:
 
 ### Dockerfile sketch
 
-Serves the static build and the proxy from one process. The real `Dockerfile` also pins both stages to an image digest.
+Serves the static build and the proxy from one process. The real `Dockerfile` also pins both stages to an image digest. The image has no rate limit: anyone exposing it, or running the Node entry directly, must put their own limit in front (a reverse proxy, a WAF or similar).
 
 ```dockerfile
 FROM node:24-slim AS build
