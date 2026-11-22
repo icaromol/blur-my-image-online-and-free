@@ -41,7 +41,7 @@ Write the proxy so that leaving Vercel means swapping one entry file (see [Porta
    - enforce the size cap and a fetch timeout,
    - spend the one WAF rate-limit rule on `/api/image`.
 3. **Hitting a limit takes the site down**, in most cases until 30 days have passed. For a free tool that's better than a surprise bill, but monitor usage.
-4. **The 4.5 MB body limit belongs to Vercel, not the product.** It applies to request bodies and to responses that aren't streamed. The proxy only takes GET requests and streams its response, so its own cap, `MAX_BYTES` (4,400,000 by default), is the one that decides. Keep it in configuration, below 4.5 MB.
+4. **The 4.5 MB body limit belongs to Vercel, not the product.** It applies to request bodies and to responses that aren't streamed. The proxy only takes GET requests and streams its response, so its own cap, `MAX_BYTES` (4,400,000 by default), is the one that decides. Keep it in configuration and under 4.5 MB, so it stays valid if the response is ever buffered.
 
 ## Portable layout
 

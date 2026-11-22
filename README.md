@@ -105,9 +105,9 @@ This is the same model Photoshop uses for a Smart Filter with a layer mask, and 
 - accepts only `http` and `https` URLs on their default ports (80 and 443), with no username or password,
 - resolves the hostname and refuses private, loopback and link-local addresses (SSRF protection), re-checking after each redirect, with at most 3 redirects,
 - accepts only PNG, JPEG, GIF, WebP, AVIF and BMP content types, checks the file's first bytes against the declared type, and re-labels the response with the canonical type for the format rather than passing the upstream header through,
-- caps the response size with a configurable limit (`MAX_BYTES`, default 4,400,000 bytes, below the 4.5 MB response body limit Vercel documents for Functions, which doesn't apply to streamed responses, so the proxy refuses a larger image itself) and times out slow fetches,
+- caps the response size with a configurable limit (`MAX_BYTES`, default 4,400,000 bytes, below the 4.5 MB response body limit Vercel documents for Functions, which doesn't apply to streamed responses, so the proxy enforces its own cap: a 413 when the declared size is over the cap, and an aborted stream when an undeclared body passes it) and times out slow fetches,
 - rejects cross-site callers (`Sec-Fetch-Site` / `Origin` checks),
-- relies on those header checks only to stop other websites from using the proxy. A script can forge them, so scripted abuse is limited by a rate-limit rule on `/api/image` in the Vercel firewall plus usage alerts, both set up at deploy time,
+- relies on those header checks only to stop other websites from using the proxy. A script can forge them, so scripted abuse meets a rate-limit rule on `/api/image` in the Vercel firewall, active at 30 requests per 60 seconds per IP. Usage alerts are planned,
 - stores nothing about the image and logs nothing itself.
 
 `app.ts` is platform-neutral: it takes a `fetch` function and uses only web-standard `Request` and `Response`. Vercel (`api/image.ts`) and Node in Docker (`server/entries/node.ts`) ship today. Cloudflare Workers would need its own fetch (the Node one in `node-fetch.ts` relies on `node:dns`) and its own entry file. See [docs/hosting.md](docs/hosting.md).

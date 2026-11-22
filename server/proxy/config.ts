@@ -5,7 +5,7 @@ export type ProxyConfig = {
   allowedOrigins: string[];
 };
 
-// Just under Vercel's 4.5 MB function response limit, which also counts headers.
+// Below Vercel's 4.5 MB response body limit (streamed responses are exempt, so this cap is what decides).
 const DEFAULT_MAX_BYTES = 4_400_000;
 
 function positiveInt(value: string | undefined, fallback: number): number {
