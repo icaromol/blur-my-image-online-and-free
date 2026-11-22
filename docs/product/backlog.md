@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 50 `Must` done, 43 in review, 4 in progress (BMI-003, 050, 066, 070), 3 ready (BMI-076 after the merge, BMI-086, BMI-088), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 and BMI-081 (`Should`, `Review`), BMI-082 (`Should`, `Ready`, after the merge), BMI-083 (`Should`, `Idea`) and BMI-084 and BMI-087 (`Should`, `Ready`) and BMI-085 (`Should`, `Idea`).
+Progress: 0 of 50 `Must` done, 43 in review, 6 in progress (BMI-003, 050, 066, 070, 086, 088), 1 ready (BMI-076, after the merge), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 and BMI-081 (`Should`, `Review`), BMI-082 (`Should`, `Ready`, after the merge), BMI-083 (`Should`, `Idea`) and BMI-084 and BMI-087 (`Should`, `Ready`) and BMI-085 (`Should`, `Idea`).
 
 ### E1. Foundation
 
@@ -100,9 +100,9 @@ Approved package from three research reports (quality and CI, security baseline,
 | --- | --- | --- | --- | --- | --- |
 | BMI-084 | Complete landing page copy in English, after research (competitors, search intent per persona, conversion patterns), drafted in `docs/marketing/landing/`; building the page is BMI-078 and is not part of this item | Should | M | Ready | |
 | BMI-085 | The landing built as the app's own screen with the copy underneath (D-032), as static HTML the crawlers can read, plus the use-case pages if Ícaro keeps them (Q-024), with the technical SEO the SEO file lists: canonical, `robots.txt`, `sitemap.xml`, a real `<h1>`, `<html lang>`, a minimal `WebApplication` block; from the copy of BMI-084; after the merge of PR #2 | Should | L | Idea | BMI-084, BMI-078, the merge of PR #2, Q-022 |
-| BMI-086 | Correct statements that are false or imprecise and already public: the "roughly 20 px" figure and the Unredacter wording in the README and in the project and marketing notes, and the README's account of which links use the proxy; before the merge of PR #2 | Must | S | Ready | |
+| BMI-086 | Correct statements that are false or imprecise and already public: the "roughly 20 px" figure and the Unredacter wording in the README and in the project and marketing notes, and the README's account of which links use the proxy; before the merge of PR #2 | Must | S | In progress | |
 | BMI-087 | A proxied download cut at the proxy's cap, with no declared size, shows the generic error; the user should learn that the image is too large for the proxy | Should | S | Ready | |
-| BMI-088 | Rewrite the in-app redaction warning (line 47 of `en.json` and `pt-BR.json`): blur and pixelate don't really hide what must stay secret, and for a secret one covers or crops; the shortest wording, no new feature; Ícaro reads the `pt-BR` before the merge | Must | S | Ready | |
+| BMI-088 | Rewrite the in-app redaction warning (line 47 of `en.json` and `pt-BR.json`): blur and pixelate don't really hide what must stay secret, and a secret is covered in another editor or left out; the shortest wording, no new feature; Ícaro reads the `pt-BR` before the merge | Must | S | In progress | |
 
 ### E6. Launch readiness
 
@@ -411,11 +411,13 @@ Spec: [specs/hosted-analytics.md](specs/hosted-analytics.md). Decided by Ícaro 
 
 Authorized by Ícaro (D-033, relayed by `-aa`): the text next to the Pixelate option ("Pixelated text can sometimes be recovered. For passwords or document numbers, use a high intensity.") gives the same weak assurance as the README's false figure. PM read the 2016 study's text: its conclusion is that mosaicing and blurring "are not viable approaches for text redaction". The rewrite adds no feature and states no number. Ui lane, in PR #2, after the opus reviewer.
 
+Delivered by `-cc` and verified by `-75` (2026-11-22; not committed, with the opus reviewer; PM hasn't read the diff): three hunks for PR #2: `en.json` line 47, `pt-BR.json` line 47 and `e2e/whole-image.spec.ts` line 37 (the only test that quoted the old warning, now `/Blur and pixelate don't reliably hide text/`); `errors.download_interrupted` (line 79) is BMI-087's and stays out. Gate: check clean, 307 tests, e2e 42/42, size 43.77 of 45 kB and 192.94 of 195 kB. Variant (a), in the JSON for now: `en` "Blur and pixelate don't reliably hide text. For anything secret, cover it with a solid box in another editor, or leave it out." and `pt-BR` "Desfoque e pixelização não escondem texto de verdade. Para algo secreto, cubra com uma tarja sólida em outro editor ou deixe de fora." ("tarja" is how Portuguese names the bar over sensitive data). Variant (b), shorter, not applied: `en` "Blur and pixelate don't reliably hide text. Cover secrets with a solid box in another editor." and `pt-BR` "Desfoque e pixelização não escondem texto de verdade. Cubra o que é secreto com uma tarja sólida em outro editor."
+
 PM's first draft advised cropping and a solid shape, which the app doesn't offer (the README lists cropping as out of scope and the solid box is BMI-104 in `Later`), so it would have told the user to do inside the app what the app doesn't do; `-75` caught it. The corrected direction, for the reviewer and the strategist to shorten (not approved; Ícaro reads the `pt-BR`): `en` "Blur and pixelate don't reliably hide text. For anything secret, cover it with a solid box in another editor, or leave it out." and a natural `pt-BR` of the same meaning; `-cc` proposes a shorter variant too. The text must not promise a feature of this app.
 
 - [ ] The warning says that blur and pixelate don't really hide text that must stay secret and that a secret is covered or cropped out, in the fewest words, in `en` and `pt-BR`, with no number and no "high intensity".
 - [ ] Both languages keep the same keys; the key-parity test, check, unit and e2e tests (including the axe contrast) and `pnpm size` pass; it is text only, so the JavaScript budget (1.2 to 1.3 kB of room) isn't touched.
-- [ ] The text near the Pixelate option stays tied to it for assistive tech as it is today.
+- [ ] The text near the Pixelate option stays tied to it for assistive tech as it is today. It shows only next to Pixelate (a question for Ícaro, Q-025, whether it should show for every effect).
 - [ ] `en.json` and `pt-BR.json` also hold the BMI-087 change (`errors.download_interrupted`, near line 79), which goes in another PR after the merge: this item touches only line 47 of each file, and `-5b` stages only that hunk for PR #2 (`git add -p` or `git update-index --cacheinfo`), checking with `git diff --cached`; `-cc` reports the exact lines.
 - [ ] Ícaro reads the `pt-BR` before the merge; PM sends `-aa` both texts once the reviewer approves them. BMI-104 (a solid box) stays in `Later` (D-033); this warning is its mitigation, so the text doesn't promise a box.
 

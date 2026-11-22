@@ -20,6 +20,14 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-025 — Where the redaction warning shows
+
+Found by `-cc` while rewriting the warning (BMI-088; via `-75`): the warning is shown only next to the Pixelate option (`EffectControls` uses `definition.hasWarning`), and the README says so (line 58: "The app shows this warning next to the Pixelate option"). The new text talks about "blur and pixelate", but someone who picks Gaussian or Motion never sees it, although the study is as much about blur as about pixelation. Changing where it shows is a small UI change that the README then has to describe.
+
+Options: (a) show it for every effect (a flag per effect, text only, no new library), and the README line says "next to the effect options"; (b) leave the placement and make the text talk only about pixelation, which understates the study; (c) leave both as they are.
+
+Recommendation: (a). The reason for the warning (text blurred or pixelated can be read) applies to all three effects, and it costs a flag per effect and one README sentence. Default in force: **(c)** until he answers: the text is the one he reads and approves, shown next to Pixelate only, so BMI-088 doesn't wait.
+
 ### Q-024 — Do the three use-case pages stay, now that the home is the app screen?
 
 D-032 makes the landing the app's own screen with the copy underneath. BMI-085 planned a home and three use-case pages (blur a license plate, pixelate a screenshot, blur a face) as static pages. Question for Ícaro: do the use-case pages stay as separate pages that the app screen links to, or does everything live on the one screen (sections, no separate pages)? The SEO notes favour separate pages (one query intent per page), at the price of more files to keep true; one screen is simpler and ranks for fewer queries. Recommendation: keep the three use-case pages, small, linked from the sections under the app, since each search intent (plate, screenshot, face) deserves its own answer. Default in force: BMI-085 stays an `Idea` and nothing is built; the copy of BMI-084 is written for the home first.
