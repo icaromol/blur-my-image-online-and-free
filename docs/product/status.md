@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 45 `Must` done · 39 in review · 3 in progress · 0 ready · 0 blocked. Full list in [backlog.md](backlog.md).
+0 of 45 `Must` done · 39 in review · 3 in progress · 0 ready · 0 blocked. Plus BMI-074 (`Should`, `Ready`): unexplained e2e failure. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -56,6 +56,8 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- BMI-074 added (`Should`, `Ready`, quality lane) at the orchestrator's request: the cause of the first failing local e2e run is unknown, and the item repeats the suite with the trace captured. It is a verification of work in `Review`; Ícaro can veto the addition. `a3840a9` committed the D-009 docs.
 
 - Later the same day: D-009 (Ícaro accepts the 45 / 195 kB budgets, relayed by `-aa`) closed Q-007. BMI-061 → `Review` after PM ran `pnpm size` (43.21 / 192.22 kB) and the Chromium e2e (35/35; the first run failed for an unknown reason, the next two passed). BMI-002 → `Review`: `ci.yml` (`08d2384`), Dependabot (`a61f693`) and a green first PR run; the required-checks ruleset stays a BMI-050 step. Ícaro confirmed through `-aa` that the conduct contact is his own choice, aware it will be public; not asked again.
 
