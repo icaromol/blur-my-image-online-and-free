@@ -266,9 +266,11 @@ Reopened by D-010 and committed as `758fc6b` (`README.md`, `index.html`, `en.jso
 - [x] `app.tagline` in `en.json` ("…Image files never leave your device.") and `pt-BR.json` ("…Os arquivos de imagem nunca saem do seu navegador.").
 - [x] `README.md` line 99: "at the loaded image's resolution" and "The blur size is defined in source-image pixels, never screen pixels".
 
+Done after `Review`:
+- Ícaro read and approved the `pt-BR` tagline as committed (relayed by `-aa`, 2026-11-22; the reviewer's "Seus arquivos…" variant is not used). Logged in D-010.
+
 Open, not holding `Review`:
-- Ícaro reads the `pt-BR` tagline before PR #1 merges (asked through `-aa`; default: it stays as committed). The reviewer's optional alternative is "Seus arquivos de imagem nunca saem do seu navegador", which points more clearly at the user's own files.
-- Marketing text that quotes the old tagline or the provisional sentence is checked against the final wording. Not a code change: the marketing lane's correction round does it, waiting on Ícaro's yes via `-aa`.
+- Marketing text that quotes the old tagline or the provisional sentence is checked against the final wording. Not a code change: the marketing lane's last copy round does it; Ícaro authorized that round (relayed by `-aa`).
 
 - [x] The status line says pre-release (v1 built and under review, not deployed) and no longer "planning, nothing implemented". It keeps marketing in its pre-launch posture: no "try it now" until BMI-003 gives a live URL. The live wording is set at go-public (BMI-050).
 - [x] The proxy portability sentence says `app.ts` is platform-neutral, Vercel and Node ship, and Cloudflare would need its own fetch and entry.
