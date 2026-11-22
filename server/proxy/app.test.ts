@@ -417,6 +417,15 @@ describe("upstream response", () => {
     await expect(res.arrayBuffer()).rejects.toThrow();
   });
 
+  it("cuts off a body that grows past its declared size and the limit", async () => {
+    const body = new Uint8Array(17);
+    body.set(PNG);
+    const res = await proxy(async () => image(body, { "content-length": "8" }))(
+      "https://example.com/a.png",
+    );
+    await expect(res.arrayBuffer()).rejects.toThrow();
+  });
+
   it("reports upstream errors without forwarding them", async () => {
     const res = await proxy(async () => new Response("nope", { status: 404 }))(
       "https://example.com/a.png",
