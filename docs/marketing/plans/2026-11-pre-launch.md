@@ -1,6 +1,6 @@
 # Pre-launch plan, from 2026-11-22 to launch
 
-No launch date exists yet (see the questions at the end), so timing is tied to backlog milestones, not dates. The README status line still says "planning", the repo is private and there is no hosted URL. Until the milestones below land, public text is "I'm building this", has no link and never says "try it" or "open source". Language is English only (Q-002 default).
+No launch date exists yet (see the questions at the end), so timing is tied to backlog milestones, not dates. The README says pre-release (v1 is built, not deployed), the repo is private and there is no hosted URL. Until the milestones below land, public text is "I'm building this", has no link and never says "try it" or "open source". Language is English only (Q-002 default).
 
 ## Milestones that unlock work
 
@@ -34,7 +34,8 @@ Show HN and the Reddit posts should wait for BMI-050, so that "try it" and "read
 
 - **Persona:** P1 and A1. **Channels:** LinkedIn, Bluesky, Mastodon (the only approved keys in channels.md).
 - **For:** the audience has to exist before launch day, and A1 recommendations take weeks to form. Cadence is the Building row of channels.md (1, 2 and 2 a week).
-- **Agents:** `copywriter` writes the posts, `designer` the images, `social-publisher` creates Buffer drafts that Ícaro approves. **Output:** `marketing/social/posts/2026-11-*.md` and `.json`, first four ideas.
+- **Agents:** `copywriter` writes the posts, `designer` the images, `social-publisher` creates Buffer drafts that Ícaro approves. **Output:** `marketing/social/posts/2026-11-*.md` and `.json`, first four ideas. The dates in the post file names (24, 26, 28 and 30 November) are IDs, not schedule dates; the schedule follows the cadence above and is set when the drafts are queued.
+- **Mastodon is blocked:** Mastodon versions are not queued until Ícaro decides decision 4 in channels.md (he rewrites them in his own words, or picks a server and a disclosure approach). channels.md says mastodon.social requires disclosure of generative-AI use and infosec.exchange bans AI-operated accounts, and decision 4 has no recommendation.
 - **Ideas, all backed by the README or its linked studies:** blur is not redaction (PETS 2016, about 20 px); why edits are an operation list so painting twice at 40 stays 40; canvas export drops EXIF; Safari's `toBlob('image/webp')` silently returns a PNG. Wording is "I'm building", not "it does".
 - **Worked when:** replies from people outside Ícaro's network (five from strangers by the 31 January 2027 review, the channels.md threshold, a judgment call), follows, and Buffer insights written down before the 30-day window drops them.
 
@@ -46,7 +47,7 @@ Show HN and the Reddit posts should wait for BMI-050, so that "try it" and "read
 - **Posts at:** directories after BMI-003; HN, Reddit, Privacy Guides after BMI-050.
 - **Worked when:** drafts pass the rules in channels.md. After launch, GitHub stars, the repo's own traffic referrers, Search Console branded queries ("blur my image"), replies on each thread.
 
-### 5. Site and repo preview image (waits on the tagline decision)
+### 5. Site and repo preview image (tagline settled by D-010)
 
 - **Persona:** P1 and A1, who check a link preview before clicking. **Channel:** link previews and the GitHub social preview.
 - **For:** BMI-050 lists a repo social preview image, and the site needs an OG image at BMI-003.
@@ -55,7 +56,7 @@ Show HN and the Reddit posts should wait for BMI-050, so that "try it" and "read
 
 ## What can start now and what waits
 
-- **Now:** actions 1 and 3 together, then 2 as soon as briefs exist, then 4 (drafting) and 5 (after the tagline answer).
+- **Now:** actions 1 and 3 together, then 2 as soon as briefs exist, then 4 (drafting) and 5.
 - **Waits for BMI-003:** publishing action 2, directory submissions, Search Console setup, any post with a link.
 - **Waits for BMI-051:** present-tense feature claims.
 - **Waits for BMI-050:** "open source", the repo link, Show HN, Reddit launch posts, Privacy Guides, dev.to article if it links the code.
@@ -65,12 +66,10 @@ Show HN and the Reddit posts should wait for BMI-050, so that "try it" and "read
 1. **Target launch date.** None in the docs. It sets how many weeks of posts to queue (Buffer holds 10 per channel).
 2. **Soft-live window.** After BMI-003 the site can be live while the repo is still private. Should it be indexed from then, with no announcement? I recommend yes, because search pages gain from age. The alternative is `noindex` until BMI-050.
 3. **Domain.** None chosen (hosting.md has none). It decides the Bluesky handle and which property Search Console verifies. Is a `*.vercel.app` URL acceptable at launch?
-4. **English tagline.** `pt-BR` and `en` differ (status.md). The designer and copywriter need one final English line.
+4. **English tagline.** Settled by D-010: "…Image files never leave your device." (`src/i18n/messages/en.json:4`).
 5. **Keyword volume.** Public sources have none. May the seo-specialist use a Google or Bing Keyword Planner account, with no ad spend, to get volume ranges before launch?
-6. **Accounts.** The five decisions in channels.md (personal or project handles, Mastodon server, AI-drafted posts, Reddit and HN history) are still open. This plan assumes the recommendations. Reddit and HN accounts need real participation starting now to have history by launch.
+6. **Accounts.** The five decisions in channels.md (personal or project handles, Mastodon server, AI-drafted posts, Reddit and HN history) are still open. This plan assumes the recommendations, except decision 4 (AI-drafted posts: Ícaro rewrites the Mastodon versions in his own words, or picks a server and a disclosure approach), which has no recommendation and **blocks Mastodon**: no Mastodon version is queued until Ícaro decides it. Reddit and HN accounts need real participation starting now to have history by launch.
 
-## Corrections audience.md needs (not edited, for the strategist's next pass)
+## Corrections audience.md needed
 
-- P1 "what wins them" and the objection answer rely on "open source", which can't be said until BMI-050. Until then the answer to "how do I know it doesn't upload?" is the DevTools network check alone.
-- The "Private by construction" pillar and the positioning line say the image never leaves the device. The README makes one exception, URL loading through the proxy, and notes Vercel's 1-hour request log. The pillar's proof column should say so.
-- P2 and P3 "what wins them" include "works on a phone". The README doesn't state it; treat it as unproven until real-device testing and a README line exist.
+Applied in d8baa89.
