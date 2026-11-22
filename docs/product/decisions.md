@@ -20,6 +20,18 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-022 — When may the app's URL be public: canonical, sitemap, README, marketing?
+
+D-016 says the URL stays out of the README and marketing until Ícaro says. Meanwhile `index.html` already carries it (`og:url` and `og:image`, on the repository that is public now), and the landing pages need the real host for `canonical` and `sitemap.xml` (decision 3 of `docs/marketing/landing/seo.md`, read through `-75`; PM hasn't read the file). So the URL is already discoverable, and the question is when it stops being a secret to the places that matter.
+
+Recommendation: release it with the go-live, in one step after the merge of PR #2: the first production deploy of the final build, the landing pages (BMI-085) and the README/marketing line, with the canonical and the sitemap built from the same host. Before that nothing changes. Default in force: the URL stays out of the README and marketing, `canonical` and `sitemap.xml` aren't built, and no post cites it.
+
+### Q-021 — Five choices for the landing page copy (BMI-084)
+
+The strategist's research (`docs/marketing/landing/research.md`: 19 pages from 18 sites, with URL and date) leaves five choices for Ícaro; the dispatcher follows the strategist's recommendation in the draft until he answers. (1) Is the landing a **page of its own** with a button to the editor, or the app's screen with the copy underneath? It decides whether the hero has a drop zone. Recommended: a page of its own. (2) The FAQ states **both link limits**: 100 MiB for the browser's direct fetch and about 4.2 MiB (`MAX_BYTES`, 4,400,000 bytes) when the link goes through our proxy; the README names only the second. Recommended: yes, in the FAQ only, not in the hero. (3) The FAQ states Vercel's **1-hour request log** (already in the README). Recommended: yes. (4) The face section says "**no automatic detection**", since searches for faces and plates are dominated by auto-detection tools and the product has a brush. Recommended: yes, said up front. (5) The page says **nothing about phones** until a test on a real device, and **nothing about analytics** until BMI-082 is decided and built. Recommended: both.
+
+Default in force: the strategist's recommendations, in the draft only; nothing is published.
+
 ### Q-020 — What does "overlapping images" mean? (a future spec, blocks nothing)
 
 Ícaro's request mentioned overlapping images and effects (relayed by `-aa`). The effect stack (BMI-128) is about effects; a second image placed over the first is a different, larger feature: a second source texture, a position and scale, a blend. Question for him, for later: what did he mean, a second picture over the first (a sticker, a logo, a pasted patch), or only effects on top of each other? Recommendation: ask when the effect stack comes up, then write its own spec. Default: not in `specs/effect-stack.md`, no item.
