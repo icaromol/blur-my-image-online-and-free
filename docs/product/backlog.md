@@ -147,11 +147,12 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-132 | App version in the UI and in the bug form | Community | Idea |
 | BMI-133 | `GOVERNANCE.md`, `CODEOWNERS`, second admin, Discussions, interaction limits, area labels | Community | Idea |
 | BMI-134 | e2e decode coverage for GIF, AVIF and BMP (PNG only today) | Quality | Idea |
+| BMI-138 | Proxy answers `413 too_large` in JSON when the body passes `MAX_BYTES`, by reading up to `MAX_BYTES + 1` before replying (gives up streaming, about 4.4 MB of memory a request, under Vercel's 4.5 MB); the alternative to BMI-087's front-only message; a proxy architecture decision | Quality | Idea |
 | BMI-136 | Marketing templates: `marketing/social/templates/brand.css` imports Google Fonts at render time (a network request on every render, for the `tip.html` template); self-host the font or drop the import. Only matters if `tip.html` is used; the app is not affected | Quality | Idea |
 | BMI-137 | Image loading by link on phones: the real ceiling is decoding memory, not the 100 MiB cap (a compressed file of tens of MB can exceed 100 megapixels, over 400 MB as RGBA, and end in `decode_failed`; a body just under the cap sits whole in a Blob, kept in RAM on iOS Safari and able to reload the tab); a lower or device-aware cap, or a clearer message when decoding fails on a very large file | Quality | Idea |
 | BMI-135 | Playwright config: don't silently reuse another process's server on port 4173 outside CI (`reuseExistingServer`); no evidence yet that this caused the 2026-11-22 failure (BMI-074) | Quality | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-088`; later effects `BMI-109`, features `BMI-129`, other later `BMI-138`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-088`; later effects `BMI-109`, features `BMI-129`, other later `BMI-139`.
 
 ---
 
@@ -409,9 +410,15 @@ Found by the opus reviewer while reading the landing copy against the sources, r
 
 The reviewer found, in the code (PM didn't run it): when the proxy cuts its stream at `MAX_BYTES` (4,400,000 bytes) and the origin server declared no size, `proxied.blob()` rejects with an error the app doesn't recognize, and the user sees "Something went wrong. Try again."; the `too_large` 413 comes only when the origin declares the size (`server/proxy/app.ts` near line 203). Ui lane, `Should`.
 
-- [ ] Reproduce it with a test: a proxied response whose body is cut, with no declared size.
-- [ ] The user is told the image is too large to load by link (the existing `too_large` code, or a new code if the wording has to say that the proxy has a lower limit than the browser's direct fetch), in `en` and `pt-BR`; a new `pt-BR` string is shown to Ícaro.
-- [ ] A network drop in the middle of a direct download must not be mislabelled: the message only says "too large" when the cut is known to come from the proxy's cap.
+Found and reproduced by `-cc` (2026-11-22; PM didn't run it): in `server/proxy/app.ts` the response is the stream piped through `limitBytes(max)`; past the cap `limitBytes` errors the stream after the 200 has gone out, and the proxy sends no `content-length`, so the client gets a chunked body cut in the middle and `proxied.blob()` in `src/input/url.ts` rejects with a generic `TypeError` ("terminated"). Telling that cut from a dropped connection isn't safe in the front alone: counting bytes against 4,400,000 fails because the cap is configurable (`MAX_BYTES`), the cut lands on a chunk boundary below the cap, and a drop near the cap would be labelled wrongly, which the first version of this item forbade.
+
+**PM's decision: option A**, front only, with no change to the proxy: a new error code for any failure to read the body that comes from the proxy, with a text that is true in both cases, and no label of "too large". Proposed texts: `en` "The download was interrupted. If the image is large, download it and open the file instead." and `pt-BR` "O download foi interrompido. Se a imagem for grande, baixe o arquivo e abra-o aqui." This replaces the first wording of this item ("too large for the proxy" when the cut is known), which A can't meet; it refines PM's own criterion, drops nothing Ícaro asked for, and is shown to him because it is a new `pt-BR` string. Option B, the proxy reading up to `MAX_BYTES + 1` before it answers and returning the JSON `413 too_large`, would make the original text true but gives up streaming (about 4.4 MB of memory per request, still under Vercel's 4.5 MB) and is a proxy architecture decision: it is BMI-138 in `Later`, for Ícaro. Option C (an `x-max-bytes` header plus counting) is still a heuristic; option D (leave it, document it) is not chosen.
+
+This is after the merge of PR #2, in a PR of its own (the PR is clean and is not reopened for a `Should`).
+
+- [ ] A test: a proxied response whose body is cut with no declared size, and one whose connection drops, both end in the new code; a direct download is unaffected.
+- [ ] The new code has its `en` and `pt-BR` text (no inline text); the `pt-BR` is read by Ícaro before the merge of that PR; the key-parity test, check, unit and e2e tests and `pnpm size` pass.
+- [ ] Nothing in `server/` changes.
 
 ### BMI-085 — Landing pages built
 
