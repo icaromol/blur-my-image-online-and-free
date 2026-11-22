@@ -411,11 +411,12 @@ Spec: [specs/hosted-analytics.md](specs/hosted-analytics.md). Decided by Ícaro 
 
 Authorized by Ícaro (D-033, relayed by `-aa`): the text next to the Pixelate option ("Pixelated text can sometimes be recovered. For passwords or document numbers, use a high intensity.") gives the same weak assurance as the README's false figure. PM read the 2016 study's text: its conclusion is that mosaicing and blurring "are not viable approaches for text redaction". The rewrite adds no feature and states no number. Ui lane, in PR #2, after the opus reviewer.
 
-PM's draft, for the reviewer and the strategist to shorten (not approved; Ícaro reads the `pt-BR`): `en` "Blur and pixelate don't reliably hide text. For anything secret, crop it out or cover it with a solid shape." `pt-BR` "Desfoque e pixelização não escondem texto de verdade. Para algo secreto, recorte ou cubra com uma forma sólida."
+PM's first draft advised cropping and a solid shape, which the app doesn't offer (the README lists cropping as out of scope and the solid box is BMI-104 in `Later`), so it would have told the user to do inside the app what the app doesn't do; `-75` caught it. The corrected direction, for the reviewer and the strategist to shorten (not approved; Ícaro reads the `pt-BR`): `en` "Blur and pixelate don't reliably hide text. For anything secret, cover it with a solid box in another editor, or leave it out." and a natural `pt-BR` of the same meaning; `-cc` proposes a shorter variant too. The text must not promise a feature of this app.
 
 - [ ] The warning says that blur and pixelate don't really hide text that must stay secret and that a secret is covered or cropped out, in the fewest words, in `en` and `pt-BR`, with no number and no "high intensity".
 - [ ] Both languages keep the same keys; the key-parity test, check, unit and e2e tests (including the axe contrast) and `pnpm size` pass; it is text only, so the JavaScript budget (1.2 to 1.3 kB of room) isn't touched.
 - [ ] The text near the Pixelate option stays tied to it for assistive tech as it is today.
+- [ ] `en.json` and `pt-BR.json` also hold the BMI-087 change (`errors.download_interrupted`, near line 79), which goes in another PR after the merge: this item touches only line 47 of each file, and `-5b` stages only that hunk for PR #2 (`git add -p` or `git update-index --cacheinfo`), checking with `git diff --cached`; `-cc` reports the exact lines.
 - [ ] Ícaro reads the `pt-BR` before the merge; PM sends `-aa` both texts once the reviewer approves them. BMI-104 (a solid box) stays in `Later` (D-033); this warning is its mitigation, so the text doesn't promise a box.
 
 ### BMI-087 — A proxied download cut at the proxy's cap
