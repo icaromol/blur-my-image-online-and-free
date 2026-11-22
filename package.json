@@ -34,6 +34,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
     "@biomejs/biome": "^2.6.8",
+    "@intlify/unplugin-vue-i18n": "^11.2.8",
     "@playwright/test": "^1.65.1",
     "@size-limit/file": "^14.3.0",
     "@types/node": "^26.6.6",
@@ -51,7 +52,7 @@
     {
       "name": "Initial JS",
       "path": "dist/assets/index-*.js",
-      "limit": "35 kB"
+      "limit": "45 kB"
     },
     {
       "name": "All JS except the WebP encoder",
@@ -59,7 +60,7 @@
         "dist/assets/*.js",
         "!dist/assets/webp_enc*.js"
       ],
-      "limit": "180 kB"
+      "limit": "195 kB"
     }
   ]
 }

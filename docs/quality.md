@@ -72,14 +72,17 @@ Measured in CI by size-limit on the brotli size of the build output (`pnpm size`
 
 | Budget | Limit |
 | --- | --- |
-| Initial JavaScript | 35 kB |
-| All JavaScript except the WebP encoder | 180 kB |
+| Initial JavaScript | 45 kB |
+| All JavaScript except the WebP encoder | 195 kB |
+
+The first budget (35 kB) was measured before i18n existed. Vue's runtime is about 26 kB brotli and vue-i18n's runtime about 16 kB, so no initial bundle with both fits in 35 kB; petite-vue-i18n would still land near 38 kB. Precompiling the messages took the initial bundle from 47 to 43 kB. The limits sit just above the measured sizes, so any growth is a decision, not drift.
 
 How the budget stays reachable:
 
 - The UI loads the renderer with `await import("../engine/renderer")` and `import type` for types, so PixiJS is not in the initial bundle.
 - UI code does not statically import `effects.ts`, which pulls PixiJS in.
 - `@jsquash/webp` is loaded only through `import()`, only where native WebP encoding is missing.
+- The i18n message files are compiled at build time (`@intlify/unplugin-vue-i18n`), so vue-i18n's message compiler is not shipped.
 
 Lighthouse and Core Web Vitals are checked by hand before a release. CI runners vary too much for a hard gate.
 

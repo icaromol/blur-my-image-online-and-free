@@ -3,14 +3,20 @@ import proxySource from "../../server/proxy/app.ts?raw";
 import { effectIds } from "../engine/effect-catalog";
 import { errorKey } from "./index";
 import { localeIds } from "./locales";
-import en from "./messages/en.json";
 
 type Tree = { [key: string]: string | Tree };
 
-const files = import.meta.glob<Tree>("./messages/*.json", {
-  eager: true,
-  import: "default",
-});
+// Raw text: the i18n build plugin turns imported message files into compiled functions.
+const files = Object.fromEntries(
+  Object.entries(
+    import.meta.glob<string>("./messages/*.json", {
+      eager: true,
+      query: "?raw",
+      import: "default",
+    }),
+  ).map(([path, text]) => [path, JSON.parse(text) as Tree]),
+);
+const en = files["./messages/en.json"] ?? {};
 
 function flatten(tree: Tree, prefix = ""): Map<string, string> {
   const result = new Map<string, string>();
