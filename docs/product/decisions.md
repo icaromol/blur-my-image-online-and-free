@@ -20,6 +20,14 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-011 — Where do the two logos come from?
+
+Ícaro added two raster logos in `brand/source/` (a stacked and a horizontal version, off-white background, visible compression artifacts), untracked. The mark is a block of grey pixels fading into a black block, followed by the wordmark "Blur My Image" in a heavy geometric sans. Neither the author nor the wordmark's typeface is recorded, and the repo goes public.
+
+Recommendation: Ícaro says where each came from (drawn by him, a generator, a commissioned designer, a font) and whether it may be published under the repo's MIT license. Whatever the answer, the brand kit redraws the wordmark in a free font (SIL OFL) instead of tracing the raster letters, and redraws the pixel mark as plain geometry.
+
+Default in force: **the raw PNGs are never committed** (git history is permanent) and the wordmark is redrawn in an OFL font; the work doesn't wait for the answer, only the claim "this is the logo's origin" does.
+
 ### Q-006 — Do the Docker image and server bundle need license notices?
 
 Audit finding C: `dist-server/node.js` bundles hono, `@hono/node-server`, ipaddr.js and undici, and the Dockerfile ships it, but only the client build emits `licenses.md`.
@@ -33,6 +41,20 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the project's main domain on 2026-11-22, per `-aa`; the earlier `https://blur-my-image.vercel.app` answers 307 to it (PM read both with a plain `GET`). The README, the repo website field and the bug form get it only when Ícaro says (D-016). Not blocking.
 
 ## Decisions
+
+### D-021 — Old commit hashes stay reachable: risk accepted; the e-mail toggles are on (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answers (PM did not hear them directly): (1) the pre-rewrite commits may stay reachable by their full hash on GitHub until it garbage-collects them, and he **accepts the risk**: no request to GitHub Support and no new repository; (2) the two e-mail settings of his GitHub account, "Keep my email addresses private" and "Block command line pushes that expose my email", are **on** (he sent `-aa` a screenshot; PM hasn't seen it); (3) BMI-075 and the E8 epic are fine as described.
+**Why:** the old hashes aren't linked from any ref (PM checked `refs/pull/1/head` and the branches), so reaching them takes the full hash; a repository replacement or a Support request wasn't worth that. The two toggles stop a future commit from exposing the old address.
+**Decided by:** Ícaro, per the orchestrator session. Irreversible once the repo is public.
+**Affects:** D-015 (its residual risk is now an accepted one), BMI-050, BMI-075.
+
+### D-020 — Visual identity for the product (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct request (PM did not hear it directly): the product gets a visual identity, minimalist, black and white with blue as the accent, built from the two logos he added. It enters v1 by his order, as BMI-075 (`Should`, so the `Must` count doesn't change). It covers vector logos, a minimal palette, favicon, the OG image base, the marketing templates' CSS and a short guide. Applying the identity inside the app (theme, components) is a separate item for the ui lane, groomed later with him; `src/**` isn't touched here.
+**Why:** he wants a consistent identity for the repo, the OG image and the posts before launch.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-075 (new), Q-011, `marketing/social/templates/brand.css`, the OG image, `.gitignore` (the raw sources).
 
 ### D-019 — Ignored Build Step on the Vercel project before the rewritten `main` is pushed (2026-11-22)
 
@@ -68,6 +90,7 @@ The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the proj
 **Decision**, as relayed by `-aa` from Ícaro's direct answer, closing Q-009: the commits are rewritten to his GitHub no-reply address before the flip. `-5b` does it with a backup, a verification and `--force-with-lease`, and gives PM the old-to-new hash map so the docs can be corrected. The address isn't written in these docs.
 **Why:** the author address would be public in every commit once the repo is public.
 **Decided by:** Ícaro, per the orchestrator session. Irreversible for the old hashes.
+**Executed and verified (2026-11-22, `-5b` and `-aa`):** every commit on the remote now carries only the no-reply address (87 commits; every tree identical to the backup; `main` has the same tree), pushed with the Ignored Build Step in place (the `main` push built nothing, the alias stayed, no `.md` file was served). The old-to-new hash map is in `.local/rewrite-map-old-new.txt` (outside git) and the hashes cited in `docs/product/` were corrected from it. PR #1 was **closed by GitHub during the push** (the branch and `main` had no common history for a few seconds) and the API can't reopen it, so a new PR replaces it. Residual risk, low: the pre-rewrite commits may stay reachable by their full hash on GitHub until it garbage-collects them. PM checked that `refs/pull/1/head` now points at the new head (`32c4e77`) and that no remote ref holds an old hash. Ícaro accepted this residual risk (D-021).
 **Affects:** every commit hash cited in `docs/product/` and `docs/marketing/`, PR #1 (force-push, checks rerun), BMI-050. Two things to settle before pushing: `main` holds 5 of the commits and has no app in it, so pushing a rewritten `main` makes the Vercel Git integration build a production deployment from an app-less tree while the site is meant to stay up; and the repo's `user.email` must be the no-reply address first, or the next commit exposes the old one. `-5b` and `-f2` settle the first with Ícaro's go (one option is turning off deployment creation on the project while `main` is pushed, then back on).
 
 ### D-014 — The three `.claude/` skills may be published (2026-11-22)
@@ -100,10 +123,10 @@ The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the proj
 
 ### D-010 — Privacy wording and tagline say "image files" and match the URL proxy exception (2026-11-22)
 
-**Decision**, as relayed by the orchestrator session (`-aa`) from Ícaro's direct answer to it ("ajustar tudo", PM did not hear it directly): the README and the `index.html` meta description say "Image files you open, drop or paste never leave your device." The `en` tagline changes to the same idea (for example "…Image files never leave your device."), and the `pt-BR` tagline is made consistent with the URL proxy exception. Translation files may be edited for this, through the ui lane. The final `pt-BR` wording is proposed by the PM and the worker and shown to Ícaro before the merge, since he corrected `pt-BR` strings before (`bbb060c`).
+**Decision**, as relayed by the orchestrator session (`-aa`) from Ícaro's direct answer to it ("ajustar tudo", PM did not hear it directly): the README and the `index.html` meta description say "Image files you open, drop or paste never leave your device." The `en` tagline changes to the same idea (for example "…Image files never leave your device."), and the `pt-BR` tagline is made consistent with the URL proxy exception. Translation files may be edited for this, through the ui lane. The final `pt-BR` wording is proposed by the PM and the worker and shown to Ícaro before the merge, since he corrected `pt-BR` strings before (`fbf8779`).
 **Why:** "Images you open, drop or paste never leave your device" is ambiguous because opening a link goes through the proxy; the `en` tagline ("It never leaves your device") and the `pt-BR` one ("Ela nunca sai do seu navegador") state no exception at all.
-**Decided by:** Ícaro, per the orchestrator session. Reversible. He then read and approved the committed `pt-BR` tagline (`758fc6b`) as it is, "Desfoque a imagem inteira ou como quiser. Os arquivos de imagem nunca saem do seu navegador.", and said not to switch to "Seus arquivos…" (relayed by `-aa`, 2026-11-22).
-**Affects:** BMI-051 (criteria reopened), BMI-003 (meta tags and OG image use the final wording), `src/i18n/messages/en.json` and `pt-BR.json` line 4, `README.md` line 3, `index.html` line 6. Settles the "en vs pt-BR tagline" question that had been open since `bbb060c`.
+**Decided by:** Ícaro, per the orchestrator session. Reversible. He then read and approved the committed `pt-BR` tagline (`ccef665`) as it is, "Desfoque a imagem inteira ou como quiser. Os arquivos de imagem nunca saem do seu navegador.", and said not to switch to "Seus arquivos…" (relayed by `-aa`, 2026-11-22).
+**Affects:** BMI-051 (criteria reopened), BMI-003 (meta tags and OG image use the final wording), `src/i18n/messages/en.json` and `pt-BR.json` line 4, `README.md` line 3, `index.html` line 6. Settles the "en vs pt-BR tagline" question that had been open since `fbf8779`.
 
 ### D-009 — Bundle budgets set to 45 kB initial and 195 kB total (2026-11-22)
 
@@ -155,7 +178,7 @@ The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the proj
 
 ### D-003 — i18n sequencing after the editor was built first (2026-11-22)
 
-**Decision:** the editor UI was committed (`bdcccbe`) before i18n existed, with English strings hard-coded. Ícaro agreed to build i18n now over the existing UI: BMI-040 to BMI-044 in one pass, then every later story ships its `pt-BR` strings from the start.
+**Decision:** the editor UI was committed (`43525ae`) before i18n existed, with English strings hard-coded. Ícaro agreed to build i18n now over the existing UI: BMI-040 to BMI-044 in one pass, then every later story ships its `pt-BR` strings from the start.
 **Why:** the committed UI is small enough to translate in one change, and the parity test (BMI-040) stops it from regressing.
 **Decided by:** Ícaro ("ok prossiga, estou de acordo").
 **Affects:** BMI-040 to BMI-044. Not answered by this decision: whether other sessions must pause adding UI strings meanwhile.

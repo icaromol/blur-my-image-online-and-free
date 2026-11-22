@@ -2,13 +2,13 @@
 
 Single source of truth for work items. Statuses, priority and size are defined in `.claude/skills/pm/SKILL.md`. Current iteration and log live in [status.md](status.md); decisions in [decisions.md](decisions.md).
 
-Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (PR #1, draft, not merged). `Review` means committed on that branch, not merged to `main`.
+Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (PR #2, draft, not merged; it replaced PR #1, which GitHub closed during the history rewrite). `Review` means committed on that branch, not merged to `main`.
 
 ## Milestone v1
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 45 `Must` done, 40 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-073), 0 idea. Also BMI-074 (`Should`, `Done`).
+Progress: 0 of 45 `Must` done, 40 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-073), 0 idea. Also BMI-074 (`Should`, `Done`) and BMI-075 (`Should`, `Ready`).
 
 ### E1. Foundation
 
@@ -67,7 +67,7 @@ Built before any more UI work so new screens are born translated (D-001).
 
 ### E7. Quality, security and community — source: D-004 (`.local/standards/`, not committed)
 
-Approved package from three research reports (quality and CI, security baseline, community and governance). The reports were written against commit `5eae8fc` and the code has moved; each item is re-checked against current files when picked up. Re-check item details in the reports, not here.
+Approved package from three research reports (quality and CI, security baseline, community and governance). The reports were written against commit `fd5cf16` and the code has moved; each item is re-checked against current files when picked up. Re-check item details in the reports, not here.
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
@@ -86,6 +86,12 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-072 | `CODE_OF_CONDUCT.md` (Contributor Covenant 3.0) and `SECURITY.md`; `SECURITY.md` uses GitHub private reporting (no email); the code of conduct contact is set (D-007, edit waiting for the git owner's commit) | Must | S | Review | |
 | BMI-073 | Manual platform settings checklist for Ícaro (GitHub Actions and security, Vercel 2FA, WAF rate-limit rule, toolbar and analytics off, env vars); each README or hosting claim that only the platform can make true is checked or reworded: 1-hour request-log retention, the 4.5 MB body limit, the rate-limit rule and usage alerts | Must | S | Ready | BMI-003 |
 | BMI-074 | Find the cause of the unexplained Chromium e2e failure of 2026-11-22: repeat the suite, capture the report and trace, fix the cause or show N green runs | Should | S | Done | BMI-067 |
+
+### E8. Brand identity: D-020
+
+| ID | Item | Priority | Size | Status | Depends on |
+| --- | --- | --- | --- | --- | --- |
+| BMI-075 | Brand kit: vector logos (black, white, blue accent), minimal palette with contrast checked, favicon, OG image base, marketing CSS, short guide; app theme not included | Should | M | Ready | |
 
 ### E6. Launch readiness
 
@@ -125,7 +131,7 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-136 | Marketing templates: `marketing/social/templates/brand.css` imports Google Fonts at render time (a network request on every render, for the `tip.html` template); self-host the font or drop the import. Only matters if `tip.html` is used; the app is not affected | Quality | Idea |
 | BMI-135 | Playwright config: don't silently reuse another process's server on port 4173 outside CI (`reuseExistingServer`); no evidence yet that this caused the 2026-11-22 failure (BMI-074) | Quality | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-075`; later effects `BMI-109`, features `BMI-127`, other later `BMI-137`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-076`; later effects `BMI-109`, features `BMI-127`, other later `BMI-137`.
 
 ---
 
@@ -137,7 +143,7 @@ Only items that are `Ready` or `In progress` need full detail here. Others get i
 
 **Result (2026-11-22, run by the quality lane, summary checked by PM):** 10 consecutive full Chromium runs with `--retries=0`, all 35/35 (17 to 23 s, 8 workers); one run with `CI=1` (`retries: 1`, no server reuse), 35/35 with no test passing only on retry; 6 extra runs with `--workers=1` and `--workers=20`, all green. Port 4173 was free before each run and no other Playwright or Vite process was running. **The original failure is still unexplained.** It is not called flaky and not called resolved. Ruled out for the loop: a port conflict during it, the worker count, test order, and the missing retry in CI. Not ruled out, and without evidence: another session's server on port 4173 at the moment of the failing run (`reuseExistingServer` reuses a foreign server without a warning), a rare timing issue, or a different working tree that day. If it happens again, run at once with `--reporter=list,html --trace=retain-on-failure` to keep the error. Nothing to commit or merge: logs are in `.local/bmi-074/`, outside git. Marked `Done` on that basis; it adds no code, so there's nothing to merge into `main`.
 
-As a maintainer, I want to know why one local run of `pnpm test:e2e` failed on 2026-11-22 so that a real defect or a fragile setup doesn't surface when PR #1 is merged and CI runs the suite.
+As a maintainer, I want to know why one local run of `pnpm test:e2e` failed on 2026-11-22 so that a real defect or a fragile setup doesn't surface when PR #2 is merged and CI runs the suite.
 
 What is known: on 2026-11-22 the PM ran `pnpm test:e2e` (Chromium, 35 tests, 8 workers) three times in a row on `feat/scaffold-and-proxy`. The first run exited 1 and the next two passed 35/35. The error text of the first run wasn't captured, so **the cause is unknown**: a test defect, the app, or the environment are all still possible. One thing worth checking, not a finding: `playwright.config.ts` has `reuseExistingServer: !process.env.CI` on the fixed port 4173, and several sessions share this machine. CI runs with `retries: 1`, which would hide a test that fails once and passes on the retry.
 
@@ -149,6 +155,22 @@ Added as a `Should` verification of work already in `Review` (BMI-067, BMI-001).
 - [x] Also run the loop once with `CI=1` so the CI settings (`retries: 1`, no server reuse) are exercised, and report any test that passes only on retry.
 - [x] Lane: quality (read-only unless a fix is needed). `playwright.config.ts` is a shared-file lock: take it before editing.
 
+### BMI-075 — Brand kit
+
+As the maintainer, I want one visual identity (minimalist, black and white, blue as the accent) so that the repo, the link preview and the posts look like one product.
+
+Requested by Ícaro (D-020, relayed by `-aa`) and confirmed as described by him (D-021). Lane: marketing, with the designer. Source: the two raw logos in `brand/source/` (stacked 1254x1254, horizontal 1983x793): raster, off-white background, compression artifacts. Q-011 (where the logos come from) is open; it doesn't block the work.
+
+- [ ] Vector logos as SVG: the pixel-block mark (grey blocks fading into the black block) plus the wordmark "Blur My Image", in black, in white (reverse) and with the blue accent, each in stacked and horizontal versions. The mark is redrawn as plain geometry; the wordmark is redrawn in a free font (SIL OFL), not traced from the raster letters, unless Ícaro states that the raster wordmark is his to publish (Q-011).
+- [ ] A minimal palette: black, white, greys and one blue accent. Every foreground and background pair actually used has its WCAG AA contrast checked and written down. The tokens live in one file.
+- [ ] Favicon: an SVG and PNG sizes, produced under `brand/`. Putting them in `public/` and linking them from `index.html` is a small follow-up for the ui lane (`-cc`), because both belong to that lane.
+- [ ] The OG image base and `marketing/social/templates/brand.css` use the new tokens, replacing the provisional CSS. The OG image stays 1200x630 and readable at small sizes, and the new render is reviewed before it replaces the committed `public/og-image.png`.
+- [ ] A short `brand/README.md`: when to use each logo, clear space, minimum size, what not to do, where the tokens are.
+- [ ] `src/**` is not touched. Applying the identity in the app is a separate ui-lane item, groomed later with Ícaro, who decides the app's theme.
+- [ ] The raw PNGs (about 1.9 MB) are never committed; only the SVGs and the final derived files are, and `brand/source/` is git-ignored so a stray `git add` can't take it (`-5b` adds the ignore rule). Git history is permanent.
+- [ ] Origin of the logos recorded in `brand/README.md` once Ícaro tells it (Q-011); until then it says "origin not recorded".
+- [ ] The no-ai-slop rules apply to all text; the kit is reviewed by the opus reviewer before the commit list goes to `-5b`. No commit before that list.
+
 ### BMI-003 — Deploy to Vercel
 
 As a user, I want the app at a public URL so that I can use it without installing anything; as the maintainer, I want production to follow `main` without a manual step.
@@ -156,12 +178,12 @@ As a user, I want the app at a public URL so that I can use it without installin
 Authorized by Ícaro (D-012, relayed). Report from `-f2`, 2026-11-22 (full evidence went to the dispatcher; PM did not re-check it): criteria 2, 3 and 5 done on the preview deployment, 1 done except one point, 4 and 6 waiting, 7 not started. Executor: `-f2`, with the Vercel actions he authorized. Current state and the earlier 403 are in [../tooling.md](../tooling.md). Nothing may use another credential to get around a denied step: record it and report to `-aa`.
 
 - [x] A Vercel project (`blur-my-image`) exists and is confirmed by a read-only check; `createDeployments` was `disabled` and is now `enabled`.
-- [x] Hobby deploys from a private repo: proven. `-f2` reports the Git-integration deployments of the 6 commits of PR #1 all `READY`, `cb50fcb` and `3e2e77a` serve the app and `/api/image` answers 200 on both. (`-f2` also corrects its earlier report: the `framework: vite` preset wasn't needed for the build to pass.)
+- [x] Hobby deploys from a private repo: proven. `-f2` reports the Git-integration deployments of the 6 commits of PR #2 all `READY`, `229349c` and `d5e4a4d` serve the app and `/api/image` answers 200 on both. (`-f2` also corrects its earlier report: the `framework: vite` preset wasn't needed for the build to pass.)
 - [x] The project is linked to the GitHub repo through Vercel's Git integration: production deploys on merge to `main` (D-005), PRs get preview deployments. If the link needs the Vercel app authorized in the browser, `-f2` asks `-aa` (that step is Ícaro's).
 - [x] `MAX_BYTES`, `PROXY_TIMEOUT_MS` and `ALLOWED_ORIGINS` are set (production and preview) as in `docs/hosting.md`.
 - [x] Vercel Toolbar and Web Analytics are off (Speed Insights not reported).
 - [x] One WAF rate-limit rule on `/api/image`: "Rate limit image proxy", 30 requests per 60 s per IP, deny for 1 minute, published and active with 0 pending changes, read back by `-f2` (per `-aa`, 2026-11-22). Caveat: `-f2` made 13 test GETs (all answered 403 by the proxy itself) and never reached the limit, so that the deny actually fires above 30 requests per 60 s is **not proven**.
-- [x] A preview deployment of `feat/scaffold-and-proxy` loads the app (app 200, security headers and CSP present, `/api/image` 200 for an image, 403 for cross-site and internal IPs, 415 for HTML), the `/api/image` proxy answers, and the security headers and CSP from `security-headers.ts` are present on the response. Nothing is promoted to production by hand: the first production deploy is the merge of PR #1 (D-013).
+- [x] A preview deployment of `feat/scaffold-and-proxy` loads the app (app 200, security headers and CSP present, `/api/image` 200 for an image, 403 for cross-site and internal IPs, 415 for HTML), the `/api/image` proxy answers, and the security headers and CSP from `security-headers.ts` are present on the response. Nothing is promoted to production by hand: the first production deploy is the merge of PR #2 (D-013).
 - [ ] The production URL is `https://blurmyimage.vercel.app` (the project's main domain since 2026-11-22; `https://blur-my-image.vercel.app` redirects to it with a 307). It goes into the README, the repo website field and the bug-report form (Q-005) only when Ícaro says (D-016), not before. The preview URL carries the team slug and never goes into a repo file.
 - [ ] The page carries Open Graph and Twitter card meta tags (title, description, image, URL), with the final wording from D-010. The OG image comes from marketing's action 5, unblocked now that the English tagline is decided.
 
@@ -174,24 +196,24 @@ Open on BMI-003 after the live-alias finding (decided in D-016; the site stays u
 - [ ] The rate limit is proven to fire: a short burst of more than 30 requests in 60 s from one address against `/api/image` (our own endpoint, a plain image URL that the proxy already rejects, such as a cross-site request) gets the deny, and the rule stops it after the minute. `-f2`, read-only otherwise; not blocking the flip.
 - [ ] `index.html` `og:url` and `og:image` still point at the old domain, which now redirects; change them to `https://blurmyimage.vercel.app` (ui lane, `-cc`; the og tags criteria above are otherwise done). Checked in the tracked files: these two lines are the only place the old domain appears outside `docs/product/`; neither the README nor `marketing/` cites any URL. Ícaro's rule (D-016) keeps the URL out of the README and marketing; `index.html` carries it in the OG tags on purpose.
 - [x] Decision on the production deployment that serves the alias from the feature branch: it stays up (D-016).
-- [ ] The real production build replaces it with the merge of PR #1, the first official production deploy.
+- [ ] The real production build replaces it with the merge of PR #2, the first official production deploy.
 
-Two more things from the report. A "Protection Bypass for Automation" secret was created on the project by `vercel curl`, and `-f2` couldn't revoke it (reading the secret was denied): Ícaro revokes it in the Vercel dashboard (BMI-073). `vercel.json` gained `"framework": "vite"`, committed as `3e2e77a` by `-5b` (requested by the dispatcher). The push of the docs commit just before it had already triggered a preview without the preset.
+Two more things from the report. A "Protection Bypass for Automation" secret was created on the project by `vercel curl`, and `-f2` couldn't revoke it (reading the secret was denied): Ícaro revokes it in the Vercel dashboard (BMI-073). `vercel.json` gained `"framework": "vite"`, committed as `d5e4a4d` by `-5b` (requested by the dispatcher). The push of the docs commit just before it had already triggered a preview without the preset.
 
 ### BMI-003, OG tags part — Ready for the ui lane (`-cc`)
 
 The OG image is approved by the opus reviewer and verified by the dispatcher (marketing's action 5). It is rendered by `node marketing/social/render.mjs marketing/social/posts/og-image.json` into `marketing/social/out/` (git-ignored). The 1280x640 render is for GitHub's social preview only (uploaded by hand by Ícaro).
 
-- [x] `index.html` has `og:title`, `og:description`, `og:image`, `og:url`, `og:type` and `twitter:card` (`summary_large_image`). `og:url` and `og:image` are absolute on `https://blur-my-image.vercel.app`.
+- [x] `index.html` has `og:title`, `og:description`, `og:image`, `og:url`, `og:type` and `twitter:card` (`summary_large_image`). `og:url` and `og:image` are absolute (first on `https://blur-my-image.vercel.app`, the main domain at the time; swapped to `https://blurmyimage.vercel.app`, approved by the reviewer, commit requested from `-5b`).
 - [x] `og:description` is the privacy sentence from D-010, the same as the README and the meta description.
 - [x] The 1200x630 PNG (`og-image-og-1200x630.png`) is copied to `public/` (for example `public/og-image.png`) and committed by `-5b`; the page serves it.
 - [x] `pnpm check`, unit tests, e2e and `pnpm size` still pass; no file contains the Vercel preview URL.
 - [x] The CSP in `security-headers.ts` is not loosened; the image is only fetched by crawlers, not by the app.
 
-Done by `-cc` and approved by the opus reviewer, 2026-11-22; committed locally as `fa822b8` (`index.html` and `public/og-image.png`; PM confirmed the nine tags and the file, not yet pushed): nine tags in `index.html` (`og:type`, `og:url`, `og:title`, `og:description`, `og:image`, `og:image:width`, `og:image:height`, `og:image:alt`, `twitter:card`), `public/og-image.png` 1200x630, check, 229 tests and size green, no preview URL or team slug in the repo.
+Done by `-cc` and approved by the opus reviewer, 2026-11-22; committed locally as `0f0a8ed` (`index.html` and `public/og-image.png`; PM confirmed the nine tags and the file, not yet pushed): nine tags in `index.html` (`og:type`, `og:url`, `og:title`, `og:description`, `og:image`, `og:image:width`, `og:image:height`, `og:image:alt`, `twitter:card`), `public/og-image.png` 1200x630, check, 229 tests and size green, no preview URL or team slug in the repo.
 
 Added after the reviewer's two notes, for after the first production deploy that serves the final build:
-- Checked read-only by `-f2` on the preview of `a60acfe` (source Git, `READY`): `/` carries the nine tags with the D-010 sentence and an absolute `og:image`; `/og-image.png` answers 200, `image/png`, 97,630 bytes, 1200x630, with CORP `same-origin` and `nosniff`. Until the production alias is updated by the merge of PR #1, it still serves the first deployment (`c380981`), where `/og-image.png` is a 404: a link card made from the alias today has no image. So the real unfurl waits for the first production deploy of the final build.
+- Checked read-only by `-f2` on the preview of `39c28d3` (source Git, `READY`): `/` carries the nine tags with the D-010 sentence and an absolute `og:image`; `/og-image.png` answers 200, `image/png`, 97,630 bytes, 1200x630, with CORP `same-origin` and `nosniff`. Until the production alias is updated by the merge of PR #2, it still serves the first deployment (`339c4ff`), where `/og-image.png` is a 404: a link card made from the alias today has no image. So the real unfurl waits for the first production deploy of the final build.
 - [ ] A real link unfurl is checked (Facebook Sharing Debugger, LinkedIn Post Inspector or a Slack message, by Ícaro): the image shows. The `vercel.json` CORP `same-origin` header applies to the PNG; crawlers fetch server-side and shouldn't be affected, but that is an assumption until tested. If one fails, the fix is a header rule giving `/og-image.png` CORP `cross-origin`, nothing else loosened.
 - [ ] `twitter:card` has no `twitter:image` and falls back to `og:image` according to X's documentation as the reviewer knows it; untested, so the same check covers X.
 
@@ -210,7 +232,7 @@ Expanded by D-004 (design in `.local/standards/quality.md`, CI design section):
 - [ ] Workflows: `contents: read`, `persist-credentials: false`, actions pinned by full SHA, timeouts, concurrency cancel.
 - [ ] Required checks on `main` can't be enforced while the repo is private on the Free plan: the ruleset is part of BMI-050.
 
-The workflow landed as `08d2384` and Dependabot (npm, GitHub Actions, Docker, weekly, with cooldown) as `a61f693`; the first PR run passed Verify and E2E (Chromium). The required-checks ruleset can only be enforced after the repo goes public, so it is a BMI-050 step. `Review` until PR #1 merges.
+The workflow landed as `9279a65` and Dependabot (npm, GitHub Actions, Docker, weekly, with cooldown) as `1efaf03`; the first PR run passed Verify and E2E (Chromium). The required-checks ruleset can only be enforced after the repo goes public, so it is a BMI-050 step. `Review` until PR #2 merges.
 
 ### BMI-011 — Drag and drop
 
@@ -237,9 +259,9 @@ User stories and acceptance criteria are in [specs/i18n.md](specs/i18n.md), requ
 
 ### BMI-073 — platform settings, split by when they matter
 
-Not everything here has to be done before the repo is public. The flip doesn't depend on Vercel. What matters is the first official production deploy, the merge of PR #1 (D-005, D-017), which now comes before the flip. Split, nothing dropped:
+Not everything here has to be done before the repo is public. The flip doesn't depend on Vercel. What matters is the first official production deploy, the merge of PR #2 (D-005, D-017), which now comes before the flip. Split, nothing dropped:
 
-Before the merge of PR #1 (the real build goes to production; the alias already serves an earlier build, D-016):
+Before the merge of PR #2 (the real build goes to production; the alias already serves an earlier build, D-016):
 - [ ] Vercel account: 2FA on (Ícaro, by hand).
 - [x] The "Protection Bypass for Automation" secret that `vercel curl` created is revoked (Ícaro; existence checked by `-f2`).
 - [x] The WAF rate-limit rule on `/api/image` is published and active (read back by `-f2`).
@@ -248,6 +270,8 @@ Before the merge of PR #1 (the real build goes to production; the alias already 
   - Ready now, no Vercel setting needed: the 1-hour request-log retention on Hobby and the 4.5 MB request and response body limit, checked against Vercel's current documentation (cite the page and the date) and against what `docs/hosting.md` and the README say; reworded where they differ.
   - Done by the quality lane and approved by the opus reviewer (commit requested from `-5b`; PM didn't re-check the Vercel citations): the 1-hour log retention and the 4.5 MB body limit (streamed responses excepted) agree with Vercel's documentation, and `MAX_BYTES` 4,400,000 matches `config.ts` and `app.ts`.
   - Three small follow-ups from the reviewer, same kind of work: (1) `docs/hosting.md` says to keep `MAX_BYTES` "below 4.5 MB"; since the limit doesn't apply to streaming, either drop "below 4.5 MB" or give the reason. (2) The README's sentence that "the proxy refuses a larger image itself" is exact only when the size is declared: it is a 413 when the declared size is over the cap, and an aborted stream when an undeclared body passes it (the client sees a failed download); reword. (3) The comment in `server/proxy/config.ts` above `DEFAULT_MAX_BYTES` ("Just under Vercel's 4.5 MB function response limit, which also counts headers") contradicts the documentation; correct the comment (server lane, comment only, no behavior change).
+  - Done by the quality and server lanes, approved by the reviewer (commits requested from `-5b`): the `hosting.md` wording, the README sentence on a 413 and an aborted stream, the rate-limit sentence ("active, 30 requests per 60 seconds per IP", not promising that it fires) and the `config.ts` comment. Two small wording follow-ups from the reviewer, same file: the README's "an aborted stream when an undeclared body passes it" is narrower than the code, because `limitBytes` also cuts a body with a declared size under the cap that grows past it, so it says "when the body grows past it"; and the "scripted abuse meets a rule… active at" sentence reads harshly, so it becomes "runs into a rate-limit rule… set to 30 requests per 60 seconds per IP".
+  - Still open on this item: the usage-alert claim (the README says "planned") until the alerts are set.
   - Now checkable: the rate-limit rule claim (the rule is active; that it fires isn't proven yet, see BMI-003). Still waits on usage alerts being set: the usage-alert claim.
 
 After the flip, which now follows the merge (they only exist on a public repo; they are the BMI-050 list):
@@ -263,21 +287,21 @@ Community files are in. Left is GitHub settings, which `-5b` applies now (D-011)
 
 ### BMI-050 — Go-public checklist
 
-Ícaro's answer is yes (D-013). Order set by D-018 (relayed by `-aa`): rewrite the history, flip with `-aa`'s explicit go, protections, `.coderabbit.yaml`, PR #1 ready with a CodeRabbit review, corrections, merge. CodeRabbit's Free plan does no line-by-line review on a private repo; the open-source plan, for a public one, does. The public `main` shows the old README until PR #1 merges.
+Ícaro's answer is yes (D-013). Order set by D-018 (relayed by `-aa`): rewrite the history, flip with `-aa`'s explicit go, protections, `.coderabbit.yaml`, PR #2 ready with a CodeRabbit review, corrections, merge. CodeRabbit's Free plan does no line-by-line review on a private repo; the open-source plan, for a public one, does. The public `main` shows the old README until PR #2 merges.
 
 Before the flip (repo private):
 - [x] Full-history `gitleaks` over every branch clean: 64 commits, 2026-11-22 (quality lane, re-run by the dispatcher). `check-licenses` and `check-dist` pass; no token, Vercel identifier, `.env` or `.local/` tracked; no AI trailer. Run again after the rewrite.
-- [x] `SECURITY.md` and `CODE_OF_CONDUCT.md` committed with the contact from D-007 (`c5b3bce`). `CLAUDE.md` and `.claude/` stay (D-008) and the three skills may be published (D-014).
+- [x] `SECURITY.md` and `CODE_OF_CONDUCT.md` committed with the contact from D-007 (`d6f67e1`). `CLAUDE.md` and `.claude/` stay (D-008) and the three skills may be published (D-014).
 - [x] Third-party license notices in the bundle (BMI-052); README status line, contributing links and wording match what shipped (BMI-051, `Review`).
 - [ ] The Vercel project's Ignored Build Step is `test ! -f package.json` and `-f2` has read the value back (D-019): without an app the build is skipped and the live site stays; with the app it builds. `-f2`'s environment denied it, so Ícaro sets it in the dashboard (Project Settings, Git, Ignored Build Step, Custom, `test ! -f package.json`, Save); today the value is `None`. `-5b` pushes the rewritten `main` only after `-f2` reads the new value back.
-- [ ] History rewritten to the GitHub no-reply address (D-015), by `-5b`: a backup first; the repo's `user.email` set to the no-reply address before any further commit; every author and committer checked; each rewritten commit keeps the same tree; the rewritten `main` (5 commits, no app in it) pushed only after the Ignored Build Step above, because otherwise the Git integration would deploy the repository root statically, taking the site down and serving `/CLAUDE.md` and `/docs/*.md` by URL; `--force-with-lease` on `feat/scaffold-and-proxy`; `gitleaks` re-run; the old-to-new hash map given to PM, who corrects the hashes cited in `docs/product/` and `docs/marketing/`.
-- [ ] Repo description and topics (approved, D-017) applied by `-5b` and read back. The social preview image is uploaded by hand by Ícaro.
+- [x] History rewritten to the GitHub no-reply address (D-015), executed by `-5b` and verified by `-aa` on 2026-11-22: only the no-reply address on the remote (87 commits), trees identical to the backup, `main` pushed after the Ignored Build Step (the build was skipped, the alias stayed). Old-to-new hash map in `.local/rewrite-map-old-new.txt`; hashes in `docs/product/` corrected from it (PM). PR #1 was closed by GitHub during the push and can't be reopened; PR #2 (draft, `feat/scaffold-and-proxy` to `main`, same head) replaces it. Everything below that says PR #2 means the PR for this branch. `-aa` gave `-5b` the flip go, conditional on `gitleaks` at the new HEAD, the new PR opened and the description and topics applied (done by `-5b`: description A and 11 topics).
+- [x] Repo description and topics (approved, D-017) applied by `-5b` (per `-5b`: description A and 11 topics; PM hasn't read them back). The social preview image is uploaded by hand by Ícaro.
 - [ ] BMI-070 settings (D-011 applied; saved replies by Ícaro, not blocking).
 - [x] The WAF rate-limit rule on `/api/image` is published and `-f2` read the active rule back (2026-11-22). It was moved ahead of the flip because the proxy address is easy to find once the repo is public.
 - [ ] `-5b` reports on the rewrite to `-aa`.
 
 The flip:
-- [ ] `-aa` gives `-5b` the explicit go, only after the rewrite is verified and the WAF rule is active and read back; flip the repo to public. The URL stays out of the README and marketing until Ícaro says (D-016).
+- [x] The new PR is open (PR #2, draft, replaces the closed PR #1). `gitleaks` still has to be clean at the new HEAD before the flip. `-aa` has given `-5b` the explicit go (the rewrite is verified and the WAF rule is active); flip the repo to public. The URL stays out of the README and marketing until Ícaro says (D-016).
 
 After the flip, in this order:
 - [ ] Private vulnerability reporting, push protection, CodeQL default.
@@ -285,9 +309,9 @@ After the flip, in this order:
 - [ ] Fork PR workflows need approval; scorecard and dependency-review workflows; confirm Vercel Git fork protection.
 - [ ] `.coderabbit.yaml` committed (configuration only, no secret; `-f5` proposes it and the quality lane commits through `-5b`).
 - [ ] BMI-073 pre-merge items done (Vercel 2FA, usage alerts, the platform claims checked; the bypass secret is revoked and the WAF rule is active).
-- [ ] PR #1 out of draft and `@coderabbitai review` posted.
+- [ ] PR #2 out of draft and `@coderabbitai review` posted.
 - [ ] CodeRabbit's review answered and the corrections committed, checks green. Findings that change scope go to Ícaro, never applied silently.
-- [ ] Merge PR #1 (authorized by Ícaro only after the line above). It is the first official production deploy (D-005, D-013); the items in `Review` become `Done` against `main`; the link unfurl check of BMI-003 follows.
+- [ ] Merge PR #2 (authorized by Ícaro only after the line above). It is the first official production deploy (D-005, D-013); the items in `Review` become `Done` against `main`; the link unfurl check of BMI-003 follows.
 - [ ] 3 to 5 good first issues, and the first tagged release (BMI-071).
 
 ### E7 progress notes (2026-11-22, earlier; the later notes below supersede these where they differ)
@@ -295,16 +319,16 @@ After the flip, in this order:
 What is committed on `feat/scaffold-and-proxy`, and what is still open per item:
 
 - **BMI-002 CI:** `ci.yml` is written but not committed; the git-owner session commits it once `test:coverage` and `size` exist in `package.json`.
-- **BMI-060 quality bar:** `docs/quality.md` is in (`a61f693`). Still open: tsconfig flags, Biome rules and folder boundaries, coverage thresholds, kebab-case rename.
-- **BMI-066 supply chain:** Dependabot, `security.yml`, `scripts/check-licenses.mjs` and `scripts/check-dist.mjs` are in (`a61f693`, `48b1f3d`). Still open: `pnpm-workspace.yaml` with `minimumReleaseAge: 10080`, `trustPolicy: no-downgrade`, `strictDepBuilds`, `blockExoticSubdeps` and an empty `allowBuilds`. **Target date 2026-11-28, no exception list.** It can't go in earlier: 40 packages already in the lockfile are younger than 7 days, and the newest (`undici` 8.13.1) turns 7 days old around 2026-11-27 22:00 UTC. Until then pnpm 12's default (1 day) applies. Draft: `.local/standards/drafts/pnpm-workspace.yaml` (git-ignored).
-- **BMI-070 community files:** `CONTRIBUTING.md`, issue forms and the PR template are in (`4c15265`). Still open: labels, merge settings (squash only, delete branch on merge, suggest updating PR branches) and saved replies, all done in GitHub's settings.
-- **BMI-071 releases:** release-please config, manifest and workflow are in (`4c15265`). The Conventional Commits check on the PR title landed in `76325bb`. Nothing open in the repo; the first tagged release is part of BMI-050.
+- **BMI-060 quality bar:** `docs/quality.md` is in (`1efaf03`). Still open: tsconfig flags, Biome rules and folder boundaries, coverage thresholds, kebab-case rename.
+- **BMI-066 supply chain:** Dependabot, `security.yml`, `scripts/check-licenses.mjs` and `scripts/check-dist.mjs` are in (`1efaf03`, `6217fc6`). Still open: `pnpm-workspace.yaml` with `minimumReleaseAge: 10080`, `trustPolicy: no-downgrade`, `strictDepBuilds`, `blockExoticSubdeps` and an empty `allowBuilds`. **Target date 2026-11-28, no exception list.** It can't go in earlier: 40 packages already in the lockfile are younger than 7 days, and the newest (`undici` 8.13.1) turns 7 days old around 2026-11-27 22:00 UTC. Until then pnpm 12's default (1 day) applies. Draft: `.local/standards/drafts/pnpm-workspace.yaml` (git-ignored).
+- **BMI-070 community files:** `CONTRIBUTING.md`, issue forms and the PR template are in (`83b5515`). Still open: labels, merge settings (squash only, delete branch on merge, suggest updating PR branches) and saved replies, all done in GitHub's settings.
+- **BMI-071 releases:** release-please config, manifest and workflow are in (`83b5515`). The Conventional Commits check on the PR title landed in `a7880c6`. Nothing open in the repo; the first tagged release is part of BMI-050.
 - **BMI-072:** `CODE_OF_CONDUCT.md` and `SECURITY.md` are in with the `<CONDUCT_CONTACT>` placeholder; replaced by the contact in D-007 (Q-003 closed, 2026-11-22), edit pending the git owner's commit.
-- **BMI-040 to BMI-044 i18n:** committed as `ba6343f`. Ícaro reviewed `pt-BR.json` and changed the tagline and the drop overlay text (`bbb060c`), so the review condition on BMI-042 is met. It stays `Review` like the rest until PR #1 is merged to `main`. The `define` flags in `vite.config.ts` and the default `locale: "en-US"` in `playwright.config.ts` ride along with the frontend session's config commit.
+- **BMI-040 to BMI-044 i18n:** committed as `b010671`. Ícaro reviewed `pt-BR.json` and changed the tagline and the drop overlay text (`fbf8779`), so the review condition on BMI-042 is met. It stays `Review` like the rest until PR #2 is merged to `main`. The `define` flags in `vite.config.ts` and the default `locale: "en-US"` in `playwright.config.ts` ride along with the frontend session's config commit.
 
 ### E7 progress, later on 2026-11-22
 
-Committed on `feat/scaffold-and-proxy` by the git-owner session: the frontend standards package (`533f624`), page headers in the Node entry (`6bea2a7`), layout doc (`120f89b`) on top of the earlier community and CI files. PM spot-checked each item in the code (greps for the key behaviors, plus running `pnpm size`), but did not audit every acceptance criterion; the reviewer lane or the PR review does that.
+Committed on `feat/scaffold-and-proxy` by the git-owner session: the frontend standards package (`6039522`), page headers in the Node entry (`a49e2ac`), layout doc (`f1cca03`) on top of the earlier community and CI files. PM spot-checked each item in the code (greps for the key behaviors, plus running `pnpm size`), but did not audit every acceptance criterion; the reviewer lane or the PR review does that.
 
 - **BMI-060 → Review.** Biome strict rules and folder boundaries, tsconfig flags, coverage thresholds, `docs/quality.md` linked from the README.
 - **BMI-061 stays `In progress`.** The engine loads lazily, but `pnpm size` fails: initial JS is 43.21 kB brotli against a 35 kB budget, and all JS except the WebP encoder is 192.22 kB against 180 kB. Ícaro chose to precompile the i18n messages to cut it (D-006). BMI-002 (`ci.yml`) is on hold until `pnpm size` is green.
@@ -316,17 +340,17 @@ Committed on `feat/scaffold-and-proxy` by the git-owner session: the frontend st
 
 ### BMI-060 — committed (2026-11-22)
 
-The server tsconfig flags (`noUncheckedIndexedAccess`, `noImplicitOverride`) landed as `5642e7b` on top of `533f624`. `Review` until PR #1 merges to `main`.
+The server tsconfig flags (`noUncheckedIndexedAccess`, `noImplicitOverride`) landed as `f5036ad` on top of `6039522`. `Review` until PR #2 merges to `main`.
 
 - [x] `tsconfig.server.json` sets both flags and `pnpm check` passes with them.
-- [x] Committed by the git owner (`5642e7b`).
+- [x] Committed by the git owner (`f5036ad`).
 
 ### BMI-061 — committed (2026-11-22)
 
-Committed as `e2e0eb6`: i18n messages precompiled (47.0 → 43.2 kB initial). Ícaro accepted budgets of 45 kB initial and 195 kB total instead of 35 / 180 kB (D-009, relayed). `Review` until PR #1 merges to `main`. Owner was the frontend session (D-006).
+Committed as `9025852`: i18n messages precompiled (47.0 → 43.2 kB initial). Ícaro accepted budgets of 45 kB initial and 195 kB total instead of 35 / 180 kB (D-009, relayed). `Review` until PR #2 merges to `main`. Owner was the frontend session (D-006).
 
 - [x] `pnpm size` passes: initial JS ≤ 45 kB brotli and all JS except the WebP encoder ≤ 195 kB (PM re-ran 2026-11-22: 43.21 and 192.22 kB).
-- [x] i18n messages precompiled at build time (`e2e0eb6`); `pt-BR` still loads as its own chunk; Chromium e2e passes (PM ran 2026-11-22: 35/35 on the second and third runs; the first run failed and was not diagnosed).
+- [x] i18n messages precompiled at build time (`9025852`); `pt-BR` still loads as its own chunk; Chromium e2e passes (PM ran 2026-11-22: 35/35 on the second and third runs; the first run failed and was not diagnosed).
 - [x] The WebP encoder is loaded only through `import()` (`src/export/encode.ts`), and the renderer and effect code load through `import()` in `src/engine/load-renderer.ts` (reported by `-cc`, PM spot-checked both lines).
 
 ### BMI-052 — pre-flip audit run
@@ -341,9 +365,9 @@ Split out of BMI-050 so a worker can do the read-only part. It doesn't depend on
 
 ### BMI-051 — README and docs match what shipped
 
-Committed as `5117278` (`README.md`, `docs/hosting.md`, `index.html`), verified by the dispatcher and approved by the opus reviewer; PM spot-checked README lines 3, 30 and `index.html` line 6 and found no "open source" wording left in README or hosting.md. `Review` until PR #1 merges to `main`.
+Committed as `04dfa46` (`README.md`, `docs/hosting.md`, `index.html`), verified by the dispatcher and approved by the opus reviewer; PM spot-checked README lines 3, 30 and `index.html` line 6 and found no "open source" wording left in README or hosting.md. `Review` until PR #2 merges to `main`.
 
-Reopened by D-010 and committed as `758fc6b` (`README.md`, `index.html`, `en.json`, `pt-BR.json`); verified by the dispatcher (check, 229 unit tests, e2e 35/35, size 43.24 / 192.26 kB) and approved by the opus reviewer. PM confirmed the commit touches those four files on the branch. `Review` until PR #1 merges to `main`.
+Reopened by D-010 and committed as `ccef665` (`README.md`, `index.html`, `en.json`, `pt-BR.json`); verified by the dispatcher (check, 229 unit tests, e2e 35/35, size 43.24 / 192.26 kB) and approved by the opus reviewer. PM confirmed the commit touches those four files on the branch. `Review` until PR #2 merges to `main`.
 
 - [x] `README.md` line 3 and the `index.html` meta description say "Image files you open, drop or paste never leave your device."
 - [x] `app.tagline` in `en.json` ("…Image files never leave your device.") and `pt-BR.json` ("…Os arquivos de imagem nunca saem do seu navegador.").
@@ -352,7 +376,7 @@ Reopened by D-010 and committed as `758fc6b` (`README.md`, `index.html`, `en.jso
 Done after `Review`:
 - Ícaro read and approved the `pt-BR` tagline as committed (relayed by `-aa`, 2026-11-22; the reviewer's "Seus arquivos…" variant is not used). Logged in D-010.
 
-Marketing text that quoted the old tagline or the provisional sentence now matches D-010: `cb39247` (audience and three posts) and `ad82c2e` (pre-launch plan), approved by the opus reviewer after Ícaro's direct yes for those lines (relayed by `-aa`). PM spot-checked that the plan marks the tagline as settled by D-010 and found no old wording left under `docs/marketing` or `marketing`. Nothing open on this item except the merge of PR #1.
+Marketing text that quoted the old tagline or the provisional sentence now matches D-010: `7ddf40f` (audience and three posts) and `0d37933` (pre-launch plan), approved by the opus reviewer after Ícaro's direct yes for those lines (relayed by `-aa`). PM spot-checked that the plan marks the tagline as settled by D-010 and found no old wording left under `docs/marketing` or `marketing`. Nothing open on this item except the merge of PR #2.
 
 - [x] The status line says pre-release (v1 built and under review, not deployed) and no longer "planning, nothing implemented". It keeps marketing in its pre-launch posture: no "try it now" until BMI-003 gives a live URL. The live wording is set at go-public (BMI-050).
 - [x] The proxy portability sentence says `app.ts` is platform-neutral, Vercel and Node ship, and Cloudflare would need its own fetch and entry.
