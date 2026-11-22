@@ -20,14 +20,6 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
-### Q-025 — Where the redaction warning shows
-
-Found by `-cc` while rewriting the warning (BMI-088; via `-75`): the warning is shown only next to the Pixelate option (`EffectControls` uses `definition.hasWarning`), and the README says so (line 58: "The app shows this warning next to the Pixelate option"). The new text talks about "blur and pixelate", but someone who picks Gaussian or Motion never sees it, although the study is as much about blur as about pixelation. Changing where it shows is a small UI change that the README then has to describe.
-
-Options: (a) show it for every effect (a flag per effect, text only, no new library), and the README line says "next to the effect options"; (b) leave the placement and make the text talk only about pixelation, which understates the study; (c) leave both as they are.
-
-Recommendation: (a). The reason for the warning (text blurred or pixelated can be read) applies to all three effects, and it costs a flag per effect and one README sentence. Default in force: **(c)** until he answers: the text is the one he reads and approves, shown next to Pixelate only, so BMI-088 doesn't wait. The opus reviewer of BMI-088 also recommends (a), keeping "Blur and pixelate" in the text (narrowing it to "Pixelate" would suggest that blur is safe); the simplest change is to render the warning for every effect, move the text to a key that isn't tied to an effect (for example `effects.warning`) and drop `hasWarning` from `src/engine/effect-catalog.ts`, which changes behavior beyond line 47 and needs the e2e and accessibility checks adjusted, hence Ícaro's yes.
-
 ### Q-024 — Do the three use-case pages stay, now that the home is the app screen?
 
 D-032 makes the landing the app's own screen with the copy underneath. BMI-085 planned a home and three use-case pages (blur a license plate, pixelate a screenshot, blur a face) as static pages. Question for Ícaro: do the use-case pages stay as separate pages that the app screen links to, or does everything live on the one screen (sections, no separate pages)? The SEO notes favour separate pages (one query intent per page), at the price of more files to keep true; one screen is simpler and ranks for fewer queries. Recommendation: keep the three use-case pages, small, linked from the sections under the app, since each search intent (plate, screenshot, face) deserves its own answer. Default in force: BMI-085 stays an `Idea` and nothing is built; the copy of BMI-084 is written for the home first.
@@ -55,6 +47,13 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the project's main domain on 2026-11-22, per `-aa`; the earlier `https://blur-my-image.vercel.app` answers 307 to it (PM read both with a plain `GET`). The README, the repo website field and the bug form get it only when Ícaro says (D-016). Not blocking.
 
 ## Decisions
+
+### D-034 — The in-app warning: final texts, and it shows for every effect (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answers, closing Q-025: (1) Ícaro **read the `pt-BR`** of the warning and chose both optional changes. Final `pt-BR`, to be used exactly: "Desfoque e pixelização não escondem texto de forma confiável. Para algo secreto, cubra com uma tarja preta em outro editor ou deixe de fora." The `en` stays as the reviewer approved it: "Blur and pixelate don't reliably hide text. For anything secret, cover it with a solid box in another editor, or leave it out." (he didn't choose the optional "of the image"). (2) The warning is shown **for every effect** (blur and pixelate), keeping "Blur and pixelate" in the text: the ui lane adjusts the component, the e2e and the accessibility (aria, without repeated noise) and changes nothing else in the interface. Because it changes behavior, it goes back to the opus reviewer.
+**Why:** the reason for the warning applies to all three effects, and narrowing the text to Pixelate would suggest that blur is safe.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-088 (reopened for the behavior change), BMI-086 (the README sentence on where the warning shows), `src/engine/effect-catalog.ts` (`hasWarning`), `en.json` and `pt-BR.json`.
 
 ### D-033 — Merge after the fixes, the false statements corrected, the in-app warning rewritten, BMI-104 stays in Later (2026-11-22)
 
