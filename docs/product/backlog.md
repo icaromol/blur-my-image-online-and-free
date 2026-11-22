@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 47 `Must` done, 40 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-073), 0 idea. Also BMI-074 (`Should`, `Done`) and BMI-075 (`Should`, `Ready`).
+Progress: 0 of 47 `Must` done, 41 in review, 4 in progress (BMI-003, 050, 066, 070), 1 ready (BMI-076, after the merge), 1 blocked (BMI-073, on Ícaro's own actions). Also BMI-074 (`Should`, `Done`) and BMI-075 (`Should`, `Review`).
 
 ### E1. Foundation
 
@@ -84,7 +84,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-070 | Community files: `CONTRIBUTING.md`, issue forms, PR template, labels, merge settings, saved replies | Must | M | In progress | |
 | BMI-071 | Releases: release-please config and workflow, Conventional Commits check on the PR title | Must | S | Review | BMI-002 |
 | BMI-072 | `CODE_OF_CONDUCT.md` (Contributor Covenant 3.0) and `SECURITY.md`; `SECURITY.md` uses GitHub private reporting (no email); the code of conduct contact is set (D-007, edit waiting for the git owner's commit) | Must | S | Review | |
-| BMI-073 | Manual platform settings checklist for Ícaro (GitHub Actions and security, Vercel 2FA, WAF rate-limit rule, toolbar and analytics off, env vars); each README or hosting claim that only the platform can make true is checked or reworded: 1-hour request-log retention, the 4.5 MB body limit, the rate-limit rule and usage alerts | Must | S | Ready | BMI-003 |
+| BMI-073 | Manual platform settings checklist for Ícaro (GitHub Actions and security, Vercel 2FA, WAF rate-limit rule, toolbar and analytics off, env vars); each README or hosting claim that only the platform can make true is checked or reworded: 1-hour request-log retention, the 4.5 MB body limit, the rate-limit rule and usage alerts | Must | S | Blocked: on Ícaro's own actions (Vercel 2FA, usage alerts) | BMI-003 |
 | BMI-074 | Find the cause of the unexplained Chromium e2e failure of 2026-11-22: repeat the suite, capture the report and trace, fix the cause or show N green runs | Should | S | Done | BMI-067 |
 
 ### E8. Brand identity: D-020
@@ -101,7 +101,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-051 | README status line and content match what shipped | Must | S | Review | BMI-040 |
 | BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
 | BMI-076 | Scorecard and dependency-review workflows (split out of BMI-050's post-flip list): `.github/workflows/`, actions pinned by SHA, in a PR of their own after the merge of PR #2 | Must | S | Ready | the merge of PR #2 |
-| BMI-077 | Address CodeRabbit's findings on PR #2: nine corrections in the ui, server and quality lanes; three need Ícaro (Q-015) | Must | M | Ready | the CodeRabbit review of PR #2 |
+| BMI-077 | Address CodeRabbit's findings on PR #2: nine corrections in the ui, server and quality lanes; three need Ícaro (Q-015) | Must | M | Review | the CodeRabbit review of PR #2 |
 
 ## Later (post-v1)
 
@@ -261,6 +261,8 @@ User stories and acceptance criteria are in [specs/i18n.md](specs/i18n.md), requ
 
 ### BMI-073 — platform settings, split by when they matter
 
+Status: **Blocked** since 2026-11-22: what is left is Ícaro's own actions, Vercel 2FA and the usage alerts, and the usage-alert claim in the README can't be closed until the alerts exist (the dispatcher's point). It was `Ready` only for the parts the lanes could do, and those are done.
+
 Not everything here has to be done before the repo is public. The flip doesn't depend on Vercel. What matters is the first official production deploy, the merge of PR #2 (D-005, D-017), which now comes before the flip. Split, nothing dropped:
 
 Before the merge of PR #2 (the real build goes to production; the alias already serves an earlier build, D-016):
@@ -310,6 +312,8 @@ Corrections inside what the README already promises (no scope change):
   - Delivered by `-f2`, in review (per `-75`): 9 first-hop redirect cases and 1 later-hop case pass (`app.ts` already re-checks every hop), `*` and `https://a.example,*` are rejected, and a one-line comment in `app.ts` says the WAF rate limit is the limit for non-browser clients.
   - **PM's decision on empty entries:** keep the behavior. `parseOrigins` drops empty entries, so `https://a.example,` is `["https://a.example"]` and `,` is no origin at all; neither widens access, and rejecting would make a stray trailing comma break a deployment's variable. The test that documents "empty entries are ignored, not accepted as origins" replaces the rejection case; no change to `server/proxy/config.ts`.
 - [ ] **Trivial**, no code: `server/proxy/app.ts`: the same-origin gate doesn't stop a non-browser client that sends the header, so the rate limit is what limits it. Answer on the PR: the WAF rule (30 requests per 60 s per IP) is that limit. If the code comment or `docs/hosting.md` doesn't say this, add one sentence.
+
+All nine corrections are committed on the branch, each approved by the opus reviewer (2026-11-22; PM confirmed the commits exist; the gate of the ui commit is check, 280 tests, e2e 36/36 and size): quality `c946bc6` (the hand-written license evaluator; the parser version waits in `.local/spdx-parser/` for Q-017), server `c974801` (redirect-hop and `ALLOWED_ORIGINS` tests, the `app.ts` comment), ui `aa1ce76` (the three `editor.ts` fixes, `i18n/index.ts`, `decode.ts`, the two-phase timeout in `url.ts`, `LanguageSelect.vue` and their tests). `Review` until PR #2 merges; the PR still needs an answer on each CodeRabbit comment.
 
 Needs Ícaro, none started (Q-015): the release-please token, a size cap on the direct fetch, and the tagline wording.
 
@@ -390,6 +394,8 @@ The server tsconfig flags (`noUncheckedIndexedAccess`, `noImplicitOverride`) lan
 - [x] Committed by the git owner (`f5036ad`).
 
 ### BMI-061 — committed (2026-11-22)
+
+Watch (2026-11-22, per `-75`): after the BMI-077 fixes the margin under the budgets is 43.48 of 45 kB initial (1.5 kB left) and 192.5 of 195 kB total (2.5 kB left). The next UI feature will need attention; any raise of the budgets is Ícaro's (D-009).
 
 Committed as `9025852`: i18n messages precompiled (47.0 → 43.2 kB initial). Ícaro accepted budgets of 45 kB initial and 195 kB total instead of 35 / 180 kB (D-009, relayed). `Review` until PR #2 merges to `main`. Owner was the frontend session (D-006).
 

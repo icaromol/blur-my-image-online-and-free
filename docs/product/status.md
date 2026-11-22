@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 47 `Must` done · 40 in review · 4 in progress · 3 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+0 of 47 `Must` done · 41 in review · 4 in progress · 1 ready · 1 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -59,6 +59,8 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- **BMI-077 is `Review`:** all nine corrections are committed and approved by the opus reviewer: quality `c946bc6` (the hand-written license evaluator while Q-017 is open), server `c974801`, ui `aa1ce76` (gate: check, 280 tests, e2e 36/36, size). The three findings that need Ícaro are Q-015. BMI-073 is `Blocked` on Ícaro's own actions (Vercel 2FA, usage alerts). Watch item: 1.5 kB left under the initial JavaScript budget (43.48 of 45 kB) and 2.5 kB under the total (192.5 of 195 kB). Open: someone answers each CodeRabbit comment on PR #2 (`-aa` names who), then the push and the merge.
 
 - BMI-077, the license-check fix: the maintained SPDX parser PM chose pulls in a CC-BY-3.0 data package that the development allowlist doesn't allow. New Q-017 for Ícaro (recommendation: allow CC-BY-3.0 for development tools only; default meanwhile: keep the hand-written evaluator, no policy change).
 
