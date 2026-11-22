@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 48 `Must` done, 40 in review, 5 in progress (BMI-003, 050, 066, 070, 077), 2 ready (BMI-076 after the merge, BMI-079), 1 blocked (BMI-073, waiting for `-f2`'s read-back). Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 and BMI-081 (`Should`, `Ready`).
+Progress: 0 of 48 `Must` done, 40 in review, 5 in progress (BMI-003, 050, 066, 070, 077), 3 ready (BMI-073 for the README wording, BMI-076 after the merge, BMI-079), 0 blocked. Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 and BMI-081 (`Should`, `Ready`).
 
 ### E1. Foundation
 
@@ -84,7 +84,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-070 | Community files: `CONTRIBUTING.md`, issue forms, PR template, labels, merge settings, saved replies | Must | M | In progress | |
 | BMI-071 | Releases: release-please config and workflow, Conventional Commits check on the PR title | Must | S | Review | BMI-002 |
 | BMI-072 | `CODE_OF_CONDUCT.md` (Contributor Covenant 3.0) and `SECURITY.md`; `SECURITY.md` uses GitHub private reporting (no email); the code of conduct contact is set (D-007, edit waiting for the git owner's commit) | Must | S | Review | |
-| BMI-073 | Manual platform settings checklist for Ícaro (GitHub Actions and security, Vercel 2FA, WAF rate-limit rule, toolbar and analytics off, env vars); each README or hosting claim that only the platform can make true is checked or reworded: 1-hour request-log retention, the 4.5 MB body limit, the rate-limit rule and usage alerts | Must | S | Blocked: on Ícaro's own actions (Vercel 2FA, usage alerts) | BMI-003 |
+| BMI-073 | Manual platform settings checklist for Ícaro (GitHub Actions and security, Vercel 2FA, WAF rate-limit rule, toolbar and analytics off, env vars); each README or hosting claim that only the platform can make true is checked or reworded: 1-hour request-log retention, the 4.5 MB body limit, the rate-limit rule and usage alerts | Must | S | Ready | BMI-003 |
 | BMI-074 | Find the cause of the unexplained Chromium e2e failure of 2026-11-22: repeat the suite, capture the report and trace, fix the cause or show N green runs | Should | S | Done | BMI-067 |
 
 ### E8. Brand identity: D-020
@@ -268,7 +268,7 @@ User stories and acceptance criteria are in [specs/i18n.md](specs/i18n.md), requ
 
 ### BMI-073 — platform settings, split by when they matter
 
-Status: **Blocked, waiting for a read-back** (2026-11-22, per `-aa`): Ícaro says he did everything of this item and turned off the Vercel comments. `-f2` reads back what it can (it can't read his account's 2FA, and usage alerts only if the API shows them); then the usage-alert claim in the README is reworded to the real state, which the quality lane does with BMI-080. It was `Ready` only for the parts the lanes could do, and those are done.
+Status: **Ready** for the quality lane's wording task (2026-11-22). `-f2` read back, read-only, what the API shows: Vercel PR comments off (`onPullRequest` and `onCommit` false); the Ignored Build Step is `test ! -f package.json`; the WAF rule is enabled with no pending changes (`/api/image`, fixed window 30 requests per 60 s per IP, deny for 1 minute), and its test (40 GETs, the first 30 answered by the proxy with its 403 `forbidden_origin`, the 31st on denied with `x-vercel-mitigated: deny` and the body "Forbidden", the block gone about 63 s later) agrees; the bypass secret is gone; fork protection is on; the Toolbar and Web Analytics are off; the team plan is Hobby. **Nobody can read** the usage alerts (the API doesn't expose them, and Hobby has no Spend Management: a limit that is hit pauses the project, with no bill, and usage emails are account notifications set in the dashboard), the account's 2FA, or whether Speed Insights is off (its object carries an id but no on or off date). Ícaro says he did them; he confirms those three by eye (Settings, Notifications; Security; the project's Speed Insights toggle). What is left for a lane: the README and `docs/hosting.md` sentence on usage alerts is reworded to what is true (Hobby pauses the project when a limit is hit; nothing promises alerts the maintainer's account may or may not send), with BMI-080.
 
 Not everything here has to be done before the repo is public. The flip doesn't depend on Vercel. What matters is the first official production deploy, the merge of PR #2 (D-005, D-017), which now comes before the flip. Split, nothing dropped:
 
