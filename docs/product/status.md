@@ -56,6 +56,8 @@ Only items that block something. Questions with a default in force are in decisi
 
 ### 2026-11-22 (new PM session, handoff)
 
+- **BMI-079's gate passed** (run by `-75` on the committed state): `pnpm check` clean, 299 tests, e2e 41/41 with the axe contrast rule evaluated on the notice in both themes (5.93:1 light, 7.14:1 dark), size 43.61 of 45 kB. **BMI-081 is delivered** and with the opus reviewer, not committed: a 429 or a Vercel deny header becomes a "too many requests" error, and a plain 403 without that header stays the generic one so the app never claims it falsely; no change to the proxy. The `pt-BR` text needs Ícaro's eyes before the merge; the quality lane is writing the shared-address and usage-alert sentences in one pass. Size room is down to 1.31 kB.
+
 - **BMI-079 is `Review`:** the notice under the link field is committed as `88a920a` and the README's privacy section cites it (`107808f`). PM confirmed the texts in both languages are Ícaro's exact words, the `aria-describedby` association and the new unit and e2e tests; the gate result (check, tests, e2e, contrast, size) is `-75`'s to report. BMI-081 can start now that the message files are free.
 
 - **BMI-080 is `Review`:** `34f304f` (README and `docs/hosting.md`) says the 30 per 60 s limit exists only on Vercel and that the proxy code and the image have none, and records the 40-GET WAF test. PM confirmed the commit and the sentences. The usage-alert sentence (BMI-073) is not in it and is still the lane's one task.
