@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 47 `Must` done · 40 in review · 5 in progress · 1 ready · 1 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+0 of 48 `Must` done · 40 in review · 5 in progress · 1 ready · 1 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -55,6 +55,8 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- **D-028 (Ícaro, relayed by `-aa`): a privacy notice next to the link field**, with his wording in `en` and `pt-BR` (BMI-079, `Must`, ui lane, in PR #2; `Must` goes to 48). CodeRabbit found that the app had no such notice while the public answer on the `pt-BR.json` comment said it did: that answer and PM's reply draft were wrong (PM hadn't checked), `-5b` corrects the answer. Also BMI-080 (docs: the 30 per 60 s limit exists only on Vercel; the WAF test: 40 GETs, the 31st denied, the block lifted by itself) and BMI-081 (how the front reacts when the WAF denies with plain "Forbidden"; shared addresses), both `Should`. Ícaro says he finished BMI-073 and turned off the Vercel comments: `-f2` reads back what it can; BMI-073 waits for that. After BMI-079 and BMI-080 PR #2 needs a fourth CodeRabbit round and `-aa`'s go.
 
 - **CodeRabbit rounds 2 and 3 finished** (per `-5b`): the third, on `5f671ed`, found one new Minor finding, in `src/i18n/index.ts`: a stale locale load can win over the latest choice (the reviewer had spotted the same race and it wasn't tracked). A correction inside the README's scope, added to BMI-077, which is `In progress` again for it (ui lane, tests, no lock files, size budget still to pass). Everything else is answered or fixed.
 

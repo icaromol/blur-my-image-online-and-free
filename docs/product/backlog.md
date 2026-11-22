@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 47 `Must` done, 40 in review, 5 in progress (BMI-003, 050, 066, 070, 077), 1 ready (BMI-076, after the merge), 1 blocked (BMI-073, on Ícaro's own actions). Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`) and BMI-078 (`Should`, `Idea`).
+Progress: 0 of 48 `Must` done, 40 in review, 5 in progress (BMI-003, 050, 066, 070, 077), 2 ready (BMI-076 after the merge, BMI-079), 1 blocked (BMI-073, waiting for `-f2`'s read-back). Also BMI-074 (`Should`, `Done`), BMI-075 (`Should`, `Review`), BMI-078 (`Should`, `Idea`), BMI-080 and BMI-081 (`Should`, `Ready`).
 
 ### E1. Foundation
 
@@ -103,6 +103,9 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
 | BMI-076 | Scorecard and dependency-review workflows (split out of BMI-050's post-flip list): `.github/workflows/`, actions pinned by SHA, in a PR of their own after the merge of PR #2 | Must | S | Ready | the merge of PR #2 |
 | BMI-077 | Address CodeRabbit's findings on PR #2: nine corrections in the ui, server and quality lanes; Ícaro's three answers added (D-025, D-026); a locale-race fix added after round 3 | Must | M | In progress | the CodeRabbit review of PR #2 |
+| BMI-079 | Privacy notice under the link field (his wording, `en` and `pt-BR`), associated with the field for assistive tech, with unit and e2e tests; README privacy text states it | Must | S | Ready | |
+| BMI-080 | Document that the 30 requests per 60 s rate limit exists only on Vercel (WAF) and that anyone running Node or Docker must put their own limit in front; record the WAF test result in the docs | Should | S | Ready | |
+| BMI-081 | The Vercel WAF deny comes back as plain text "Forbidden", not the proxy's JSON: see how the front reacts, propose a "too many requests" message with an i18n code, and note that a shared IP (school, carrier NAT) can hit the limit | Should | S | Ready | |
 
 ## Later (post-v1)
 
@@ -135,7 +138,7 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-137 | Image loading by link on phones: the real ceiling is decoding memory, not the 100 MiB cap (a compressed file of tens of MB can exceed 100 megapixels, over 400 MB as RGBA, and end in `decode_failed`; a body just under the cap sits whole in a Blob, kept in RAM on iOS Safari and able to reload the tab); a lower or device-aware cap, or a clearer message when decoding fails on a very large file | Quality | Idea |
 | BMI-135 | Playwright config: don't silently reuse another process's server on port 4173 outside CI (`reuseExistingServer`); no evidence yet that this caused the 2026-11-22 failure (BMI-074) | Quality | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-079`; later effects `BMI-109`, features `BMI-127`, other later `BMI-138`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-082`; later effects `BMI-109`, features `BMI-127`, other later `BMI-138`.
 
 ---
 
@@ -199,7 +202,7 @@ Open on BMI-003 after the live-alias finding (decided in D-016; the site stays u
 - [x] The private team deployment built from `-f2`'s local working-tree upload (307 files, including `.local/` and `.claude/settings.local.json` as source) is removed, by `-f2`, only that deployment; read back, it answers 404. Nothing secret was found in it (scans by `-f2` and the dispatcher).
 - [x] Ignored Build Step `test ! -f package.json`: saved by Ícaro in the dashboard and read back by `-f2`, which reports it matches (per `-aa`, 2026-11-22). `-5b` may push the rewritten `main` (D-019); the WAF rule and the revoked bypass secret are still open.
 - [x] `ALLOWED_ORIGINS` (only origins, no secret) lists the new main domain, updated by `-f2`; the old domain only redirects. It takes effect on the next deploy, so the proxy's answer to a request made from the new domain is checked after that deploy.
-- [ ] The rate limit is proven to fire: a short burst of more than 30 requests in 60 s from one address against `/api/image` (our own endpoint, a plain image URL that the proxy already rejects, such as a cross-site request) gets the deny, and the rule stops it after the minute. `-f2`, read-only otherwise; not blocking the flip.
+- [x] The rate limit fires: `-f2`'s test, 40 GETs, the 31st denied (`x-vercel-mitigated: deny`), a block of about a minute that lifted by itself (per `-aa`; PM didn't see the output).
 - [ ] `index.html` `og:url` and `og:image` still point at the old domain, which now redirects; change them to `https://blurmyimage.vercel.app` (ui lane, `-cc`; the og tags criteria above are otherwise done). Checked in the tracked files: these two lines are the only place the old domain appears outside `docs/product/`; neither the README nor `marketing/` cites any URL. Ícaro's rule (D-016) keeps the URL out of the README and marketing; `index.html` carries it in the OG tags on purpose.
 - [x] Decision on the production deployment that serves the alias from the feature branch: it stays up (D-016).
 - [ ] The real production build replaces it with the merge of PR #2, the first official production deploy.
@@ -265,7 +268,7 @@ User stories and acceptance criteria are in [specs/i18n.md](specs/i18n.md), requ
 
 ### BMI-073 — platform settings, split by when they matter
 
-Status: **Blocked** since 2026-11-22: what is left is Ícaro's own actions, Vercel 2FA and the usage alerts, and the usage-alert claim in the README can't be closed until the alerts exist (the dispatcher's point). It was `Ready` only for the parts the lanes could do, and those are done.
+Status: **Blocked, waiting for a read-back** (2026-11-22, per `-aa`): Ícaro says he did everything of this item and turned off the Vercel comments. `-f2` reads back what it can (it can't read his account's 2FA, and usage alerts only if the API shows them); then the usage-alert claim in the README is reworded to the real state, which the quality lane does with BMI-080. It was `Ready` only for the parts the lanes could do, and those are done.
 
 Not everything here has to be done before the repo is public. The flip doesn't depend on Vercel. What matters is the first official production deploy, the merge of PR #2 (D-005, D-017), which now comes before the flip. Split, nothing dropped:
 
@@ -329,6 +332,31 @@ The checks (Verify, E2E Chromium, Conventional Commits title) must be green afte
 
 Added after CodeRabbit's third round (2026-11-22, per `-5b` and `-75`; PM didn't read the comment): one new finding, Minor, and no other. The race was already noticed by the opus reviewer when it approved the ui commit (a slow first load of `pt-BR` can finish after the user picked `en`; only on the first `pt-BR` load; it didn't block then and was not tracked).
 - [ ] **Minor**, ui lane: `src/i18n/index.ts` around line 36: stale locale loads must not win. If a language switch is still loading and the user picks another, the older load can finish last and apply its locale, page title and saved preference while the select shows the newer choice. `setLocale` keeps a counter of the latest selection and returns `false` for a superseded one, so `chooseLocale` doesn't persist it and `LanguageSelect.vue` returns to the active locale. Tests: in `set-locale.test.ts`, a slow load overtaken by a fast one (the last choice wins, and it is the saved preference), plus the existing failed-load case; one e2e case in `e2e/i18n.spec.ts` if it can be made stable (not required). No lock files; the initial JavaScript budget has 1.5 kB of room, and `pnpm size` still has to pass.
+### BMI-079 — Privacy notice under the link field
+
+As a user pasting a link, I want to be told that the link goes through a server so that I don't assume the "never leaves your browser" promise covers it. D-028 (relayed from Ícaro): `en` "Links are fetched through our server. Files you open, drop or paste never leave your browser."; `pt-BR` "Links são buscados pelo nosso servidor. Arquivos que você abre, solta ou cola nunca saem do seu navegador." Lane ui, in PR #2, no new scope (the README already says links go through the proxy). Goes together with the locale-race fix already in BMI-077.
+
+- [ ] The notice sits under the link field, in both locales, from the message files (no inline text), with a style that matches the rest of the page.
+- [ ] Assistive tech: the text is tied to the field (`aria-describedby`), not only visual; the axe e2e still passes at WCAG 2.2 AA, with the contrast checked.
+- [ ] A unit test for the component and an e2e that finds the notice in `en` and `pt-BR`.
+- [ ] The README's privacy text mentions the notice, and the key-parity test, `pnpm check`, the unit and e2e suites and `pnpm size` pass (1.5 kB of room in the initial JavaScript).
+
+### BMI-080 — The rate limit is Vercel's, not the proxy's
+
+The 30 requests per 60 s limit is a WAF rule on Vercel; the proxy code has none. Quality lane, docs only, in PR #2.
+
+- [ ] `README.md` and `docs/hosting.md` say that the limit exists only on Vercel and that anyone running the Node entry or the Docker image has to put their own limit in front.
+- [ ] The result of the WAF test is recorded in `docs/hosting.md`: 40 GETs, the 31st was denied (`x-vercel-mitigated: deny`), the block lasted about a minute and lifted by itself (per `-aa`; the test was run by `-f2`).
+- [ ] No claim says the proxy limits requests by itself.
+
+### BMI-081 — What the user sees when the rate limit denies
+
+When the WAF denies, Vercel answers with plain text "Forbidden", not the proxy's JSON error, so the front may show only a generic error. Ui lane. A shared address (a school, a carrier NAT) can reach 30 requests per minute for several people.
+
+- [ ] Read how `src/input/url.ts` and the error mapping handle a non-JSON 403 from `/api/image` (a cross-site 403 from the proxy is JSON with a code); describe what the user sees today.
+- [ ] Propose a message for "too many requests" through an i18n error code, `en` and `pt-BR` (Ícaro corrects `pt-BR` strings, so the proposal is shown to him before it merges), and the change that tells the two 403s apart; no new library.
+- [ ] A test for the denied case, and a sentence in `docs/hosting.md` about shared addresses. If telling the two apart needs a change in the proxy's contract, stop and ask before doing it.
+
 ### BMI-076 — Scorecard and dependency-review workflows
 
 Split out of BMI-050's post-flip list (same scope, now trackable; the `Must` count goes from 45 to 46). Quality lane, in a PR of its own after the merge of PR #2: `main` takes changes only through PRs, the workflows need the code on `main`, and PR #2 shouldn't grow. Not assignable before that merge.

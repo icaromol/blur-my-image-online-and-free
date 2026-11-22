@@ -42,6 +42,13 @@ The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the proj
 
 ## Decisions
 
+### D-028 — A privacy notice next to the link field; the rate limit and the WAF finding (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answers: the app gets a notice under the link field, with his wording. `en`: "Links are fetched through our server. Files you open, drop or paste never leave your browser." `pt-BR`: "Links são buscados pelo nosso servidor. Arquivos que você abre, solta ou cola nunca saem do seu navegador." The taglines don't change. It goes into PR #2 and changes no scope: the README already says links go through the proxy. Context: CodeRabbit checked and the app had no such notice, while the public answer on the `pt-BR.json` comment said it had; that answer was wrong, `-5b` corrects it, and PM's reply draft carried the same mistake (corrected). He also says he did everything of BMI-073 and turned off the Vercel comments (D-024 done).
+**Why:** the claim "files never leave your browser" needs the exception for links said where the user pastes a link, not only in the README.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-079 (the notice), BMI-080 (docs on the rate limit), BMI-081 (the deny's message), BMI-073, the README privacy text.
+
 ### D-027 — Brand kit: his original lettering, the two-tone blue and the icons are accepted (2026-11-22)
 
 **Decision**, as relayed by `-aa` from Ícaro's direct answers, closing Q-016: (1) the wordmark is **his original lettering**, vectorized from `brand/source/logo-horizontal.png` (1983x793); Liberation Sans stays for running text only. The designer redoes the SVGs (horizontal and stacked, four colorways each) and touches the mark only if it has to change; vectorizing uses a mature tool (potrace or an equivalent) and the result is compared side by side with the original at small sizes. (2) The blue is two tones, `#0d62b8` on light backgrounds and `#7cc4ff` on dark ones, as the only accent: accepted. (3) The icons (favicon, apple-touch, 192, 512), as drawn now with a dark background and a light blue bar: accepted. (4) Applying the identity to the site (`index.html`, `public/`, the OG image) is a PR of its own after the merge of PR #2; the kit is a PR of its own too (`feat/brand-kit`), not part of #2. The app's color theme is still to be decided with him later.
@@ -58,7 +65,7 @@ The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the proj
 
 ### D-025 — Answers on the three CodeRabbit findings that needed Ícaro (2026-11-22)
 
-**Decision**, as relayed by `-aa` from Ícaro's direct answers, closing Q-015: (1) **release-please**: the first release PR is closed and reopened by hand to start its checks; the workflow stays as it is and no new secret is created. (2) **Direct fetch**: it gets a timeout **and a size cap** (his choice, against PM's recommendation of a timeout only; his choice stands). PM sets the value, with a reason, in BMI-077, and the error uses the existing `too_large` i18n code in `en` and `pt-BR`. (3) **Tagline**: kept as he approved it (D-010); the PR answer says the README, the meta description and the app's own notice carry the exception for links.
+**Decision**, as relayed by `-aa` from Ícaro's direct answers, closing Q-015: (1) **release-please**: the first release PR is closed and reopened by hand to start its checks; the workflow stays as it is and no new secret is created. (2) **Direct fetch**: it gets a timeout **and a size cap** (his choice, against PM's recommendation of a timeout only; his choice stands). PM sets the value, with a reason, in BMI-077, and the error uses the existing `too_large` i18n code in `en` and `pt-BR`. (3) **Tagline**: kept as he approved it (D-010); the PR answer says the README and the meta description carry the exception for links. (PM first wrote "and the app's own notice" here and in the reply draft without checking: the app had no such notice, CodeRabbit found it, and D-028 adds it.)
 **Why:** each is his call: a credential, a limit that can refuse an image, and his own wording.
 **Decided by:** Ícaro, per the orchestrator session.
 **Affects:** BMI-077, PR #2 (answers only where we refuse or explain).
