@@ -25,7 +25,7 @@ Accepted formats are whatever your browser can decode: PNG, JPEG, WebP, GIF (fir
 - **Brush** paints the effect onto only the areas you drag over.
 - **Eraser** removes the effect from an area and brings back the original pixels.
 
-Each stroke uses the effect type and intensity selected at the moment you paint it, so one image can have a light gaussian blur on the background and heavy pixelation on a license plate.
+Each stroke uses the effect type and intensity selected at the moment you paint it, so one image can have a light gaussian blur on the background and pixelation on a face.
 
 **3. Export it** at the original resolution, or at the downscaled size if the image was larger than the GPU limit (see [Large images](#how-it-works)). You choose the format from a list: PNG, JPG, JPEG or WebP. JPG and JPEG are the same format; the list sets the file extension. The file is named `<name>-blurred.<ext>`, where `<name>` is the original file name without its extension (for a link, the last part of the URL path; `image` if there is none).
 
@@ -44,7 +44,7 @@ v1 ships the three effects people reach for most. The ranking comes from compari
 | Effect | What it looks like | Typical use | Photoshop equivalent |
 | --- | --- | --- | --- |
 | **Gaussian** | Smooth, even softening | Backgrounds, soft-focus, whole-image blur | Filter > Blur > Gaussian Blur |
-| **Pixelate** | Square blocks of averaged color | Hiding faces, plates, screen content | Filter > Pixelate > Mosaic |
+| **Pixelate** | Square blocks of averaged color | Obscuring faces and plates; not for text that must stay secret | Filter > Pixelate > Mosaic |
 | **Motion** | Streaks in one direction | Implied movement, stylized blur | Filter > Blur > Motion Blur |
 
 Controls:
@@ -55,7 +55,7 @@ Controls:
 
 ### Blur is not redaction
 
-Blurred and pixelated text can sometimes be recovered. A [2016 study](https://crysp.petsymposium.org/popets/2016/popets-2016-0047.pdf) found text stayed recognizable unless the blur radius or mosaic block size exceeded roughly 20 px, and tools such as [Unredacter](https://bishopfox.com/blog/unredacter-tool-never-pixelation) reconstruct pixelated text by brute force. To hide a password, a document number or anything that must stay secret, use heavy Pixelate as a minimum and prefer a solid box (on the backlog). The app shows this warning next to the Pixelate option.
+Blurred and pixelated text can sometimes be recovered. A [2016 study](https://crysp.petsymposium.org/popets/2016/popets-2016-0047.pdf) recovered pixelated and blurred text across typefaces, font sizes, grid sizes and noise levels; its authors concluded that pixelation and blur are not viable ways to redact text. Tools such as [Unredacter](https://bishopfox.com/blog/unredacter-tool-never-pixelation) rebuild pixelated text by rendering guesses in the same font and comparing them. To hide a password, a document number or anything that must stay secret, cover it with a solid box in another editor or leave it out of the image. The app shows this warning with every effect.
 
 ## Keyboard shortcuts
 

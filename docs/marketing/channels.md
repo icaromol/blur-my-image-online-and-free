@@ -158,7 +158,7 @@ Content types, and where each one goes:
 | Type | Example from the spec | LinkedIn | Bluesky | Mastodon |
 | --- | --- | --- | --- | --- |
 | Build-in-public update | Why edits are stored as an operation list instead of changed pixels; why Safari needs a WebAssembly WebP encoder | Yes, with the trade-off spelled out | Short version with a screenshot | Short version with a screenshot |
-| Blur-vs-redaction explainer | The [PETS 2016 study](https://crysp.petsymposium.org/popets/2016/popets-2016-0047.pdf): text stayed readable below roughly 20 px blur or mosaic blocks | Yes, aimed at support and QA leads | Yes | Yes, this is the A1 post |
+| Blur-vs-redaction explainer | The [PETS 2016 study](https://crysp.petsymposium.org/popets/2016/popets-2016-0047.pdf): pixelated and blurred text was recovered across typefaces, font sizes and grid sizes; the authors concluded that neither is a viable way to redact text | Yes, aimed at support and QA leads | Yes | Yes, this is the A1 post |
 | Privacy tip | Canvas export drops EXIF, so GPS coordinates don't leave with the photo; plate cloning in car listings | Occasionally | Yes | Yes |
 | Use-case demo | Paste a screenshot, pixelate a name, download | After a working build | After a working build | After a working build |
 

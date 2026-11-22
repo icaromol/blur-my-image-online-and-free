@@ -8,56 +8,64 @@ type: blur-vs-redaction explainer, build-in-public
 
 ## linkedin
 
-A 2016 PETS study found that blurred or pixelated text stayed recognizable unless the blur radius, or the mosaic block size, went past roughly 20 px.
+A 2016 PoPETs paper by Hill, Zhou, Saul and Shacham used hidden Markov models to recover pixelated and blurred text across typefaces, font sizes, grid sizes and noise levels. Its authors conclude that pixelation and blur are not viable ways to redact text.
 
-Tools such as Unredacter go further and reconstruct pixelated text by brute force.
+Bishop Fox describes Unredacter, a tool that renders guesses in the same font and size and compares each one with the pixelated image. Its write-up recommends black bars that cover the whole text.
 
-If you paste screenshots into support tickets, that changes what a light blur over a customer's email address is worth. It looks like it hides the address.
+If you paste screenshots into support tickets, a blur over a customer's email address may not hide it, even though it looks like it does.
 
-I'm building a browser tool that blurs or pixelates part of an image, and this is what I'm designing around. Next to the Pixelate option the app will warn that pixelated text can sometimes be recovered, and that passwords or document numbers need a high intensity. A solid box for real redaction is on the backlog.
+I'm building a browser tool that blurs or pixelates part of an image. It will warn about this. It won't have a solid box in v1. For a password, a document number or anything that must stay secret, cover it with a solid box in another editor or leave it out of the image.
 
 ## bluesky
 
-Blurred text isn't always hidden. A 2016 PETS study found it stayed recognizable unless the blur radius or mosaic block size went past roughly 20 px. I'm building a blur tool that will warn about this next to Pixelate. A solid box is on the backlog.
+Blurred or pixelated text isn't always hidden. A 2016 PoPETs paper recovered both with hidden Markov models, and its authors say neither is a viable way to redact text. The blur tool I'm building will warn about this. For a secret, use a solid box in another editor.
 
 ## mastodon
 
-A 2016 PETS study found blurred or pixelated text stayed recognizable unless the blur radius or mosaic block size went past roughly 20 px. Tools like Unredacter rebuild pixelated text by brute force.
+A 2016 PoPETs paper recovered pixelated and blurred text with hidden Markov models. Its authors conclude neither is a viable way to redact text.
 
-I'm building a blur tool that will warn about this next to the Pixelate option. The advice will be a high intensity for anything sensitive, and a solid box, which is on the backlog.
+Bishop Fox describes Unredacter, which renders guesses in the same font and compares them with the pixelated image.
+
+I'm building a blur tool that will warn about this. The app won't have a solid box in v1. For a password or document number, use one in another editor or leave it out.
 
 #privacy #infosec
 
 ## image
 
 Headline: Blur is not redaction.
-Line: Text stayed recognizable below about 20 px.
-(11 words. Template `tip`, format `square`. No URL, no handle in the footer.)
+Line: Researchers recovered blurred and pixelated text.
+(10 words. Template `tip`, format `square`. No URL, no handle in the footer.)
 
-Visual: one line of made-up text (not a real name or email) shown twice, pixelated with small blocks on the left (still legible) and large blocks on the right (not legible). Label each side with its block size in px.
+Visual: one line of made-up text (not a real name or email) shown twice. Left: pixelated, labeled "pixelated". Right: covered by a solid black bar, labeled "solid box". No numbers, no app UI.
 
-Alt text (Bluesky, Mastodon; adjust to the render): Two copies of the same line of text. The one pixelated with small blocks can still be read. The one pixelated with large blocks can't.
+Alt text (Bluesky, Mastodon; adjust to the render): Two copies of the same line of made-up text. One is pixelated. The other is covered by a solid black bar.
 
 ## notes (not for publishing)
 
-BLOCKING before publish: verify the 20 px figure and whether "recognizable" means by people or by software in popets-2016-0047, then name the paper in the LinkedIn version.
+BLOCKING before publish:
+- Ícaro approves in Buffer. Nothing is queued or published.
+- The Mastodon version stays out of the queue until Ícaro decides item 4 in `docs/marketing/channels.md` ("AI-drafted posts"): either he rewrites it in his own words or it carries an AI disclosure. mastodon.social requires disclosure, and infosec.exchange says "LLM and AI operated accounts are not permitted", so item 3 (which server) matters too.
 
-Counts: Bluesky about 253 of 300. Mastodon about 410 of 500 including hashtags. LinkedIn about 1,050 of 3,000. Counted by hand, so recount in Buffer.
+Counts (measured after the last edit): Bluesky 266 of 300. Mastodon 449 of 500, counting the hashtag line and the blank lines between paragraphs (144 + 115 + 167 characters for the three paragraphs, 17 for the hashtags, 6 for the gaps). Bluesky and Mastodon were measured exactly with grep line-length patterns, not estimated, and the Mastodon figure is after the last edit. An earlier reviewer measurement of 466 and 283 was taken before the warning edit. LinkedIn about 860 of 3,000 by hand, and a grep confirms no line in the file reaches 500 characters, so it is far under the limit. Recount in Buffer before scheduling.
 
 Sources
-- Roughly 20 px, "radius or block size exceeded": README, section "Blur is not redaction", which links the [2016 study](https://crysp.petsymposium.org/popets/2016/popets-2016-0047.pdf).
-- Unredacter and "brute force": same README section, linking [Bishop Fox](https://bishopfox.com/blog/unredacter-tool-never-pixelation).
-- Warning next to Pixelate: `src/i18n/messages/en.json` line 46, key `effects.pixelate.warning`: "Pixelated text can sometimes be recovered. For passwords or document numbers, use a high intensity." The posts paraphrase it and say "will", since the post is pre-launch. Solid box "(on the backlog)": README Backlog list ("Solid box for real redaction").
-- "PETS 2016" label: channels.md uses it for the same study.
+- The paper: the 2016 PoPETs study linked in the README, section "Blur is not redaction" ([PDF](https://crysp.petsymposium.org/popets/2016/popets-2016-0047.pdf)). Title and authors (Hill, Zhou, Saul, Shacham), hidden Markov models, and "across typefaces, font sizes, grid sizes and noise levels" come from the abstract as read by two reviewers and from the README paragraph. The authors' conclusion that pixelation and blur are not viable for redacting text is the same paragraph.
+- Unredacter: the [Bishop Fox post](https://bishopfox.com/blog/unredacter-tool-never-pixelation), as read by the reviewers: renders guesses in the same font and size and compares them with the pixelated image, and recommends black bars covering the whole text. README says the same ("rebuild pixelated text by rendering guesses in the same font and comparing them").
+- Solid box advice ("cover it with a solid box in another editor or leave it out of the image"): README, same section. "Won't have a solid box in v1": README Backlog, "Solid box for real redaction", listed under "Not in v1".
+- App warning: the posts say only that the app will warn that blur and pixelate don't reliably hide text, the gist of the reviewer-approved warning. They don't quote it or say which effects show it, which is a copy choice. The wording is decided (Ícaro approved the pt-BR text) and the app shows the warning with every effect (Q-025).
+- "PoPETs" and "2016" come from the paper's URL and the README link. channels.md used "PETS" for the same study; the posts now use the full venue name.
 
 Could not verify
-- I couldn't open the PDF. Every statement about the study is the README's paraphrase. The post doesn't name the title or authors, and doesn't say whether "recognizable" means to a person or to software, because the README doesn't say.
-- Intensity in the app is a 1 to 100 slider scaled to the image's shorter side (README), not a pixel count. The post doesn't connect the 20 px figure to a slider value. That mapping is a product question for Ícaro before the warning text is final.
+- No reviewer read the body of the PDF. Every statement about the paper is the abstract's or the README's. The posts don't say whether "recognizable" means to a person or to software, give no figure, and don't claim the method works on every blur setting.
+- The warning's wording and placement are decided (Ícaro approved the pt-BR text; the app shows it with every effect, Q-025). Recheck the one sentence about the warning in the LinkedIn version, and the "will warn about this" lines, against the shipped text before publishing.
 
 Alternatives (pick one of each)
-- LinkedIn hook. A: the current first line (specific number and source, nothing to rewrite). B: "Unredacter reconstructs pixelated text by brute force, and a 2016 PETS study put the line for blurred text at roughly 20 px." Reason: leads with the tool name that P1 can look up.
-- Image headline. A: "Blur is not redaction." (plain, matches the README section title). B: "Is your blur above 20 px?" Reason: a question gets a reply, but it hints at a pixel rule the slider doesn't map to (see above).
+- LinkedIn hook. A: the current first paragraph (names the paper and its authors, so a reader can look it up). B: "Pixelated text can be rebuilt by rendering guesses in the same font and comparing them with the image. Bishop Fox describes a tool that does it." Reason: leads with the mechanism, shorter, but names no paper until the next paragraph.
+- Image headline. A: "Blur is not redaction." (plain, matches the README section title). B: "Pixelated is not hidden." Reason: says what the viewer will see in the picture, but "hidden" is looser than "redaction".
 - Closing ask, optional on LinkedIn, none by default (the no-ai-slop rules say to end on the last point). A: "If your team has a rule for screenshots that go into tickets, I'd like to know what it says." Reason: specific, and replies from strangers are the success measure in channels.md. B: "I'm still deciding how loud the warning should be. Tell me if it would stop you." Reason: asks for a decision, but the README doesn't leave that open, so use it only if Ícaro agrees it is.
 
 Not claimed
+- Any number from the study, any recommended blur or pixel strength, or any guarantee that a setting is safe.
+- That the app has a solid box. It doesn't, and the posts say so.
 - "Never uploaded" or any privacy claim. This post is about blur strength, and the README's URL-loading proxy exception would need to sit next to it.
+- The app's domain, metrics, or analytics of any kind.
