@@ -183,6 +183,12 @@ The OG image is approved by the opus reviewer and verified by the dispatcher (ma
 - [ ] `pnpm check`, unit tests, e2e and `pnpm size` still pass; no file contains the Vercel preview URL.
 - [ ] The CSP in `security-headers.ts` is not loosened; the image is only fetched by crawlers, not by the app.
 
+Done by `-cc` and approved by the opus reviewer, 2026-11-22 (commit requested from `-5b`; ticked when its id arrives): nine tags in `index.html` (`og:type`, `og:url`, `og:title`, `og:description`, `og:image`, `og:image:width`, `og:image:height`, `og:image:alt`, `twitter:card`), `public/og-image.png` 1200x630, check, 229 tests and size green, no preview URL or team slug in the repo.
+
+Added after the reviewer's two notes, for after the first production deploy that serves the final build:
+- [ ] A real link unfurl is checked (Facebook Sharing Debugger, LinkedIn Post Inspector or a Slack message, by Ícaro): the image shows. The `vercel.json` CORP `same-origin` header applies to the PNG; crawlers fetch server-side and shouldn't be affected, but that is an assumption until tested. If one fails, the fix is a header rule giving `/og-image.png` CORP `cross-origin`, nothing else loosened.
+- [ ] `twitter:card` has no `twitter:image` and falls back to `og:image` according to X's documentation as the reviewer knows it; untested, so the same check covers X.
+
 ### BMI-002 — CI and Dependabot
 
 As a maintainer, I want every PR checked automatically so that a broken build never reaches `main`.
