@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 48 `Must` done · 40 in review · 5 in progress · 3 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+0 of 48 `Must` done · 41 in review · 4 in progress · 3 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -55,6 +55,8 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- **BMI-077 is `Review` again:** the locale-race fix is committed as `785982f`, approved by the reviewer and verified by the dispatcher (295 tests, e2e 37/37, size 43.54 of 45 kB and 192.56 of 195 kB). In progress now: BMI-079 (ui, the link notice) and BMI-080 (quality, docs); BMI-081 waits for BMI-079 because both touch the message files.
 
 - **`-f2` read back Ícaro's Vercel work** (read-only): PR comments off, Ignored Build Step as set, WAF rule enabled with no pending changes and its test as `-aa` said (40 GETs, the 31st denied, the block gone about 63 s later), bypass secret gone, fork protection on, Toolbar and Web Analytics off, Hobby plan. **Unverifiable by anyone but him:** usage alerts (the API doesn't show them; Hobby has no Spend Management, a limit that is hit pauses the project with no bill), the account's 2FA, and the Speed Insights toggle. BMI-073 is `Ready` for the lane's one task: reword the usage-alert sentence to what is true.
 
