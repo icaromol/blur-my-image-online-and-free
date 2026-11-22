@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 45 `Must` done, 40 in review, 2 in progress (BMI-066, 070), 0 ready, 3 idea (BMI-003, 050, 073). Also BMI-074 (`Should`, `Done`).
+Progress: 0 of 45 `Must` done, 39 in review, 3 in progress (BMI-051, 066, 070), 0 ready, 3 idea (BMI-003, 050, 073). Also BMI-074 (`Should`, `Done`).
 
 ### E1. Foundation
 
@@ -92,7 +92,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
 | BMI-050 | Go-public checklist (see details): audit, README matches what shipped, merge PR #1, flip public, then GitHub protections | Must | M | Idea | all v1 items, BMI-070 to BMI-073 |
-| BMI-051 | README status line and content match what shipped | Must | S | Review | BMI-040 |
+| BMI-051 | README status line and content match what shipped (reopened by D-010: final privacy wording and taglines) | Must | S | In progress | BMI-040 |
 | BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
 
 ## Later (post-v1)
@@ -152,7 +152,7 @@ Added as a `Should` verification of work already in `Review` (BMI-067, BMI-001).
 
 Asked for by marketing through the dispatcher; refines this item, not a new one. Ícaro can veto it.
 
-- [ ] The page carries Open Graph and Twitter card meta tags (title, description, image, URL) so a shared link shows a preview. The image waits for the final English tagline (open, see status.md); the tags use the same privacy wording as BMI-051.
+- [ ] The page carries Open Graph and Twitter card meta tags (title, description, image, URL) so a shared link shows a preview. The tags use the final wording from D-010 (same as BMI-051). The OG image can now be made: the English tagline is decided.
 
 ### BMI-002 — CI and Dependabot
 
@@ -260,11 +260,12 @@ Split out of BMI-050 so a worker can do the read-only part. It doesn't depend on
 
 Committed as `5117278` (`README.md`, `docs/hosting.md`, `index.html`), verified by the dispatcher and approved by the opus reviewer; PM spot-checked README lines 3, 30 and `index.html` line 6 and found no "open source" wording left in README or hosting.md. `Review` until PR #1 merges to `main`.
 
-Follow-ups that don't hold `Review`:
-- The privacy sentence in `README.md` line 3 and `index.html` line 6 is the provisional wording; the final wording follows Ícaro's tagline answer, and `en.json` and `pt-BR.json` were left untouched on purpose.
-- `README.md` line 99 says the export renders "at full resolution", which reads oddly beside the downscale exception on line 30. The reviewer suggests "at the loaded image's resolution". Small; goes to the quality lane with the final privacy wording.
+Reopened by D-010 (2026-11-22): the criteria already committed in `5117278` stay checked; the final wording below is not done. `In progress` until it's committed.
 
-From the pre-flip audit ([audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md), findings A, B, D, E). Owner lane: quality (`README.md`, `docs/hosting.md`). Nothing here changes behavior.
+- [ ] `README.md` line 3 and the `index.html` meta description (line 6) say "Image files you open, drop or paste never leave your device." (quality lane for the README; `index.html` through the ui lane, `-cc`).
+- [ ] `en.json` and `pt-BR.json` line 4 (`app.tagline`): `en` ends with the same idea ("…Image files never leave your device."); `pt-BR` is consistent with the URL proxy exception, for example "Desfoque a imagem inteira ou como quiser. Os arquivos de imagem nunca saem do seu navegador." (PM's proposal; the worker may improve it). Ui lane (`-cc`). The `pt-BR` text is shown to Ícaro before the merge. The key-parity test, `pnpm check`, unit and e2e still pass.
+- [ ] `README.md` line 99 says the export renders "at full resolution"; it reads "at the loaded image's resolution" (reviewer's wording), consistent with the downscale exception on line 30.
+- [ ] `docs/marketing` text that quotes the old tagline or sentence is checked against the final wording (reported to the dispatcher, who routes it to marketing; PM doesn't edit those files).
 
 - [x] The status line says pre-release (v1 built and under review, not deployed) and no longer "planning, nothing implemented". It keeps marketing in its pre-launch posture: no "try it now" until BMI-003 gives a live URL. The live wording is set at go-public (BMI-050).
 - [x] The proxy portability sentence says `app.ts` is platform-neutral, Vercel and Node ship, and Cloudflare would need its own fetch and entry.
@@ -277,5 +278,5 @@ From the pre-flip audit ([audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-f
 - [x] The privacy claim in `README.md` line 3 and in the `index.html` meta description carries the URL-proxy exception: the reviewer's suggested wording is "Images you open, drop or paste never leave your device." Final wording follows Ícaro's answer on the en / pt-BR tagline (open, see status.md); this item doesn't decide it. `index.html` is outside the quality lane's owned paths, so the dispatcher coordinates it with whoever holds that file.
 - [x] `docs/hosting.md` line 43 ("For a free open source tool") makes an open-source claim in a tracked doc while the repo is private. Reword it neutrally, or leave it for the go-public step; the rule is that no public-facing text says "open source" before BMI-050 flips the repo. Found by the reviewer, 2026-11-22.
 - [x] The export sentence in `README.md` line 30 ("Export it at the original resolution") says that the original resolution is kept, which isn't true for an image downscaled to the GPU limit (README line 101, the `downscaled` message). It states the exception.
-- [x] Privacy wording: "Images you open, drop or paste never leave your device" is ambiguous, because opening a link goes through the proxy. The reviewer's smaller alternative is "Image files you open, drop or paste never leave your device". The same sentence in `src/i18n/messages/en.json` line 4 ("It never leaves your device") and `pt-BR.json` line 4 has no exception either. Wording and tagline are Ícaro's call, so the worker applies whatever he picks to the README and `index.html`; it doesn't edit the `en.json` or `pt-BR.json` taglines.
+- [x] Privacy wording: the ambiguity was reported by the reviewer. Superseded by D-010: the final wording and the tagline edits are the open criteria above, and the translation files may now be edited.
 - [x] Out of scope here: claims only Vercel can make true (see BMI-073).

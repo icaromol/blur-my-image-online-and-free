@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 45 `Must` done · 40 in review · 2 in progress · 0 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+0 of 45 `Must` done · 39 in review · 3 in progress · 0 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -49,13 +49,15 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 
 Only items that block something. Questions with a default in force are in decisions.md and don't wait.
 
-- **en/pt-BR tagline differ** since `bbb060c`: `pt-BR` says "…ou como quiser. Ela nunca sai do seu navegador.", `en` still says "…or only the parts you paint… your device". The git-owner session is asking Ícaro whether `en` follows. PM doesn't touch `en.json`. The same question now covers the README and `index.html` sentence: "Images you open, drop or paste never leave your device" is ambiguous because opening a link goes through the proxy; the reviewer's smaller alternative is "Image files you open, drop or paste never leave your device". The tagline and the privacy sentence need one answer from him (BMI-051, BMI-003).
+- **Tagline and privacy wording:** decided, see D-010. The final `pt-BR` text is shown to Ícaro before the merge (BMI-051).
 - **BMI-050 (go public)** still needs: BMI-051 (README and docs match what shipped), PR #1 merged, and Ícaro's direct go. Q-003 and the `CLAUDE.md` question are closed (D-007, D-008).
 - **D-004, D-006, D-007, D-008, D-009** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
 
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- D-010 (Ícaro: "ajustar tudo", relayed by `-aa`): README, `index.html` and both taglines say "Image files … never leave your device", consistent with the URL proxy exception. BMI-051 → `In progress` again, with the new criteria; BMI-003's OG image is unblocked. `en.json` and `pt-BR.json` may be edited, through the ui lane.
 
 - BMI-074 → `Done` (verification, nothing to merge): 10 runs with `--retries=0`, one with `CI=1` and 6 with 1 and 20 workers all passed 35/35. The cause of the first failing run stays **unknown**. The `reuseExistingServer` risk went to `Later` as BMI-135. Nobody has to hold off e2e anymore.
 
