@@ -12,5 +12,10 @@
     "skipLibCheck": true,
     "types": ["node"]
   },
-  "include": ["server/**/*.ts", "api/**/*.ts", "vite.server.config.ts"]
+  "include": [
+    "server/**/*.ts",
+    "api/**/*.ts",
+    "vite.server.config.ts",
+    "security-headers.ts"
+  ]
 }
