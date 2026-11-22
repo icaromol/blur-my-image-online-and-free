@@ -20,14 +20,6 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
-### Q-003 — Contact address for the code of conduct
-
-`SECURITY.md` needs **no email**: it already points to GitHub's private vulnerability reporting, which works once the repo is public. Only `CODE_OF_CONDUCT.md` needs a contact, still the `<CONDUCT_CONTACT>` placeholder, which blocks BMI-050.
-
-GitHub doesn't give a repo an inbox. The `ID+user@users.noreply.github.com` address only hides the sender on commits and can't receive mail, so it can't be used here.
-
-Recommendation: create one dedicated free mailbox for the project (a separate account, not Ícaro's personal or work address) and use it as the conduct contact. Replace the placeholder with it. Creating the mailbox is Ícaro's action.
-
 ### Q-006 — Do the Docker image and server bundle need license notices?
 
 Audit finding C: `dist-server/node.js` bundles hono, `@hono/node-server`, ipaddr.js and undici, and the Dockerfile ships it, but only the client build emits `licenses.md`.
@@ -36,11 +28,33 @@ Default in force: **nothing added to v1.** The image is built in CI as an exit p
 
 Recommendation: before any Docker image is published or pulled by anyone else, add server-bundle notices (the same mechanism, written to `dist-server/`). It's cheap and removes the question. Adding it to v1 is Ícaro's call; say so and it becomes a `Should` item for the server lane.
 
+### Q-007 — Accept the loosened bundle budgets (45 kB initial, 195 kB total)?
+
+`e2e0eb6` raised the `size-limit` budgets from 35 kB to 45 kB (initial JS) and from 180 kB to 195 kB (all JS except the WebP encoder), set just above the measured 43.2 kB and 192.2 kB. `docs/quality.md` explains why: Vue (~26 kB) plus vue-i18n's runtime (~16 kB) already exceed 35 kB, and the 35 kB figure was measured before i18n existed. D-006 approved precompiling the messages to reach 35 kB; it did not approve a higher budget.
+
+Default in force: **the committed 45 / 195 kB budgets stay**, and BMI-061 stays `In progress` with its original criterion (≤ 35 kB, ≤ 180 kB) unedited until Ícaro answers. No feature is dropped either way.
+
+Recommendation: accept 45 / 195 kB. 35 kB can't be met with both libraries, and the limits sitting just above the measured sizes make any growth a visible decision. If accepted, BMI-061's criterion is rewritten to the new numbers and the item goes to `Review`.
+
 ### Q-005 — Hosted URL
 
 The URL doesn't exist yet. Checked 2026-11-22 through the Vercel MCP: the Vercel account has one team and no project for this repo. Creating the project in BMI-003 produces the `*.vercel.app` URL. Then the README, the repo website field and the bug form get it. Not blocking before BMI-003. See [../tooling.md](../tooling.md).
 
 ## Decisions
+
+### D-008 — `CLAUDE.md` and `.claude/` stay in the repo (2026-11-22)
+
+**Decision**, as relayed by the orchestrator session (`-aa`) from Ícaro's direct answer to it (PM did not hear it directly): `CLAUDE.md` and `.claude/` stay in the repository. The `.gitignore` edit that ignored both is reverted by the git owner. This settles D-004 item 3.
+**Why:** it was the mandatory "decide before going public" item; Ícaro chose to keep them. A minute earlier he had told the CodeRabbit session `-f5` it could remove them, then made keeping them his final answer.
+**Decided by:** Ícaro, per the orchestrator session. Reversible while the repo is private. Once it is public, anything already in the history stays there unless the history is rewritten.
+**Affects:** BMI-050 (checklist item closed), `.gitignore`. Licensing and provenance of the skills under `.claude/` (brandkit, design-taste-frontend, no-ai-slop) was the reason the item existed; this decision doesn't answer that, so BMI-052's audit record still lists it.
+
+### D-007 — Code of conduct contact is set (2026-11-22)
+
+**Decision**, as relayed by the orchestrator session (`-aa`) from Ícaro's direct answer to it: the `CODE_OF_CONDUCT.md` contact is the email address Ícaro named, replacing `<CONDUCT_CONTACT>`. The edit was made at 15:01 on his request through the `-f5` session; the git owner commits it. Closes Q-003. The address is deliberately not written in these docs.
+**Why:** the placeholder blocked BMI-050. `SECURITY.md` needs no address (GitHub private vulnerability reporting).
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-050 (placeholder line removed from the checklist), BMI-072 (note updated), BMI-052 (the "no email in the repo" check now has this one intended exception, the conduct contact).
 
 ### D-006 — Precompile the i18n messages to meet the size budget (2026-11-22)
 
@@ -61,7 +75,7 @@ The URL doesn't exist yet. Checked 2026-11-22 through the Vercel MCP: the Vercel
 **Decision**, as relayed by the git-owner session from `.local/standards/decisions.md` (Ícaro's answers; PM has not heard them directly, confirmation requested):
 1. The proxy stays `GET /api/image?url=…`. No switch to POST. The README privacy text becomes honest: our code logs nothing, but Vercel's runtime log keeps the request path including the image URL, client IP and user agent for 1 hour on Hobby.
 2. Single-key shortcuts (`B`, `E`, `[`, `]`) work only while the image canvas has focus (WCAG 2.1.4). `Ctrl/Cmd` shortcuts stay global. The README says so.
-3. `CLAUDE.md` and `.claude/`: no change now. Deciding is a mandatory item on the go-public checklist.
+3. `CLAUDE.md` and `.claude/`: no change now. Deciding is a mandatory item on the go-public checklist. *Settled by D-008: they stay.*
 4. The rest of the three reports is approved: community files, quality bar, CI, security headers and CSP, supply-chain settings, proxy fixes, privacy tests. Response targets: 7 days for issues and conduct reports, 7 days to acknowledge security reports.
 5. License stays MIT. v1 scope is the full README; nothing is cut without Ícaro's direct yes.
 

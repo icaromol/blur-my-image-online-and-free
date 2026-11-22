@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 45 `Must` done, 36 in review, 5 in progress, 1 ready.
+Progress: 0 of 45 `Must` done, 37 in review, 4 in progress, 1 ready.
 
 ### E1. Foundation
 
@@ -71,7 +71,7 @@ Approved package from three research reports (quality and CI, security baseline,
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
-| BMI-060 | Quality bar: stricter tsconfig flags, Biome rules and per-folder import boundaries, kebab-case file names, coverage thresholds on `src/engine` and `server/proxy`, `docs/quality.md` linked from README | Must | M | In progress | BMI-001 |
+| BMI-060 | Quality bar: stricter tsconfig flags, Biome rules and per-folder import boundaries, kebab-case file names, coverage thresholds on `src/engine` and `server/proxy`, `docs/quality.md` linked from README | Must | M | Review | BMI-001 |
 | BMI-061 | Performance budget: lazy-load the engine so initial JS stays ≤ 35 kB brotli, `size-limit` in CI, WebP encoder only via `import()` | Must | S | In progress | BMI-040, BMI-002 |
 | BMI-062 | Proxy hardening A: one middleware sets `no-store`, `nosniff`, CORP, `Referrer-Policy`, sandbox CSP on every response; image type allowlist with file-signature check, mismatch → 415 | Must | M | Review | BMI-014 |
 | BMI-063 | Proxy hardening B: default ports only, reject URL credentials, block `::/96`, fixed outbound headers, validate `ALLOWED_ORIGINS` at startup | Must | M | Review | BMI-014 |
@@ -83,14 +83,14 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-069 | README honesty and sync: privacy and proxy text says Vercel's request log keeps the image URL, IP and user agent for 1 hour; shortcut focus rule; contributing links; layout tree; new scripts | Must | S | Review | BMI-068 |
 | BMI-070 | Community files: `CONTRIBUTING.md`, issue forms, PR template, labels, merge settings, saved replies | Must | M | In progress | |
 | BMI-071 | Releases: release-please config and workflow, Conventional Commits check on the PR title | Must | S | Review | BMI-002 |
-| BMI-072 | `CODE_OF_CONDUCT.md` (Contributor Covenant 3.0) and `SECURITY.md`, `SECURITY.md` uses GitHub private reporting (no email); the code of conduct keeps a placeholder contact until a project mailbox exists (Q-003) | Must | S | Review | |
+| BMI-072 | `CODE_OF_CONDUCT.md` (Contributor Covenant 3.0) and `SECURITY.md`; `SECURITY.md` uses GitHub private reporting (no email); the code of conduct contact is set (D-007, edit waiting for the git owner's commit) | Must | S | Review | |
 | BMI-073 | Manual platform settings checklist for Ícaro (GitHub Actions and security, Vercel 2FA, WAF rate-limit rule, toolbar and analytics off, env vars); each README or hosting claim that only the platform can make true is checked or reworded: 1-hour request-log retention, the 4.5 MB body limit, the rate-limit rule and usage alerts | Must | S | Idea | BMI-003 |
 
 ### E6. Launch readiness
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
-| BMI-050 | Go-public checklist (see details): audit, replace placeholders, decide CLAUDE.md and `.claude/`, flip public, then GitHub protections | Must | M | Idea | all v1 items, BMI-070 to BMI-073 |
+| BMI-050 | Go-public checklist (see details): audit, README matches what shipped, merge PR #1, flip public, then GitHub protections | Must | M | Idea | all v1 items, BMI-070 to BMI-073 |
 | BMI-051 | README status line and content match what shipped | Must | S | Ready | BMI-040 |
 | BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
 
@@ -129,6 +129,12 @@ Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-05
 ## Item details
 
 Only items that are `Ready` or `In progress` need full detail here. Others get it when groomed.
+
+### BMI-003 — Deploy: criteria added
+
+Asked for by marketing through the dispatcher; refines this item, not a new one. Ícaro can veto it.
+
+- [ ] The page carries Open Graph and Twitter card meta tags (title, description, image, URL) so a shared link shows a preview. The image waits for the final English tagline (open, see status.md); the tags use the same privacy wording as BMI-051.
 
 ### BMI-002 — CI and Dependabot
 
@@ -176,8 +182,8 @@ Ordered, from `.local/standards/community.md` and `security.md` (D-004). Every l
 
 Before the flip:
 - [ ] Full-history gitleaks re-run is clean.
-- [ ] `SECURITY.md` and `CODE_OF_CONDUCT.md` committed with a real contact (Q-003) instead of `<CONDUCT_CONTACT>`.
-- [ ] **Decide what happens to `CLAUDE.md` and `.claude/`** (mandatory item; brandkit, design-taste-frontend and no-ai-slop have no stated origin or license).
+- [ ] `SECURITY.md` and `CODE_OF_CONDUCT.md` committed with the contact from D-007.
+- [x] `CLAUDE.md` and `.claude/` stay in the repo (D-008, 2026-11-22). The provenance and license of the skills under `.claude/` (brandkit, design-taste-frontend, no-ai-slop) is still unstated; this decision doesn't cover it.
 - [ ] Third-party license notices in the bundle; README status line and contributing links updated (BMI-051).
 - [ ] Repo description, topics, social preview image; 3 to 5 good first issues.
 
@@ -192,7 +198,7 @@ What is committed on `feat/scaffold-and-proxy`, and what is still open per item:
 - **BMI-066 supply chain:** Dependabot, `security.yml`, `scripts/check-licenses.mjs` and `scripts/check-dist.mjs` are in (`a61f693`, `48b1f3d`). Still open: `pnpm-workspace.yaml` with `minimumReleaseAge: 10080`, `trustPolicy: no-downgrade`, `strictDepBuilds`, `blockExoticSubdeps` and an empty `allowBuilds`. **Target date 2026-11-28, no exception list.** It can't go in earlier: 40 packages already in the lockfile are younger than 7 days, and the newest (`undici` 8.13.1) turns 7 days old around 2026-11-27 22:00 UTC. Until then pnpm 12's default (1 day) applies. Draft: `.local/standards/drafts/pnpm-workspace.yaml` (git-ignored).
 - **BMI-070 community files:** `CONTRIBUTING.md`, issue forms and the PR template are in (`4c15265`). Still open: labels, merge settings (squash only, delete branch on merge, suggest updating PR branches) and saved replies, all done in GitHub's settings.
 - **BMI-071 releases:** release-please config, manifest and workflow are in (`4c15265`). The Conventional Commits check on the PR title landed in `76325bb`. Nothing open in the repo; the first tagged release is part of BMI-050.
-- **BMI-072:** `CODE_OF_CONDUCT.md` and `SECURITY.md` are in with the `<CONDUCT_CONTACT>` placeholder; replacing it is a BMI-050 item (Q-003).
+- **BMI-072:** `CODE_OF_CONDUCT.md` and `SECURITY.md` are in with the `<CONDUCT_CONTACT>` placeholder; replaced by the contact in D-007 (Q-003 closed, 2026-11-22), edit pending the git owner's commit.
 - **BMI-040 to BMI-044 i18n:** committed as `ba6343f`. Ícaro reviewed `pt-BR.json` and changed the tagline and the drop overlay text (`bbb060c`), so the review condition on BMI-042 is met. It stays `Review` like the rest until PR #1 is merged to `main`. The `define` flags in `vite.config.ts` and the default `locale: "en-US"` in `playwright.config.ts` ride along with the frontend session's config commit.
 
 ### E7 progress, later on 2026-11-22
@@ -207,19 +213,21 @@ Committed on `feat/scaffold-and-proxy` by the git-owner session: the frontend st
 - **BMI-068 → Review.** axe at WCAG 2.2 AA, single-key shortcuts only with image focus, a click without drag paints one dab.
 - **BMI-069 → Review.** README states the Vercel request-log caveat and the shortcut focus rule.
 
-### BMI-060 — what is left (2026-11-22)
+### BMI-060 — committed (2026-11-22)
 
-Everything but the server tsconfig is committed (`533f624`). The quality lane has `noUncheckedIndexedAccess` and `noImplicitOverride` in `tsconfig.server.json` in the working tree, plus the few lines they flag in `server/proxy/{app.test,image-type,node-fetch}.ts`.
+The server tsconfig flags (`noUncheckedIndexedAccess`, `noImplicitOverride`) landed as `5642e7b` on top of `533f624`. `Review` until PR #1 merges to `main`.
 
-- [ ] `tsconfig.server.json` sets both flags and `pnpm check` passes with them.
-- [ ] Committed by the git owner; then `Review`.
+- [x] `tsconfig.server.json` sets both flags and `pnpm check` passes with them.
+- [x] Committed by the git owner (`5642e7b`).
 
 ### BMI-061 — what is left (2026-11-22)
 
-Owner: the frontend session (`implementar-v1-editor-pixi`), because the precompile touches `vite.config.ts`, `package.json` and the i18n loader, which that session holds. The dispatcher must not assign it to a lane while the session works on it (D-006).
+Owner: the frontend session (now `-cc`; the former `implementar-v1-editor-pixi` is locked until 2026-11-26), because the precompile touches `vite.config.ts`, `package.json` and the i18n loader. The dispatcher must not assign it to a lane while that session works on it (D-006).
 
-- [ ] `pnpm size` passes: initial JS ≤ 35 kB brotli and all JS except the WebP encoder ≤ 180 kB (today 43.21 kB and 192.22 kB).
-- [ ] i18n messages precompiled at build time; `pt-BR` still loads as its own chunk; `en` and `pt-BR` e2e still pass.
+Committed as `e2e0eb6` (precompiled messages, 47.0 → 43.2 kB), but with the budgets changed to 45 kB and 195 kB. The original criterion below is unchanged on purpose: relaxing it is Ícaro's call (Q-007). `pnpm size` passes only against the new numbers (43.2 / 45 kB, 192.2 / 195 kB). Stays `In progress` until Q-007 is answered and the unchecked criteria below are confirmed (PM hasn't re-run `pnpm size` or the e2e suite; the numbers are from the 2026-11-22 handoff).
+
+- [ ] `pnpm size` passes: initial JS ≤ 35 kB brotli and all JS except the WebP encoder ≤ 180 kB (measured 43.2 kB and 192.2 kB; budgets now 45 / 195 kB, see Q-007).
+- [x] i18n messages precompiled at build time (`e2e0eb6`); `pt-BR` still loads as its own chunk; `en` and `pt-BR` e2e still pass.
 - [ ] The WebP encoder is loaded only through `import()`, and the UI doesn't statically import the PixiJS-heavy effect code.
 
 ### BMI-052 — pre-flip audit run
@@ -244,4 +252,5 @@ From the pre-flip audit ([audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-f
 - [ ] The pre-commit description says Biome and `vue-tsc` on staged files.
 - [ ] The Docker-build-in-CI claim is conditional on `ci.yml` and on `main`, or `ci.yml` is committed first.
 - [ ] `docs/hosting.md` matches the code: `export const GET` in `api/image.ts`, `PROXY_TIMEOUT_MS`, a fixed 3 redirects, Worker entry and DoH resolver marked deferred.
+- [ ] The privacy claim in `README.md` line 3 and in the `index.html` meta description carries the URL-proxy exception: the reviewer's suggested wording is "Images you open, drop or paste never leave your device." Final wording follows Ícaro's answer on the en / pt-BR tagline (open, see status.md); this item doesn't decide it. `index.html` is outside the quality lane's owned paths, so the dispatcher coordinates it with whoever holds that file.
 - [ ] Out of scope here: claims only Vercel can make true (see BMI-073).

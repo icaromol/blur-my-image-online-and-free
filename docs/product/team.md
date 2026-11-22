@@ -28,7 +28,7 @@ When a lane needs one that another lane holds, its item waits. A lane can still 
 
 | Who | Role |
 | --- | --- |
-| **Git owner**: the interactive session that commits (currently named `ci-main-branch-decisions`; names change, confirm with `ListAgents`) | The only one who runs git. Receives file lists and commit messages. Also owns CI (BMI-002), PR #1 and repo settings |
+| **Git owner**: the interactive session that commits (currently named `blur-my-image-online-and-free-5b`; names change, confirm with `ListAgents`) | The only one who runs git. Receives file lists and commit messages. Also owns CI (BMI-002), PR #1 and repo settings |
 | **Ícaro** | Scope, priorities that change scope, anything outward-facing (publishing, Vercel and GitHub settings, purchases), the Q-### questions in `decisions.md` |
 | **PM** (`claude --agent pm`; name the session `pm` with `/rename` so the dispatcher can message it) | The only writer of `backlog.md`, `status.md`, `decisions.md` and `specs/`. Grooms items, applies the statuses the dispatcher reports, takes scope questions to Ícaro. The dispatcher writes `dispatch.md` only |
 | Other interactive sessions (for example the frontend session) | Not controlled by the dispatcher. It may message them with a request and never assumes they act on it |
