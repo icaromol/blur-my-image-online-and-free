@@ -85,3 +85,38 @@ test("a language file that fails to load leaves the page and the select as they 
   await expect(page.getByText("Choose an image")).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem("locale"))).toBeNull();
 });
+
+test("a slower language choice that finishes after a newer one changes nothing", async ({
+  page,
+}) => {
+  let release!: () => void;
+  const gate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route("**/assets/pt-BR-*.js", async (route) => {
+    await gate;
+    await route.continue();
+  });
+  await page.goto("/");
+  const select = page.getByLabel("Language");
+
+  await select.selectOption("pt-BR");
+  await select.selectOption("en");
+  await expect
+    .poll(() => page.evaluate(() => localStorage.getItem("locale")))
+    .toBe("en");
+  const loaded = page.waitForResponse(/pt-BR-.*\.js/);
+  release();
+  await (await loaded).finished();
+  await page.evaluate(
+    () =>
+      new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      ),
+  );
+
+  await expect(select).toHaveValue("en");
+  await expect(html(page)).toHaveAttribute("lang", "en");
+  await expect(page.getByText("Choose an image")).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem("locale"))).toBe("en");
+});

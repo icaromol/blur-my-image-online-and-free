@@ -30,13 +30,18 @@ export async function loadLocale(locale: Locale): Promise<void> {
   if (load) i18n.global.setLocaleMessage(locale, (await load()).default);
 }
 
+let latestSelection = 0;
+
 // A locale file that fails to load leaves the current locale in place, so the page still mounts.
+// A selection that a newer one overtook while loading applies nothing and returns false.
 export async function setLocale(locale: Locale): Promise<boolean> {
+  const selection = ++latestSelection;
   try {
     await loadLocale(locale);
   } catch {
     return false;
   }
+  if (selection !== latestSelection) return false;
   i18n.global.locale.value = locale;
   document.documentElement.lang = locale;
   document.title = i18n.global.t("app.title");

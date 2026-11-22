@@ -6,8 +6,11 @@ const { t, locale } = useTranslation();
 
 async function onChange(event: Event) {
   const select = event.target as HTMLSelectElement;
-  if (!isLocale(select.value)) return;
-  if (!(await chooseLocale(select.value))) select.value = locale.value;
+  const chosen = select.value;
+  if (!isLocale(chosen)) return;
+  // Only the latest choice may put the select back; an overtaken one leaves the newer choice alone.
+  if (!(await chooseLocale(chosen)) && select.value === chosen)
+    select.value = locale.value;
 }
 </script>
 
