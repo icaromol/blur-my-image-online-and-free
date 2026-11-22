@@ -306,7 +306,7 @@ Corrections inside what the README already promises (no scope change):
 
 Needs Ícaro, none started (Q-015): the release-please token, a size cap on the direct fetch, and the tagline wording.
 
-The checks (Verify, E2E Chromium, Conventional Commits title) must be green after the fixes. `-5b` answers each CodeRabbit comment through `gh`.
+The checks (Verify, E2E Chromium, Conventional Commits title) must be green after the fixes. Who answers each CodeRabbit comment on the PR is for `-aa` to name: `-5b` doesn't answer PR comments today, and the lanes don't run GitHub actions. Each answer says what was fixed, or why not.
 
 ### BMI-076 — Scorecard and dependency-review workflows
 
