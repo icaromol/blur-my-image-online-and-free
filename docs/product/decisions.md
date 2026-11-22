@@ -28,22 +28,6 @@ Recommendation: turn off the Vercel pull-request comments in the project's Git s
 
 Default in force: **no change** until he answers; PRs from `-5b` keep getting the comment meanwhile.
 
-### Q-013 — CodeRabbit skipped PR #2 for size: how does the PR get its review?
-
-Per `-5b` (relayed, not seen by PM): CodeRabbit skipped PR #2 because it changes 134 files and the free plan's limit is 100, so no review happened. PM counted 136 files between `main` and the branch: about 100 under `src/`, `server/`, `e2e/`, `scripts/` and the root configs (the app, the proxy and its tests), and about 35 that aren't app code (`docs/`, `marketing/`, `.claude/`, `.github/ISSUE_TEMPLATE`, a PNG). Ícaro's condition (D-013, D-018) was that PR #2 is merged only after CodeRabbit's corrections, so this needs his decision.
-
-Options:
-- **A. Path filters** in `.coderabbit.yaml` that exclude files nobody needs reviewed (docs, marketing, generated or binary files, the lockfile). Cheap, but it's unknown whether the limit counts the filtered files; `-f5` checks CodeRabbit's documentation first.
-- **B. Split PR #2** into smaller PRs, each under 100 files: one with the non-code files (a doc-only PR doesn't build, the Ignored Build Step skips it) and one or two with the app, the proxy, the tests and the CI workflows (the workflows need `package.json`, so they travel with the app). More PRs and merges, same scope, and CodeRabbit reviews each one.
-- **C. Accept no line-by-line CodeRabbit review** and rely on the reviews the lanes already ran (each item was read by the opus reviewer) plus a `/code-review` of the PR. Fastest; drops the second reviewer Ícaro asked for.
-- **D. A paid CodeRabbit plan** with a higher limit, which is a purchase and his alone.
-
-Recommendation: A first, because it costs a file and one check; if the limit counts filtered files too, B (two PRs, the app PR kept under 100 with the filters). C only if he decides the second reviewer isn't worth the split.
-
-Update from `-aa` (2026-11-22): CodeRabbit's message was "134 files exceed the limit of 100", the free plan's limit and not a private-repo one. `-aa`, `-f5` and `-5b` are trying option A now: path filters that take `docs/`, `marketing/`, `.claude/`, markdown and `public/` out of the review while code, security and CI files stay in. If it still skips, the options are B (split), C (merge without CodeRabbit's review, which needs Ícaro's direct yes) or D (a paid plan).
-
-Default in force: **PR #2 isn't merged and stays a draft**, and nothing is split or bought without his word.
-
 ### Q-012 — Allow `ossf/scorecard-action` in the Actions allowlist?
 
 The post-flip checklist (BMI-050) asked for a scorecard workflow and a dependency-review workflow, and neither exists. The repo's Actions allowlist has GitHub's own actions and a short list of third-party ones (pnpm/action-setup, release-please-action, zizmor-action, action-semantic-pull-request). `actions/dependency-review-action` is GitHub's, so it's allowed; `ossf/scorecard-action` is third-party and isn't.
@@ -65,6 +49,13 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the project's main domain on 2026-11-22, per `-aa`; the earlier `https://blur-my-image.vercel.app` answers 307 to it (PM read both with a plain `GET`). The README, the repo website field and the bug form get it only when Ícaro says (D-016). Not blocking.
 
 ## Decisions
+
+### D-023 — Path filters let CodeRabbit review PR #2 (2026-11-22)
+
+**Decision**, taken by `-aa`, `-f5` and `-5b` as option A of the former Q-013 (PM's recommendation, tried first on `-aa`'s word; PM hasn't seen the file): the committed `.coderabbit.yaml` (`57e170d`) uses path filters that take `docs/`, `marketing/`, `.claude/`, markdown and `public/` out of the review, while code, security and CI files stay in, and `drafts: true`. CodeRabbit's status on PR #2 went from "skipped" (134 files over the free plan's limit of 100) to "Review in progress". Ícaro's condition, a merge only after CodeRabbit's corrections, is met by this route and stays in force; he can overrule the filters.
+**Why:** the file count was the only thing that stopped the review, and the filtered files are text and assets, not code.
+**Decided by:** `-aa` with `-f5` and `-5b`, under Ícaro's order (D-018), not by Ícaro himself. Reversible.
+**Affects:** BMI-050 (the review step), PR #2. Closes Q-013.
 
 ### D-022 — The logos are Ícaro's and may be published under MIT (2026-11-22)
 
