@@ -57,6 +57,8 @@ Only items that block something. Questions with a default in force are in decisi
 
 ### 2026-11-22 (new PM session, handoff)
 
+- **The repository is public** (by `-5b`; PM read `visibility: PUBLIC`, the description, 11 topics, the active ruleset on `main` and secret scanning plus push protection as enabled). Per `-5b`: vulnerability reporting on, fork PR approval for all external contributors; CodeQL not possible yet (`main` has no code); no scorecard or dependency-review workflow exists. `main` now takes changes only through PRs. Remaining on BMI-050: `.coderabbit.yaml`, PR #2 out of draft with a CodeRabbit review, corrections, merge, then CodeQL, the two workflows (Q-012 for scorecard), Vercel fork protection, good first issues and the first release. Residual: pre-rewrite SHAs fetchable (accepted), local backup tags and the hash map hold the old address on disk only.
+
 - D-022 (Ícaro, relayed by `-aa`): the two logos are his and may be published under MIT; Q-011 closed. BMI-075 may start from the shape of his symbol and from his wordmark; a free-font redraw is optional. The record says only "created by Ícaro".
 
 - D-021 (Ícaro, relayed by `-aa`): he accepts that the pre-rewrite commits stay reachable by full hash until GitHub's garbage collection (no Support request, no new repo); his two GitHub e-mail toggles ("Keep my email addresses private", "Block command line pushes that expose my email") are on (a screenshot sent to `-aa`; PM hasn't seen it); BMI-075 and E8 are confirmed as described. Q-011 was answered the next hour: D-022.

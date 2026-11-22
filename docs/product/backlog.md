@@ -293,26 +293,32 @@ Before the flip (repo private):
 - [x] Full-history `gitleaks` over every branch clean: 64 commits, 2026-11-22 (quality lane, re-run by the dispatcher). `check-licenses` and `check-dist` pass; no token, Vercel identifier, `.env` or `.local/` tracked; no AI trailer. Run again after the rewrite.
 - [x] `SECURITY.md` and `CODE_OF_CONDUCT.md` committed with the contact from D-007 (`d6f67e1`). `CLAUDE.md` and `.claude/` stay (D-008) and the three skills may be published (D-014).
 - [x] Third-party license notices in the bundle (BMI-052); README status line, contributing links and wording match what shipped (BMI-051, `Review`).
-- [ ] The Vercel project's Ignored Build Step is `test ! -f package.json` and `-f2` has read the value back (D-019): without an app the build is skipped and the live site stays; with the app it builds. `-f2`'s environment denied it, so Ícaro sets it in the dashboard (Project Settings, Git, Ignored Build Step, Custom, `test ! -f package.json`, Save); today the value is `None`. `-5b` pushes the rewritten `main` only after `-f2` reads the new value back.
+- [x] The Vercel project's Ignored Build Step is `test ! -f package.json` and `-f2` read it back (D-019); the `main` push built nothing and the alias stayed.
 - [x] History rewritten to the GitHub no-reply address (D-015), executed by `-5b` and verified by `-aa` on 2026-11-22: only the no-reply address on the remote (87 commits), trees identical to the backup, `main` pushed after the Ignored Build Step (the build was skipped, the alias stayed). Old-to-new hash map in `.local/rewrite-map-old-new.txt`; hashes in `docs/product/` corrected from it (PM). PR #1 was closed by GitHub during the push and can't be reopened; PR #2 (draft, `feat/scaffold-and-proxy` to `main`, same head) replaces it. Everything below that says PR #2 means the PR for this branch. `-aa` gave `-5b` the flip go, conditional on `gitleaks` at the new HEAD, the new PR opened and the description and topics applied (done by `-5b`: description A and 11 topics).
 - [x] Repo description and topics (approved, D-017) applied by `-5b` (per `-5b`: description A and 11 topics; PM hasn't read them back). The social preview image is uploaded by hand by Ícaro.
 - [ ] BMI-070 settings (D-011 applied; saved replies by Ícaro, not blocking).
 - [x] The WAF rate-limit rule on `/api/image` is published and `-f2` read the active rule back (2026-11-22). It was moved ahead of the flip because the proxy address is easy to find once the repo is public.
-- [ ] `-5b` reports on the rewrite to `-aa`.
+- [x] `-5b` reported on the rewrite to `-aa`, who verified it.
 
 The flip:
-- [x] The new PR is open (PR #2, draft, replaces the closed PR #1). `gitleaks` still has to be clean at the new HEAD before the flip. `-aa` has given `-5b` the explicit go (the rewrite is verified and the WAF rule is active); flip the repo to public. The URL stays out of the README and marketing until Ícaro says (D-016).
+- [x] The new PR is open (PR #2, draft, replaces the closed PR #1) and `-aa` gave `-5b` the go.
+- [x] **The repository is public** (2026-11-22, by `-5b`; PM read `visibility: PUBLIC`, the description and 11 topics, an active ruleset on `main` and the secret-scanning settings with a plain read). The URL stays out of the README and marketing until Ícaro says (D-016).
 
-After the flip, in this order:
-- [ ] Private vulnerability reporting, push protection, CodeQL default.
-- [ ] Ruleset on `main`: no force push or deletion, PR required, required checks, linear history.
-- [ ] Fork PR workflows need approval; scorecard and dependency-review workflows; confirm Vercel Git fork protection.
-- [ ] `.coderabbit.yaml` committed (configuration only, no secret; `-f5` proposes it and the quality lane commits through `-5b`).
+After the flip, in this order (state per `-5b`, partly read back by PM):
+- [x] Vulnerability reporting, secret scanning and push protection are on (PM read secret scanning and push protection as enabled; the private-reporting switch isn't in that response, so it rests on `-5b`'s word). Dependabot security updates are enabled.
+- [ ] CodeQL default setup: not possible yet, `main` has no code. Turn it on after the merge of PR #2.
+- [x] Ruleset on `main` active (PM read it): a pull request is required for every change to `main`.
+- [x] Fork PR workflows need approval from all external contributors (per `-5b`).
+- [ ] Scorecard and dependency-review workflows: they don't exist in the repo. Files to write after the merge of PR #2 (they need the code on `main`; `main` now takes changes only through PRs) in `.github/workflows/`, actions pinned by SHA, quality lane. `actions/dependency-review-action` is a GitHub action; `ossf/scorecard-action` is third-party and isn't on the Actions allowlist (Q-012). Dependency review can go first.
+- [ ] Vercel Git fork protection confirmed (`-f2` or Ícaro).
+- [ ] `.coderabbit.yaml` committed on the feature branch (configuration only, no secret; `-f5` proposes it, the quality lane commits through `-5b`).
 - [ ] BMI-073 pre-merge items done (Vercel 2FA, usage alerts, the platform claims checked; the bypass secret is revoked and the WAF rule is active).
-- [ ] PR #2 out of draft and `@coderabbitai review` posted.
+- [ ] PR #2 out of draft and `@coderabbitai review` posted (`-aa` says when).
 - [ ] CodeRabbit's review answered and the corrections committed, checks green. Findings that change scope go to Ícaro, never applied silently.
 - [ ] Merge PR #2 (authorized by Ícaro only after the line above). It is the first official production deploy (D-005, D-013); the items in `Review` become `Done` against `main`; the link unfurl check of BMI-003 follows.
 - [ ] 3 to 5 good first issues, and the first tagged release (BMI-071).
+
+Residual, recorded: the pre-rewrite SHAs may stay fetchable on GitHub (accepted, D-021); the local `backup/pre-rewrite-*` tags and `.local/rewrite-map-old-new.txt` still hold the old address, on disk only (no tag is on the remote); the repo's public `main` shows the old README until the merge.
 
 ### E7 progress notes (2026-11-22, earlier; the later notes below supersede these where they differ)
 

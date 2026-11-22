@@ -20,6 +20,14 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-012 — Allow `ossf/scorecard-action` in the Actions allowlist?
+
+The post-flip checklist (BMI-050) asked for a scorecard workflow and a dependency-review workflow, and neither exists. The repo's Actions allowlist has GitHub's own actions and a short list of third-party ones (pnpm/action-setup, release-please-action, zizmor-action, action-semantic-pull-request). `actions/dependency-review-action` is GitHub's, so it's allowed; `ossf/scorecard-action` is third-party and isn't.
+
+Recommendation: add `ossf/scorecard-action` to the allowlist, pinned by SHA like the others: it's the OpenSSF project's own action, it's read-mostly, and it publishes the badge that BMI-131 would later want. The dependency-review workflow doesn't wait for this.
+
+Default in force: **only the dependency-review workflow is written; scorecard waits for his yes.** Adding to an allowlist is a GitHub setting, so it needs his go.
+
 ### Q-006 — Do the Docker image and server bundle need license notices?
 
 Audit finding C: `dist-server/node.js` bundles hono, `@hono/node-server`, ipaddr.js and undici, and the Dockerfile ships it, but only the client build emits `licenses.md`.
