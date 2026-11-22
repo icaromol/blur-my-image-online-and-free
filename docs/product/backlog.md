@@ -396,7 +396,7 @@ Decided by Ícaro (D-029, relayed): sponsorship and donations first, no ads, no 
 Split out of BMI-050's post-flip list (same scope, now trackable; the `Must` count goes from 45 to 46). Quality lane, in a PR of its own after the merge of PR #2: `main` takes changes only through PRs, the workflows need the code on `main`, and PR #2 shouldn't grow. Not assignable before that merge.
 
 - [ ] A dependency-review workflow on pull requests, using `actions/dependency-review-action` (a GitHub action, allowed), pinned by full SHA, `permissions` minimal, `persist-credentials: false`, timeout, concurrency, like the existing workflows.
-- [ ] A scorecard workflow with `ossf/scorecard-action`, pinned by SHA. Ícaro allowed the action (D-030); `-5b` applies the allowlist setting, then the workflow is written after the merge of PR #2, in a PR of its own with the dependency-review workflow.
+- [ ] A scorecard workflow with `ossf/scorecard-action`, pinned by SHA. Ícaro allowed the action (D-030) but the allowlist write is **not done**: `-5b`'s environment blocked it, so Ícaro allows it in `-5b`'s session or sets it himself; the pin is `ossf/scorecard-action` v2.6.0 at commit `23f22cd43608bae7a1f1fa2603d7314dee9538a5`, and the update must carry the four existing patterns too. Then the workflow is written after the merge of PR #2, in a PR of its own with the dependency-review workflow.
 - [ ] Both pass the existing workflow audit (zizmor) and appear as checks without being added to the required ones unless Ícaro says.
 
 ### BMI-050 — Go-public checklist
