@@ -20,7 +20,7 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
-### Q-008 — The author address in the commit history becomes public at the flip
+### Q-009 — The author address in the commit history becomes public at the flip
 
 All 64 commits (every branch) carry the same author and committer address, the maintainer's own, found by the dispatcher's pre-flip scan on 2026-11-22. A public repo shows it in every commit. Rewriting the history afterwards doesn't take it back from clones and caches.
 
@@ -49,7 +49,7 @@ The URL doesn't exist yet. Checked 2026-11-22 through the Vercel MCP: the Vercel
 **Decision**, as relayed by the orchestrator session (`-aa`) from Ícaro's direct answer ("posso publicar"): `brandkit`, `design-taste-frontend` and `no-ai-slop` stay in the repo and go public with it. Nothing is removed from the history. Closes Q-008.
 **Why:** it was the one open item that blocked the flip. The exact origin of the three skills is still not documented: their `SKILL.md` files state no author, source or license, and the claim that they can be published is Ícaro's own. The PM recorded that, and did not verify it.
 **Decided by:** Ícaro, per the orchestrator session. Irreversible in practice once the repo is public: the history stays public unless it is rewritten.
-**Affects:** BMI-050 (the Q-008 item closed; the flip no longer waits on it), D-008.
+**Affects:** BMI-050 (the skills item, Q-008, is closed and the flip no longer waits on it; the flip still waits on Q-009, the author address), D-008. Note: this entry originally shared the label Q-008 with the author-address question; that one is now Q-009, and IDs are not reused.
 
 ### D-013 — Go public: yes, with CodeRabbit before the merge (2026-11-22)
 

@@ -224,11 +224,11 @@ Community files are in. Left is GitHub settings, which `-5b` applies now (D-011)
 
 ### BMI-050 — Go-public checklist
 
-Ícaro's answer is yes (D-013, relayed). Order, from `.local/standards/community.md` and `security.md` (D-004), reordered by D-013 so CodeRabbit can review PR #1 before the merge. The flip itself waits for `-aa`'s go to `-5b` and for the answer to Q-008. BMI-073 gates the merge of PR #1, not the flip.
+Ícaro's answer is yes (D-013, relayed). Order, from `.local/standards/community.md` and `security.md` (D-004), reordered by D-013 so CodeRabbit can review PR #1 before the merge. The flip itself waits for `-aa`'s go to `-5b` and for the answer to Q-009. BMI-073 gates the merge of PR #1, not the flip.
 
 Pre-flip, nothing outward-facing:
 - [x] Full-history `gitleaks` over every branch is clean: 64 commits, run by the quality lane and re-run by the dispatcher on 2026-11-22. `check-licenses` and `check-dist` pass; no token, Vercel identifier, `.env` or `.local/` is tracked; no AI trailer in the history; the only addresses in files are the code of conduct contact and `@example.com` fixtures. Re-run once more just before the flip if there are new commits.
-- [ ] The author address in the 64 commits becomes public at the flip: Ícaro decides whether to keep it or rewrite the history first (Q-008). Blocks the flip.
+- [ ] The author address in the 64 commits becomes public at the flip: Ícaro decides whether to keep it or rewrite the history first (Q-009). Blocks the flip.
 - [x] `SECURITY.md` and `CODE_OF_CONDUCT.md` committed with the contact from D-007 (`c5b3bce`).
 - [x] `CLAUDE.md` and `.claude/` stay in the repo (D-008).
 - [x] The three skills under `.claude/` may be published, nothing removed from the history (D-014; origin still undocumented, Ícaro's own claim).

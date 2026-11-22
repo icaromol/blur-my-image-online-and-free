@@ -50,14 +50,14 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 Only items that block something. Questions with a default in force are in decisions.md and don't wait.
 
 - **Tagline and privacy wording:** decided, see D-010. The final `pt-BR` text is shown to Ícaro before the merge (BMI-051).
-- **BMI-050 (go public):** Ícaro said yes (D-013). Waiting on `-aa`'s go to `-5b` for the flip and on the answer to Q-008 (the author address in the history). After the flip he installs the CodeRabbit app; the merge of PR #1 comes after CodeRabbit's corrections.
+- **BMI-050 (go public):** Ícaro said yes (D-013). Waiting on `-aa`'s go to `-5b` for the flip and on the answer to Q-009 (the author address in the history). After the flip he installs the CodeRabbit app; the merge of PR #1 comes after CodeRabbit's corrections.
 - **D-004, D-006, D-007, D-008, D-009** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
 
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
 
-- Pre-flip scan (dispatcher, read-only): gitleaks over all branches, 64 commits, clean; license and dist checks pass; no AI trailer in the history. One finding: every commit carries the maintainer's own address as author and committer, which becomes public at the flip. Opened as Q-008 (keep, or rewrite the history first; the address isn't written in the docs). The flip waits for the answer. Repo description and topics are drafted and with the reviewer; the OG image is still in production.
+- Pre-flip scan (dispatcher, read-only): gitleaks over all branches, 64 commits, clean; license and dist checks pass; no AI trailer in the history. One finding: every commit carries the maintainer's own address as author and committer, which becomes public at the flip. Opened as Q-009 (keep, or rewrite the history first; the address isn't written in the docs). The flip waits for the answer. Repo description and topics are drafted and with the reviewer; the OG image is still in production.
 
 - D-014 (Ícaro: "posso publicar" the three skills, relayed by `-aa`) closed Q-008; the origin stays undocumented and nothing leaves the history. BMI-073 split by when each part matters: only the merge of PR #1 (first production deploy) needs it, not the flip, so BMI-050's dependency changed; BMI-073 is `Ready`. Squash message set to the PR title by `-5b` (`32a6a57`).
 
