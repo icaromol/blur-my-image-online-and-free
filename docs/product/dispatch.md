@@ -13,7 +13,7 @@ Status: **Running** in session `blur-my-image-online-and-free-75` (took over fro
 | Created | 2026-11-22 15:1x, tick 1 of this session (the `-ad` heartbeat `89127110` died with its session) |
 | Last tick | 2026-11-22 (tick 1, this session) |
 | Next tick | 2026-11-22 15:21, or earlier on a worker result or a message |
-| Quiet ticks in a row | 1 (tick 7: no worker running, no `Ready` item, every peer idle, tree clean apart from this board) |
+| Quiet ticks in a row | 1 (tick 11: nothing to assign; BMI-073 is `Ready` but its worker part waits on BMI-003, which is `In progress`, and the rest is Ícaro's; no worker running; every peer idle except `-aa`) |
 
 ## Lanes
 
@@ -21,9 +21,9 @@ Workers from the `-ad` session are all dead; nothing below is carried over from 
 
 | Lane | State | Item | Worker id | Started | Files held |
 | --- | --- | --- | --- | --- | --- |
-| ui | Idle: nothing eligible. Executor `-cc` is on stand-by. The OG meta tags in `index.html` (BMI-003 criterion) go to `-cc` once the OG image exists and the preview URL is known; waiting for the PM to mark that part `Ready` | | | | |
-| server | Idle after BMI-003 report (tick 9), stand-by. Done and read back by `-f2`: project `blur-my-image`, Git connected to `main`, env vars, toolbar and analytics off, preview of `feat/scaffold-and-proxy` verified (app, proxy, headers, CSP, SSRF cases). Not done: WAF rate-limit rule is staged, not published; a Protection Bypass for Automation created as a side effect needs revoking; Hobby with a private repo is proven only at the first Git deploy. `vercel.json` (`framework: vite`) goes to `-5b` before the next push. The preview host carries the team slug and is not recorded here | BMI-003 | `-f2` (session) | tick 8 | none |
-| quality | Idle: BMI-050 pre-flip read-only checks finished and verified by the dispatcher (gitleaks over all branches, 64 commits, clean, re-run by me; `check-licenses` and `check-dist` pass; no token, Vercel id, `.env` or `.local/` file tracked; 0 AI trailers). Report sent to `-aa` and the PM | | a46a21a4642e575e5 (done) | | |
+| ui | Frozen until the rewrite is done. Queued for right after: small BMI-003 item for `-cc`: change `og:url` and `og:image` in `index.html` to the new main domain (the old alias redirects, preview crawlers prefer the final URL); no other change; check, tests, size green; commit via `-5b`; push only after the rewrite. The new domain stays out of the README and marketing until Ícaro says. Executor `-cc` on stand-by | BMI-003 (OG URLs) | | | `index.html` |
+| server | Frozen until the rewrite is done. Queued for right after: BMI-073 (3) the comment at `server/proxy/config.ts:8` says the 4.5 MB limit "counts headers", which the docs don't say; fix the comment only, no behavior change. Executor `-f2` has one more queued item, not blocking the flip: prove that the rate limit fires (a burst of more than 30 requests in 60 s against our own `/api/image`, with a request the proxy already rejects); it generates traffic against the live service, so it waits for `-aa`'s direct yes and the end of the freeze. Otherwise `-f2` is on stand-by (Q-010 actions need a direct yes, not a relay through the dispatcher) | BMI-073 (3) | | | `server/proxy/config.ts` |
+| quality | Frozen until `-5b` says the history rewrite (Q-009) is done. BMI-073 first part done and reviewed (commit requested before the rewrite). Queued for right after: BMI-073 (1) `hosting.md` "below 4.5 MB" wording, (2) README sentence: "a 413 when the declared size is over the cap, and an aborted stream when an undeclared body passes it". The WAF rule is now published and active (read back by `-f2`, via `-aa`), so the rate-limit claim can be checked after the freeze: the text may say only "an active rule of 30 requests per 60 s per IP", since that the deny fires is not proven; the usage-alert claim still waits | BMI-073 (rest) | | | `README.md`, `docs/hosting.md` |
 | marketing | Idle (tick 9): OG and GitHub social preview image done, verified by the dispatcher (check, byte-identical re-render, no external requests) and approved by the reviewer after one rework round; files go to `-5b`. Repo description and topics: committed (`50db392`), applying them waits for `-aa`'s OK to `-5b`. Posts remain drafts; publish blockers stand (PETS 20 px, Safari, Mastodon decision 4). SEO and launch kit have no `Ready` item. Open for the PM: `brand.css` still `@import`s Google Fonts, so `tip.html` renders hit the network | | a079d9a6d72f8217f (designer, done) | | |
 | reviewer | Idle. Reads the next finished item before `-5b` | | | | |
 
@@ -52,6 +52,15 @@ Not assigned to anyone:
 | Marketing plan (3 lines + earlier fixes) | `docs/marketing/plans/2026-11-pre-launch.md` | tick 6: `docs(marketing): drop the open tagline question and the stale status from the pre-launch plan` | `ad82c2e` (pushed); reviewer approved; PM told so it can close BMI-051's marketing criterion |
 | `docs/product/dispatch.md` | this file | after this rewrite is stable | `0de1b97` (the board has been edited since; the next commit is asked when a tick leaves it stable) |
 | BMI-051 | `README.md`, `docs/hosting.md`, `index.html` | tick 2: `docs: sync the README and hosting guide with the shipped code` | `5117278` (pushed); PM told |
+
+
+## Decisions in force (relayed by `-aa` from Ícaro's direct answers, tick 12)
+
+- Q-009: the 64 commits are rewritten to the GitHub no-reply address. `-5b` executes with a backup and a verification (same trees before and after, gitleaks clean), then force-pushes with `--force-with-lease`. Hashes cited in the docs change. **The dispatcher assigns nothing new until `-5b` says the rewrite is done**; the BMI-073 worker is committed first.
+- Q-010: `-f2` publishes the WAF rule (30 requests per 60 s per IP, deny 1 min) and deletes only the deployment that uploaded the ignored files. The site stays up. The URL stays out of the README and marketing until Ícaro says. Revoking the Protection Bypass for Automation is Ícaro's.
+- Rule: nobody runs `vercel deploy` from the working tree; Git sends what is committed.
+- Vercel facts read back by `-f2` (tick 14, read-only): the project's Ignored Build Step is `test ! -f package.json` for all branches, so a push of the rewritten `main` (which has no `package.json`) skips the build and doesn't replace the production alias, while feature-branch previews keep building; after the PR #1 merge `main` has a `package.json` and builds production. Untested until a `main` push happens. Main domain is `blurmyimage.vercel.app` (the old alias answers 307); `ALLOWED_ORIGINS` was switched to it and applies from the next deploy; the current production runs on the default. `-5b` has not been told to push: that signal comes from `-aa` after the WAF.
+- BMI-050 order: rewrite, PR #1 ready for review, private CodeRabbit review, corrections, merge, flip (only on `-aa`'s go).
 
 ## Needs Ícaro
 
