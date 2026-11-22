@@ -122,9 +122,10 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-132 | App version in the UI and in the bug form | Community | Idea |
 | BMI-133 | `GOVERNANCE.md`, `CODEOWNERS`, second admin, Discussions, interaction limits, area labels | Community | Idea |
 | BMI-134 | e2e decode coverage for GIF, AVIF and BMP (PNG only today) | Quality | Idea |
+| BMI-136 | Marketing templates: `marketing/social/templates/brand.css` imports Google Fonts at render time (a network request on every render, for the `tip.html` template); self-host the font or drop the import. Only matters if `tip.html` is used; the app is not affected | Quality | Idea |
 | BMI-135 | Playwright config: don't silently reuse another process's server on port 4173 outside CI (`reuseExistingServer`); no evidence yet that this caused the 2026-11-22 failure (BMI-074) | Quality | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-075`; later effects `BMI-109`, features `BMI-127`, other later `BMI-136`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-075`; later effects `BMI-109`, features `BMI-127`, other later `BMI-137`.
 
 ---
 
@@ -165,6 +166,16 @@ Authorized by Ícaro (D-012, relayed). Report from `-f2`, 2026-11-22 (full evide
 - [ ] The page carries Open Graph and Twitter card meta tags (title, description, image, URL), with the final wording from D-010. The OG image comes from marketing's action 5, unblocked now that the English tagline is decided.
 
 Two more things from the report. A "Protection Bypass for Automation" secret was created on the project by `vercel curl`, and `-f2` couldn't revoke it (reading the secret was denied): Ícaro revokes it in the Vercel dashboard (BMI-073). `vercel.json` gained `"framework": "vite"`, committed as `3e2e77a` by `-5b` (requested by the dispatcher). The push of the docs commit just before it had already triggered a preview without the preset.
+
+### BMI-003, OG tags part — Ready for the ui lane (`-cc`)
+
+The OG image is approved by the opus reviewer and verified by the dispatcher (marketing's action 5). It is rendered by `node marketing/social/render.mjs marketing/social/posts/og-image.json` into `marketing/social/out/` (git-ignored). The 1280x640 render is for GitHub's social preview only (uploaded by hand by Ícaro).
+
+- [ ] `index.html` has `og:title`, `og:description`, `og:image`, `og:url`, `og:type` and `twitter:card` (`summary_large_image`). `og:url` and `og:image` are absolute on `https://blur-my-image.vercel.app`.
+- [ ] `og:description` is the privacy sentence from D-010, the same as the README and the meta description.
+- [ ] The 1200x630 PNG (`og-image-og-1200x630.png`) is copied to `public/` (for example `public/og-image.png`) and committed by `-5b`; the page serves it.
+- [ ] `pnpm check`, unit tests, e2e and `pnpm size` still pass; no file contains the Vercel preview URL.
+- [ ] The CSP in `security-headers.ts` is not loosened; the image is only fetched by crawlers, not by the app.
 
 ### BMI-002 — CI and Dependabot
 
