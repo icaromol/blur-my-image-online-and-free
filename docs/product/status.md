@@ -27,7 +27,6 @@ Updated: 2026-11-22
 BMI-040 to BMI-044 are built over the committed UI (D-003) and verified by PM on 2026-11-22: `vue-tsc` clean, 218 unit tests, build, 26 e2e (including `pt-BR` and language-switch specs). `Review` until PR #1 is merged. New UI text goes into `src/i18n/messages/*.json`, never inline.
 
 Open on this item:
-- BMI-042 needs Ícaro's review of `src/i18n/messages/pt-BR.json` before it's `Done`.
 - BMI-044: no file-size string exists in the app yet, so the "4,4 MB" case has nothing to format. Dimensions, angle, intensity and brush size use locale formatting. Revisit when a size is first shown.
 - `index.html` keeps a static English meta description (not covered by the spec); matters for Q-001.
 - Heads-up: `pnpm check` currently fails on two format errors in another session's files (`security-headers.test.ts`, the coverage block in `vite.config.ts`). None are in i18n files.
@@ -50,11 +49,15 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 
 Only items that block something. Questions with a default in force are in decisions.md and don't wait.
 
-- **BMI-042 → Done:** Ícaro is correcting `src/i18n/messages/pt-BR.json`. PM doesn't touch the file and won't ask again.
+- **en/pt-BR tagline differ** since `bbb060c`: `pt-BR` says "…ou como quiser. Ela nunca sai do seu navegador.", `en` still says "…or only the parts you paint… your device". The git-owner session is asking Ícaro whether `en` follows. PM doesn't touch `en.json`.
 - **Q-003:** a project mailbox for the code of conduct. Blocks BMI-050 only. Recommendation in decisions.md.
 - **D-004** was relayed by the git-owner session, not heard directly. Stays in force unless Ícaro objects.
 
 ## Log
+
+### 2026-11-22 (pt-BR reviewed)
+
+- Ícaro corrected two `pt-BR` strings, committed as `bbb060c`. BMI-042's review condition is met; the item stays `Review` until PR #1 merges to `main`.
 
 ### 2026-11-22 (answers from Ícaro)
 

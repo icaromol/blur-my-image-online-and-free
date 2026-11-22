@@ -16,7 +16,7 @@ Progress: 0 of 44 `Must` done, 28 in review, 4 in progress.
 | --- | --- | --- | --- | --- | --- |
 | BMI-001 | Scaffold: Vue 3 + Vite + TS, Biome, Vitest, Playwright, husky pre-commit | Must | M | Review | |
 | BMI-002 | CI: check, unit, e2e, Docker build on every PR; Dependabot | Must | S | In progress | BMI-001 |
-| BMI-003 | Deploy to Vercel Hobby (static site + `/api/image` function); Git integration, production on every merge to `main` (D-005); no Vercel project exists yet | Must | S | Idea | BMI-001, BMI-014 |
+| BMI-003 | Deploy to Vercel Hobby (static site + `/api/image` function); Git integration, production on every merge to `main` (D-005); project creation half done (MCP 403, CLI created it unverified, Git link pending); see tooling.md | Must | S | Idea | BMI-001, BMI-014 |
 | BMI-004 | Docker image (static site + proxy on Node) built in CI as the exit path | Must | S | Review | BMI-014 |
 
 ### E2. Input
@@ -191,4 +191,4 @@ What is committed on `feat/scaffold-and-proxy`, and what is still open per item:
 - **BMI-070 community files:** `CONTRIBUTING.md`, issue forms and the PR template are in (`4c15265`). Still open: labels, merge settings (squash only, delete branch on merge, suggest updating PR branches) and saved replies, all done in GitHub's settings.
 - **BMI-071 releases:** release-please config, manifest and workflow are in (`4c15265`). The Conventional Commits check on the PR title landed in `76325bb`. Nothing open in the repo; the first tagged release is part of BMI-050.
 - **BMI-072:** `CODE_OF_CONDUCT.md` and `SECURITY.md` are in with the `<CONDUCT_CONTACT>` placeholder; replacing it is a BMI-050 item (Q-003).
-- **BMI-040 to BMI-044 i18n:** committed as `ba6343f`. BMI-042 stays short of `Done` until Ícaro reviews `pt-BR.json`. The `define` flags in `vite.config.ts` and the default `locale: "en-US"` in `playwright.config.ts` ride along with the frontend session's config commit.
+- **BMI-040 to BMI-044 i18n:** committed as `ba6343f`. Ícaro reviewed `pt-BR.json` and changed the tagline and the drop overlay text (`bbb060c`), so the review condition on BMI-042 is met. It stays `Review` like the rest until PR #1 is merged to `main`. The `define` flags in `vite.config.ts` and the default `locale: "en-US"` in `playwright.config.ts` ride along with the frontend session's config commit.

@@ -14,9 +14,15 @@ These come from Ícaro's Claude account and plugins, so another machine or contr
 
 | Server | State | Used for | Notes |
 | --- | --- | --- | --- |
-| **Vercel** (plugin) | Authenticated. One team on the account. **No project for this repo yet** (checked by name and by repository) | BMI-003: create the project, link the Git repo, check deployments, read runtime logs, set env vars, firewall rule | Creating or changing anything on Vercel needs Ícaro's go. Read-only checks are fine. Team and project IDs aren't recorded here: this file goes public with the repo. |
+| **Vercel** (plugin) | Authenticated. One team on the account. **Project creation is half done, see below** (the MCP's `create_git_project` got a 403 even though the login is the team owner) | BMI-003: create the project, link the Git repo, check deployments, read runtime logs, set env vars, firewall rule | Creating or changing anything on Vercel needs Ícaro's go. Read-only checks are fine. Team and project IDs aren't recorded here: this file goes public with the repo. |
 | **Claude Docs**, **Meetings**, **Claude Data** | Connected | Not used by this project | Left alone. |
 | Asana, Atlassian, Box, Canva, ClickUp, Figma, HubSpot, Intercom, Linear, Microsoft 365, Notion, monday.com, Datadog, PagerDuty, Slack, Miro, Resend | Listed, not authenticated | Not used | Don't authenticate one without a task that needs it. |
+
+## Vercel, state of BMI-003 (2026-11-22)
+
+- The MCP can read but couldn't create: `create_git_project` returned 403 `forbidden`, with the login being the team owner. Cause unverified, probably the access granted to the MCP.
+- `vercel project add blur-my-image` through the local CLI (same account) reported success, but the MCP's `get_project` returns 404 for that name, so the project's existence is **not confirmed**. The step that links it to the GitHub repo was blocked by Claude Code's permission check and not retried.
+- Nothing is deployed, no settings are configured, no env vars set. Next step is Ícaro's choice: connect the repo in the Vercel dashboard, or explicitly allow the CLI route.
 
 ## Vercel, what BMI-003 will do
 
