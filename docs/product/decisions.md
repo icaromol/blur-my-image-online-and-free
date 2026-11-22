@@ -20,6 +20,16 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-017 — Accept CC-BY-3.0 for development tools, to use a maintained SPDX parser?
+
+PM chose a maintained parser for `scripts/check-licenses.mjs` (BMI-077). `spdx-expression-parse@5.0.0` (MIT, published 2026-07-16) brings two packages: `spdx-license-ids` (CC0-1.0, already allowed) and `spdx-exceptions@2.5.0`, a data package under **CC-BY-3.0**, which the development-dependency allowlist doesn't include, so the license check itself fails on it. A clean `pnpm install --frozen-lockfile`, `pnpm check`, the 275 tests and the build pass on a clean copy; no build script, `allowBuilds` untouched.
+
+Options: (a) add CC-BY-3.0 to the development-dependency allowlist only; the package is data, used only by the check, never shipped to the client or the Docker image, and the change is one visible line (total packages 148 to 151); (b) exempt `spdx-exceptions` by name, narrower but it creates an exception mechanism; (c) keep the hand-written evaluator already delivered (no dependency, no allowlist change; the reviewer found two small fixes in it).
+
+Recommendation: (a). It is a policy change (development tools may also use CC-BY-3.0, which asks for attribution only on redistribution), so it is Ícaro's, but the risk is nil for what ships, and the project's rule prefers the maintained library.
+
+Default in force: **(c)**: the hand-written evaluator stays, with the reviewer's two small fixes, and no policy changes; if he says (a), the worker swaps in the parser, which is already prepared.
+
 ### Q-016 — Three design choices in the brand kit (BMI-075)
 
 The designer's kit (`d897bb6`, approved by the opus reviewer) leaves three choices for Ícaro:
