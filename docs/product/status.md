@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 44 `Must` done · 22 in review · 10 in progress · 0 blocked. Full list in [backlog.md](backlog.md).
+0 of 44 `Must` done · 28 in review · 4 in progress · 0 blocked. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -14,17 +14,23 @@ Updated: 2026-11-22
 | --- | --- | --- | --- |
 | BMI-001, 004, 010, 014, 020, 021, 030 | Scaffold, proxy, Docker, file picker, gaussian, PNG export (branch `feat/scaffold-and-proxy`) | git-owner session | Review |
 | BMI-002 | CI + Dependabot | git-owner session | Ready |
-| BMI-040 | i18n foundation | Sonnet subagent (PM reviews) | In progress |
-| BMI-041 | Locale resolution + switcher | same agent | In progress |
-| BMI-042 | Translate existing UI (now ~5 components + effect and export labels; re-size to M) | same agent | In progress |
-| BMI-043 | Errors as codes | same agent | In progress |
-| BMI-044 | Number formatting + plurals | same agent | In progress |
+| BMI-040 | i18n foundation | git-owner session committed `ba6343f` | Review |
+| BMI-041 | Locale resolution + switcher | same commit | Review |
+| BMI-042 | Translate existing UI (now ~5 components + effect and export labels; re-size to M) | same commit | Review |
+| BMI-043 | Errors as codes | same commit | Review |
+| BMI-044 | Number formatting + plurals | same commit | Review |
 
 **Committed (`bdcccbe`, PR #1):** drag and drop, paste, URL loading, Pixelate, Motion, brush, eraser, undo/redo, JPG/JPEG/WebP export and large images, with unit and e2e specs. `Review` until PR #1 is merged and the checks are green.
 
-## i18n in progress
+## i18n: committed (`ba6343f`)
 
-The editor was committed before i18n, with English strings hard-coded (D-003). BMI-040 to BMI-044 are being built together over the committed UI. Any UI text added while this runs adds to the translation work: add it to the message files, not inline.
+BMI-040 to BMI-044 are built over the committed UI (D-003) and verified by PM on 2026-11-22: `vue-tsc` clean, 218 unit tests, build, 26 e2e (including `pt-BR` and language-switch specs). `Review` until PR #1 is merged. New UI text goes into `src/i18n/messages/*.json`, never inline.
+
+Open on this item:
+- BMI-042 needs Ícaro's review of `src/i18n/messages/pt-BR.json` before it's `Done`.
+- BMI-044: no file-size string exists in the app yet, so the "4,4 MB" case has nothing to format. Dimensions, angle, intensity and brush size use locale formatting. Revisit when a size is first shown.
+- `index.html` keeps a static English meta description (not covered by the spec); matters for Q-001.
+- Heads-up: `pnpm check` currently fails on two format errors in another session's files (`security-headers.test.ts`, the coverage block in `vite.config.ts`). None are in i18n files.
 
 ## Standards package (D-004)
 
@@ -49,6 +55,15 @@ In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the
 - **BMI-042** needs Ícaro to review the `pt-BR` strings before it's `Done`.
 
 ## Log
+
+### 2026-11-22 (i18n committed)
+
+- `ba6343f` committed i18n (23 files). BMI-040 to BMI-044 → `Review`. The git-owner session staged `package.json` and the lockfile with only `vue-i18n`; the `vite.config.ts` defines and the `playwright.config.ts` locale wait for the frontend session's config commit. Pre-commit now checks a snapshot of what's staged (`eb8cef8`).
+
+### 2026-11-22 (i18n done, pending commit)
+
+- BMI-040 to BMI-044 implemented by a Sonnet subagent, reviewed and re-verified by PM (check on i18n files, tests, build, e2e). Not committed yet.
+- Git-owner and frontend sessions notified to resume their held work.
 
 ### 2026-11-22 (E7 progress)
 

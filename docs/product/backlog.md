@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 44 `Must` done, 22 in review, 10 in progress.
+Progress: 0 of 44 `Must` done, 28 in review, 4 in progress.
 
 ### E1. Foundation
 
@@ -59,11 +59,11 @@ Built before any more UI work so new screens are born translated (D-001).
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
-| BMI-040 | i18n foundation: vue-i18n, `src/i18n/`, typed keys, lazy-loaded locales, key-parity test | Must | M | In progress | BMI-001 |
-| BMI-041 | Locale resolution (saved → browser → `en`), switcher, `<html lang>`, persisted choice | Must | S | In progress | BMI-040 |
-| BMI-042 | Translate the existing UI to `pt-BR`; effect labels from message keys | Must | S | In progress | BMI-040 |
-| BMI-043 | Errors as codes: client and proxy codes mapped to translated messages | Must | S | In progress | BMI-040 |
-| BMI-044 | Locale-aware number formatting and plurals | Must | S | In progress | BMI-040 |
+| BMI-040 | i18n foundation: vue-i18n, `src/i18n/`, typed keys, lazy-loaded locales, key-parity test | Must | M | Review | BMI-001 |
+| BMI-041 | Locale resolution (saved → browser → `en`), switcher, `<html lang>`, persisted choice | Must | S | Review | BMI-040 |
+| BMI-042 | Translate the existing UI to `pt-BR`; effect labels from message keys | Must | S | Review | BMI-040 |
+| BMI-043 | Errors as codes: client and proxy codes mapped to translated messages | Must | S | Review | BMI-040 |
+| BMI-044 | Locale-aware number formatting and plurals | Must | S | Review | BMI-040 |
 
 ### E7. Quality, security and community — source: D-004 (`.local/standards/`, not committed)
 
@@ -82,7 +82,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-068 | Accessibility: axe e2e at WCAG 2.2 AA; single-key shortcuts (`B`, `E`, `[`, `]`) only while the canvas has focus; a click without drag paints one dab | Must | M | Idea | BMI-025 |
 | BMI-069 | README honesty and sync: privacy and proxy text says Vercel's request log keeps the image URL, IP and user agent for 1 hour; shortcut focus rule; contributing links; layout tree; new scripts | Must | S | Idea | BMI-068 |
 | BMI-070 | Community files: `CONTRIBUTING.md`, issue forms, PR template, labels, merge settings, saved replies | Must | M | In progress | |
-| BMI-071 | Releases: release-please config and workflow, Conventional Commits check on the PR title | Must | S | In progress | BMI-002 |
+| BMI-071 | Releases: release-please config and workflow, Conventional Commits check on the PR title | Must | S | Review | BMI-002 |
 | BMI-072 | `CODE_OF_CONDUCT.md` (Contributor Covenant 3.0) and `SECURITY.md`, contact kept as placeholder until Q-003 is answered | Must | S | Review | |
 | BMI-073 | Manual platform settings checklist for Ícaro (GitHub Actions and security, Vercel 2FA, WAF rate-limit rule, toolbar and analytics off, env vars) | Must | S | Idea | BMI-003 |
 
@@ -189,5 +189,6 @@ What is committed on `feat/scaffold-and-proxy`, and what is still open per item:
 - **BMI-060 quality bar:** `docs/quality.md` is in (`a61f693`). Still open: tsconfig flags, Biome rules and folder boundaries, coverage thresholds, kebab-case rename.
 - **BMI-066 supply chain:** Dependabot, `security.yml`, `scripts/check-licenses.mjs` and `scripts/check-dist.mjs` are in (`a61f693`, `48b1f3d`). Still open: `pnpm-workspace.yaml` with `minimumReleaseAge: 10080`, `trustPolicy: no-downgrade`, `strictDepBuilds`, `blockExoticSubdeps` and an empty `allowBuilds`. **Target date 2026-11-28, no exception list.** It can't go in earlier: 40 packages already in the lockfile are younger than 7 days, and the newest (`undici` 8.13.1) turns 7 days old around 2026-11-27 22:00 UTC. Until then pnpm 12's default (1 day) applies. Draft: `.local/standards/drafts/pnpm-workspace.yaml` (git-ignored).
 - **BMI-070 community files:** `CONTRIBUTING.md`, issue forms and the PR template are in (`4c15265`). Still open: labels, merge settings (squash only, delete branch on merge, suggest updating PR branches) and saved replies, all done in GitHub's settings.
-- **BMI-071 releases:** release-please config, manifest and workflow are in (`4c15265`). Still open: the Conventional Commits check on the PR title (no workflow has it yet).
+- **BMI-071 releases:** release-please config, manifest and workflow are in (`4c15265`). The Conventional Commits check on the PR title landed in `76325bb`. Nothing open in the repo; the first tagged release is part of BMI-050.
 - **BMI-072:** `CODE_OF_CONDUCT.md` and `SECURITY.md` are in with the `<CONDUCT_CONTACT>` placeholder; replacing it is a BMI-050 item (Q-003).
+- **BMI-040 to BMI-044 i18n:** committed as `ba6343f`. BMI-042 stays short of `Done` until Ícaro reviews `pt-BR.json`. The `define` flags in `vite.config.ts` and the default `locale: "en-US"` in `playwright.config.ts` ride along with the frontend session's config commit.
