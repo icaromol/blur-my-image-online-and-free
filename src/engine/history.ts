@@ -1,4 +1,4 @@
-import { type EffectSettings, sameSettings } from "./effects";
+import { type EffectSettings, sameSettings } from "./effect-catalog";
 
 export interface Point {
   x: number;

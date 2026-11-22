@@ -1,5 +1,5 @@
-import type { ImageSize } from "../engine/intensity";
 import { CodedError } from "../errors";
+import type { ImageSize } from "../image-size";
 
 export interface DecodedImage {
   bitmap: ImageBitmap;

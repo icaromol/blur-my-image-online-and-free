@@ -1,14 +1,16 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 import {
   decode,
   download,
   HEIGHT,
   openImage,
   paint,
+  type Rgba,
   setIntensity,
 } from "./helpers";
 
-const gray = (rgba: number[]) => rgba[0];
+const gray = (rgba: Rgba) => rgba[0];
+const editorCanvas = (page: Page) => page.getByRole("application");
 // In the checkerboard, (0,0)-(1,1) is black and (2,0)-(3,1) is white.
 const isOriginalChecker = (value: number, x: number, y: number) =>
   value === ((Math.floor(x / 2) + Math.floor(y / 2)) % 2 === 0 ? 0 : 255);
@@ -43,6 +45,7 @@ test("painting twice with the same setting doesn't compound", async ({
 
 test("the eraser brings back the original pixels", async ({ page }) => {
   await page.getByRole("button", { name: "Blur entire image" }).click();
+  await editorCanvas(page).focus();
   await page.keyboard.press("e");
   await expect(page.getByRole("button", { name: "Eraser" })).toHaveAttribute(
     "aria-pressed",
@@ -61,6 +64,8 @@ test("undo and redo step through strokes", async ({ page }) => {
   await paint(page, [20, HEIGHT / 2], [80, HEIGHT / 2]);
   const point: [number, number] = [50, HEIGHT / 2];
 
+  // Ctrl/Cmd shortcuts work with focus anywhere outside text fields.
+  await page.getByRole("button", { name: "Blur entire image" }).focus();
   await page.keyboard.press("ControlOrMeta+z");
   const undone = await decode(page, await download(page));
   expect(isOriginalChecker(gray(undone.pixel(...point)), ...point)).toBe(true);
@@ -71,8 +76,12 @@ test("undo and redo step through strokes", async ({ page }) => {
   expect(isOriginalChecker(gray(redone.pixel(...point)), ...point)).toBe(false);
 });
 
-test("[ and ] resize the brush", async ({ page }) => {
+test("[ and ] resize the brush and B picks the brush while the image has focus", async ({
+  page,
+}) => {
   const size = page.getByRole("slider", { name: "Brush size" });
+  await page.getByRole("button", { name: "Eraser" }).click();
+  await editorCanvas(page).focus();
   await page.keyboard.press("]");
   await expect(size).toHaveValue("50");
   await page.keyboard.press("[");
@@ -83,4 +92,38 @@ test("[ and ] resize the brush", async ({ page }) => {
     "aria-pressed",
     "true",
   );
+});
+
+test("single-key shortcuts do nothing while focus is outside the image", async ({
+  page,
+}) => {
+  const size = page.getByRole("slider", { name: "Brush size" });
+  await page.getByRole("button", { name: "Blur entire image" }).focus();
+  await page.keyboard.press("e");
+  await page.keyboard.press("]");
+  await expect(page.getByRole("button", { name: "Brush" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await expect(size).toHaveValue("40");
+});
+
+test("the image can be reached with Tab and shows where focus is", async ({
+  page,
+}) => {
+  const canvas = editorCanvas(page);
+  await page.getByRole("button", { name: "Download" }).focus();
+  for (
+    let i = 0;
+    i < 20 &&
+    !(await canvas.evaluate((el: Element) => el === document.activeElement));
+    i++
+  ) {
+    await page.keyboard.press("Tab");
+  }
+  await expect(canvas).toBeFocused();
+  const outline = await canvas.evaluate(
+    (el) => getComputedStyle(el).outlineStyle,
+  );
+  expect(outline).not.toBe("none");
 });

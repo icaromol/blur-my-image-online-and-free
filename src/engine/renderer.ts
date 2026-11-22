@@ -1,3 +1,6 @@
+// Must load before any PixiJS renderer is created: replaces the shader code PixiJS would
+// otherwise build with new Function, which the page CSP (no 'unsafe-eval') blocks.
+import "pixi.js/unsafe-eval";
 import {
   Application,
   Container,
@@ -7,9 +10,9 @@ import {
   Sprite,
   Texture,
 } from "pixi.js";
-import { effects } from "./effects";
+import type { ImageSize } from "../image-size";
+import { effectFilters } from "./effects";
 import type { Operation, Stroke } from "./history";
-import type { ImageSize } from "./intensity";
 
 interface Targets {
   // Input of the operation being edited.
@@ -142,7 +145,7 @@ export class Renderer {
     [targets.base, targets.result] = [targets.result, targets.base];
 
     if (operation.kind === "effect") {
-      const filter = effects[operation.settings.effect].createFilter(
+      const filter = effectFilters[operation.settings.effect](
         operation.settings,
         targets.base,
       );
@@ -225,16 +228,15 @@ export class Renderer {
 
 // Draws the points from `from` on, joined to the point before so segments connect.
 function drawStroke(graphics: Graphics, stroke: Stroke, from: number): void {
-  const radius = stroke.diameter / 2;
-  const { points } = stroke;
-  if (points.length === 1) {
-    graphics.circle(points[0].x, points[0].y, radius).fill(MASK_COLOR);
+  const [first, ...rest] = stroke.points.slice(Math.max(0, from - 1));
+  if (!first) return;
+  // A click without a drag paints one dab.
+  if (stroke.points.length === 1) {
+    graphics.circle(first.x, first.y, stroke.diameter / 2).fill(MASK_COLOR);
     return;
   }
-  const start = Math.max(0, from - 1);
-  graphics.moveTo(points[start].x, points[start].y);
-  for (let i = start + 1; i < points.length; i++)
-    graphics.lineTo(points[i].x, points[i].y);
+  graphics.moveTo(first.x, first.y);
+  for (const point of rest) graphics.lineTo(point.x, point.y);
   graphics.stroke({
     width: stroke.diameter,
     color: MASK_COLOR,
@@ -249,7 +251,9 @@ function sameOperations(
   count: number,
 ): boolean {
   for (let i = 0; i < count; i++) {
-    if (!sameOperation(a[i], b[i])) return false;
+    const left = a[i];
+    const right = b[i];
+    if (!left || !right || !sameOperation(left, right)) return false;
   }
   return true;
 }

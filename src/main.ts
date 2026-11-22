@@ -1,4 +1,3 @@
-import "pixi.js/unsafe-eval";
 import { createApp } from "vue";
 import { i18n, savedLocale, setLocale } from "./i18n";
 import { resolveLocale } from "./i18n/locales";

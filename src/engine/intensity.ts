@@ -1,10 +1,7 @@
+import type { ImageSize } from "../image-size";
+
 export const MIN_INTENSITY = 1;
 export const MAX_INTENSITY = 100;
-
-export interface ImageSize {
-  width: number;
-  height: number;
-}
 
 export function clampIntensity(intensity: number): number {
   return Math.min(MAX_INTENSITY, Math.max(MIN_INTENSITY, intensity));

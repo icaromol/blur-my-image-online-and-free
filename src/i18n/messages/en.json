@@ -81,5 +81,8 @@
     "not_found": "The image service couldn't be found. Try again later.",
     "internal_error": "The image service ran into a problem. Try again later.",
     "unknown": "Something went wrong. Try again."
+  },
+  "canvas": {
+    "label": "Image. Paint on it with the pointer. Shortcuts while it has focus: B brush, E eraser, [ and ] brush size."
   }
 }

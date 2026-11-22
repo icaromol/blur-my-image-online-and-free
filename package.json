@@ -9,12 +9,15 @@
   },
   "scripts": {
     "dev": "vite",
-    "check": "biome check . && vue-tsc --build",
+    "check": "biome check --error-on-warnings . && vue-tsc --build",
     "test": "vitest run",
-    "test:e2e": "playwright test",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test --project=chromium",
+    "test:e2e:all": "playwright test",
     "build": "vite build",
     "build:server": "vite build -c vite.server.config.ts",
     "preview": "vite preview",
+    "size": "size-limit",
     "prepare": "husky"
   },
   "dependencies": {
@@ -29,15 +32,34 @@
     "vue-i18n": "^11.4.23"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@biomejs/biome": "^2.6.8",
     "@playwright/test": "^1.65.1",
+    "@size-limit/file": "^14.3.0",
     "@types/node": "^26.6.6",
     "@vitejs/plugin-vue": "^6.0.11",
+    "@vitest/coverage-v8": "^5.1.1",
     "@vue/tsconfig": "^0.9.1",
     "husky": "^9.1.7",
+    "size-limit": "^14.3.0",
     "typescript": "^6.0.3",
     "vite": "^8.3.8",
     "vitest": "^5.1.1",
     "vue-tsc": "^3.3.14"
-  }
+  },
+  "size-limit": [
+    {
+      "name": "Initial JS",
+      "path": "dist/assets/index-*.js",
+      "limit": "35 kB"
+    },
+    {
+      "name": "All JS except the WebP encoder",
+      "path": [
+        "dist/assets/*.js",
+        "!dist/assets/webp_enc*.js"
+      ],
+      "limit": "180 kB"
+    }
+  ]
 }

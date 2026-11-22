@@ -14,7 +14,7 @@ export function isLocale(value: unknown): value is Locale {
 }
 
 function baseLanguage(tag: string): string {
-  return tag.split("-")[0].toLowerCase();
+  return (tag.split("-")[0] ?? tag).toLowerCase();
 }
 
 export function resolveLocale(

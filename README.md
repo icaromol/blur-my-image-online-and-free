@@ -70,6 +70,8 @@ Shortcuts follow Photoshop's defaults where one exists.
 | `Ctrl/Cmd+Z` | Undo |
 | `Ctrl/Cmd+Shift+Z` | Redo |
 
+`B`, `E`, `[` and `]` work while the image has keyboard focus: click it or move to it with `Tab`. Single-key shortcuts that fire anywhere get in the way of screen reader and speech input users ([WCAG 2.1.4](https://www.w3.org/WAI/WCAG22/Understanding/character-key-shortcuts.html)). The `Ctrl/Cmd` shortcuts work anywhere on the page, except `Ctrl/Cmd+Z` inside a text field, which undoes typing there.
+
 ## Privacy
 
 - Images are decoded, edited and encoded in your browser. There is no upload step and no server-side storage.
@@ -136,12 +138,19 @@ Requires Node.js 24 and pnpm.
 
 ```bash
 pnpm install
-pnpm dev          # dev server at http://localhost:5173
-pnpm check        # Biome lint + format check and type check (also runs on pre-commit)
-pnpm test         # unit tests
-pnpm test:e2e     # Playwright
-pnpm build        # production build in dist/
+pnpm dev            # dev server at http://localhost:5173
+pnpm check          # Biome (warnings fail) and type check; also runs on pre-commit
+pnpm test           # unit tests
+pnpm test:coverage  # unit tests with coverage thresholds for src/engine and server/proxy
+pnpm build          # production build in dist/, with third-party licenses in dist/licenses.md
+pnpm size           # bundle size budgets (run after build)
+pnpm test:e2e       # Playwright on Chromium, against the production build under the real CSP
+pnpm test:e2e:all   # Playwright on Chromium, Firefox and WebKit
 ```
+
+Playwright needs its browsers once: `pnpm exec playwright install --with-deps chromium` (or without `chromium` for all three).
+
+The quality bar (TypeScript and Biome rules, folder boundaries, required tests, coverage, accessibility, bundle budgets, supported browsers) is in [docs/quality.md](docs/quality.md).
 
 The URL proxy runs locally through `vercel dev`. To run the whole app as it would run off Vercel:
 
@@ -150,30 +159,13 @@ docker build -t blur-my-image .
 docker run -p 3000:3000 blur-my-image   # static site + proxy at http://localhost:3000
 ```
 
-### Planned layout
+### Project layout
 
-```
-src/
-  input/      file picker, drag and drop, paste, URL loader
-  engine/     renderer, effect definitions, operation list, masks
-  export/     format encoders and download
-  ui/         Vue components
-  i18n/       locale setup and message files (en, pt-BR)
-server/
-  proxy/      Hono app, SSRF checks, config (platform-agnostic)
-  entries/    node.ts (Docker), worker.ts (Cloudflare)
-api/
-  image.ts    Vercel entry: wraps server/proxy/app.ts
-docs/
-  research.md
-  hosting.md
-  product/    backlog, status, decisions, feature specs
-Dockerfile
-```
+The folder tree and the import rules between folders are in [docs/quality.md](docs/quality.md#project-layout). In short: `src/` is the browser app (`input/`, `engine/`, `export/`, `ui/`, `i18n/`), `server/` and `api/` are the URL proxy, and `security-headers.ts` holds the page's security headers for every host.
 
 The frontend reads the proxy location from `VITE_PROXY_URL` (default `/api/image`), so static hosting and the proxy can be split across platforms.
 
-Adding an effect means adding one entry to `src/engine/effects.ts` (its id, controls and a function that builds the PixiJS filter from intensity and image size) plus its label in each file under `src/i18n/messages/`. Nothing else should need to change.
+Adding an effect means adding its id and controls to `src/engine/effect-catalog.ts`, the function that builds its PixiJS filter to `src/engine/effects.ts` (numbers such as radius or block size go in `src/engine/effect-params.ts`, which is unit tested), and its label in each file under `src/i18n/messages/`. The catalog stays free of PixiJS so the UI can read it without loading the renderer. Nothing else should need to change.
 
 ## Backlog
 

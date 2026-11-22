@@ -8,7 +8,7 @@ import ExportControls from "./ExportControls.vue";
 import { useEditor } from "./editor";
 import ImageInput from "./ImageInput.vue";
 import LanguageSelect from "./LanguageSelect.vue";
-import { commandFor } from "./shortcuts";
+import { type Command, globalCommandFor } from "./shortcuts";
 import ToolControls from "./ToolControls.vue";
 
 const { t, n } = useTranslation();
@@ -35,10 +35,7 @@ function onPaste(event: ClipboardEvent) {
   else void editor.openUrl(input.url);
 }
 
-function onKeydown(event: KeyboardEvent) {
-  const command = commandFor(event);
-  if (!command) return;
-  event.preventDefault();
+function runCommand(command: Command) {
   switch (command) {
     case "brush":
     case "eraser":
@@ -57,6 +54,13 @@ function onKeydown(event: KeyboardEvent) {
       editor.redo();
       break;
   }
+}
+
+function onKeydown(event: KeyboardEvent) {
+  const command = globalCommandFor(event);
+  if (!command) return;
+  event.preventDefault();
+  runCommand(command);
 }
 
 function hasFiles(event: DragEvent): boolean {
@@ -90,13 +94,13 @@ function onDrop(event: DragEvent) {
 }
 
 onMounted(async () => {
-  canvas.value = await editor.start();
   window.addEventListener("paste", onPaste);
   window.addEventListener("keydown", onKeydown);
   window.addEventListener("dragenter", onDragEnter);
   window.addEventListener("dragleave", onDragLeave);
   window.addEventListener("dragover", onDragOver);
   window.addEventListener("drop", onDrop);
+  canvas.value = (await editor.start())?.canvas ?? null;
 });
 
 onBeforeUnmount(() => {
@@ -169,6 +173,7 @@ onBeforeUnmount(() => {
         @stroke-start="editor.beginStroke"
         @stroke-move="editor.extendStroke"
         @stroke-end="editor.endStroke"
+        @command="runCommand"
       />
     </main>
 

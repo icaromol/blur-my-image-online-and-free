@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { type EffectDefinition, type EffectId, effectIds, effects } from "../engine/effects";
+import { type EffectId, effectCatalog, effectIds } from "../engine/effect-catalog";
 import { MAX_INTENSITY, MIN_INTENSITY } from "../engine/intensity";
 import { type MessageKey, useTranslation } from "../i18n";
 
@@ -9,7 +9,7 @@ const effect = defineModel<EffectId>("effect", { required: true });
 const intensity = defineModel<number>("intensity", { required: true });
 const angle = defineModel<number>("angle", { required: true });
 
-const definition = computed<EffectDefinition>(() => effects[effect.value]);
+const definition = computed(() => effectCatalog[effect.value]);
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import proxySource from "../../server/proxy/app.ts?raw";
-import { effectIds } from "../engine/effects";
+import { effectIds } from "../engine/effect-catalog";
 import { errorKey } from "./index";
 import { localeIds } from "./locales";
 import en from "./messages/en.json";
@@ -33,7 +33,7 @@ describe("message files", () => {
 
   for (const id of localeIds) {
     describe(id, () => {
-      const messages = flatten(files[`./messages/${id}.json`]);
+      const messages = flatten(files[`./messages/${id}.json`] ?? {});
 
       it("has every key en.json has", () => {
         const missing = [...source.keys()].filter((key) => !messages.has(key));

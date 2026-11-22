@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { EffectSettings } from "./effects";
+import type { EffectSettings } from "./effect-catalog";
 import { type Action, History, type Stroke, toOperations } from "./history";
 
 const light: EffectSettings = { effect: "gaussian", intensity: 20, angle: 0 };
@@ -97,7 +97,7 @@ describe("History", () => {
     history.push(actionAt(3));
     expect(history.canRedo).toBe(false);
     expect(
-      history.active.map((a) => a.kind === "erase" && a.stroke.points[0].x),
+      history.active.map((a) => a.kind === "erase" && a.stroke.points[0]?.x),
     ).toEqual([1, 3]);
   });
 
@@ -105,5 +105,15 @@ describe("History", () => {
     const history = new History();
     expect(history.canUndo).toBe(false);
     expect(history.undo()).toBe(false);
+  });
+
+  it("clears everything when a new image is opened", () => {
+    const history = new History();
+    history.push(actionAt(1));
+    history.undo();
+    history.clear();
+    expect(history.active).toEqual([]);
+    expect(history.canUndo).toBe(false);
+    expect(history.canRedo).toBe(false);
   });
 });

@@ -81,5 +81,8 @@
     "not_found": "Não foi possível encontrar o serviço de imagens. Tente de novo mais tarde.",
     "internal_error": "O serviço de imagens teve um problema. Tente de novo mais tarde.",
     "unknown": "Algo deu errado. Tente de novo."
+  },
+  "canvas": {
+    "label": "Imagem. Pinte sobre ela com o mouse ou o dedo. Com a imagem em foco, use B para o pincel, E para a borracha e [ e ] para mudar o tamanho do pincel."
   }
 }

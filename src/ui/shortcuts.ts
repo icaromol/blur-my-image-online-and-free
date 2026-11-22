@@ -1,10 +1,6 @@
-export type Command =
-  | "brush"
-  | "eraser"
-  | "smaller"
-  | "larger"
-  | "undo"
-  | "redo";
+export type GlobalCommand = "undo" | "redo";
+export type CanvasCommand = "brush" | "eraser" | "smaller" | "larger";
+export type Command = GlobalCommand | CanvasCommand;
 
 type Key = Pick<
   KeyboardEvent,
@@ -31,16 +27,25 @@ function isTyping(target: EventTarget | null): boolean {
   );
 }
 
-// Photoshop's defaults where one exists.
-export function commandFor(event: Key): Command | null {
-  if (isTyping(event.target) || event.altKey) return null;
-  const key = event.key.toLowerCase();
-  if (event.ctrlKey || event.metaKey) {
-    if (key === "z") return event.shiftKey ? "redo" : "undo";
+// Ctrl/Cmd shortcuts work anywhere on the page, except while typing, so a text field keeps
+// its own undo.
+export function globalCommandFor(event: Key): GlobalCommand | null {
+  if (
+    isTyping(event.target) ||
+    event.altKey ||
+    !(event.ctrlKey || event.metaKey)
+  )
     return null;
-  }
-  if (event.shiftKey) return null;
-  switch (key) {
+  if (event.key.toLowerCase() !== "z") return null;
+  return event.shiftKey ? "redo" : "undo";
+}
+
+// Single-key shortcuts (Photoshop's keys) are only read while the image has focus, so they
+// never fire for screen reader or speech input users elsewhere on the page (WCAG 2.1.4).
+export function canvasCommandFor(event: Key): CanvasCommand | null {
+  if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey)
+    return null;
+  switch (event.key.toLowerCase()) {
     case "b":
       return "brush";
     case "e":

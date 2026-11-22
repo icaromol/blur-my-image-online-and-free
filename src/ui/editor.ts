@@ -1,13 +1,12 @@
 import { computed, reactive, ref, shallowRef } from "vue";
-import type { EffectSettings } from "../engine/effects";
+import type { EffectSettings } from "../engine/effect-catalog";
 import {
   History,
   type Point,
   type Stroke,
   toOperations,
 } from "../engine/history";
-import type { ImageSize } from "../engine/intensity";
-import { Renderer } from "../engine/renderer";
+import { loadRenderer, type Renderer } from "../engine/load-renderer";
 import { errorCode } from "../errors";
 import { downloadBlob, exportFileName } from "../export/download";
 import {
@@ -15,6 +14,7 @@ import {
   encodeImage,
   exportFormats,
 } from "../export/encode";
+import type { ImageSize } from "../image-size";
 import { decodeImage } from "../input/decode";
 import { fetchImage } from "../input/url";
 
@@ -62,14 +62,22 @@ export function useEditor() {
   let activeStroke: Stroke | null = null;
   let frame = 0;
 
-  async function start(): Promise<HTMLCanvasElement | null> {
-    try {
-      renderer.value = await Renderer.create();
-      return renderer.value.canvas;
-    } catch {
-      error.value = "webgl_unavailable";
-      return null;
-    }
+  // The renderer chunk loads after first paint. An image opened before it arrives waits
+  // for it instead of being dropped.
+  let ready: Promise<Renderer | null> | null = null;
+
+  function start(): Promise<Renderer | null> {
+    ready ??= loadRenderer().then(
+      (instance) => {
+        renderer.value = instance;
+        return instance;
+      },
+      () => {
+        error.value = "webgl_unavailable";
+        return null;
+      },
+    );
+    return ready;
   }
 
   function renderNow(): void {
@@ -88,7 +96,7 @@ export function useEditor() {
   }
 
   async function open(blob: Blob, name: string): Promise<void> {
-    const instance = renderer.value;
+    const instance = await start();
     if (!instance) return;
     error.value = "";
     notice.value = null;

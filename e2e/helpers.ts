@@ -72,11 +72,13 @@ export async function download(page: Page): Promise<Download> {
   return pending;
 }
 
+export type Rgba = [number, number, number, number];
+
 export interface Decoded {
   width: number;
   height: number;
   bytes: Buffer;
-  pixel(x: number, y: number): number[];
+  pixel(x: number, y: number): Rgba;
 }
 
 // Decodes the file in the browser and returns RGBA pixels.
@@ -108,11 +110,11 @@ export async function decode(
     width: result.width,
     height: result.height,
     bytes,
-    pixel: (x, y) =>
-      result.rgba.slice(
-        (y * result.width + x) * 4,
-        (y * result.width + x) * 4 + 4,
-      ),
+    pixel: (x, y) => {
+      const at = (y * result.width + x) * 4;
+      const [r = 0, g = 0, b = 0, a = 0] = result.rgba.slice(at, at + 4);
+      return [r, g, b, a];
+    },
   };
 }
 

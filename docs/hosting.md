@@ -49,35 +49,36 @@ The frontend is a static Vite SPA and runs anywhere. All platform coupling is in
 
 ```
 src/                       frontend, no platform imports
+security-headers.ts        page security headers (CSP and others), the single source for every host
 server/
   proxy/
     app.ts                 Hono app: GET /api/image?url=  (standard Request/Response/fetch only)
-    ssrf.ts                IP and redirect validation; takes an injected resolver
-    config.ts              MAX_BYTES, MAX_REDIRECTS, TIMEOUT_MS from env
-    resolvers/
-      node.ts              node:dns/promises (Vercel, Docker)
-      doh.ts               DNS over HTTPS (Cloudflare Workers has no node:dns)
+    address.ts             IP classification with ipaddr.js, no Node APIs
+    image-type.ts          image allowlist and file-signature check
+    config.ts              MAX_BYTES, MAX_REDIRECTS, TIMEOUT_MS, ALLOWED_ORIGINS from env
+    node-fetch.ts          Node-only fetch: DNS lookup inside the socket, connection pinned to the checked IP
   entries/
-    node.ts                @hono/node-server + serveStatic('dist'), used by Docker
-    worker.ts              export default app, for Cloudflare
+    node.ts                @hono/node-server + static dist/ with the page headers, used by Docker
 api/
   image.ts                 handle(app) from hono/vercel, for Vercel
 Dockerfile
-vercel.json                (wrangler.toml only when moving to Cloudflare)
+vercel.json                page headers (kept equal to security-headers.ts by a test) and maxDuration for api/image.ts
 ```
+
+A Cloudflare Worker entry (`entries/worker.ts`) and a DNS-over-HTTPS resolver are deferred until a move to Cloudflare is actually planned: Workers have no `node:dns`, so `app.ts` would get a fetch that resolves through DoH instead of `node-fetch.ts`. `wrangler.toml` and a `_headers` file generated from `security-headers.ts` come with that move.
 
 Rules:
 
 - **Hono on web-standard APIs.** The same `app.ts` runs on Vercel (`handle(app)`), Cloudflare (`export default app`) and Node (`@hono/node-server`). Moving means changing an entry file of a few lines.
 - **The proxy URL is configuration** (`VITE_PROXY_URL`, default `/api/image`), so static hosting and the proxy can live on different hosts, for example static on Cloudflare and the proxy on a VPS.
 - **No Vercel-only products** (Blob, Marketplace KV, Image Optimization, Global Config). The app needs none of them.
-- **Security headers defined once.** A single `headers.ts` produces `vercel.json` headers and the `_headers` file Cloudflare and Netlify read; `entries/node.ts` applies the same values.
+- **Security headers defined once.** `security-headers.ts` holds the CSP and the other page headers. `vite preview` serves them (so Playwright runs under the real CSP), `entries/node.ts` applies them to static files, and a unit test fails if `vercel.json` drifts from them. Cloudflare and Netlify would read a `_headers` file generated from the same source.
 - **SSRF in layers.** On Node, pin the connection to the IP that passed validation (custom `lookup` on the undici dispatcher) so DNS rebinding can't swap it. Workers can't pin, but there is no private network to reach from there.
-- **One test suite for every target.** Proxy unit tests run against bare `app.ts` (`app.request(...)` in Vitest). Playwright runs against the Docker image in CI.
+- **One test suite for every target.** Proxy unit tests run against bare `app.ts` (`app.request(...)` in Vitest). Playwright runs against the production build served by `vite preview` on every pull request; the Docker image gets a build and smoke test on `main`.
 
 ### Dockerfile sketch
 
-Serves the static build and the proxy from one process.
+Serves the static build and the proxy from one process. The real `Dockerfile` also pins both stages to an image digest.
 
 ```dockerfile
 FROM node:24-slim AS build
@@ -95,7 +96,7 @@ COPY --from=build /app/dist-server ./dist-server
 COPY --from=build /app/node_modules ./node_modules
 USER node
 EXPOSE 3000
-CMD ["node", "dist-server/entries/node.js"]
+CMD ["node", "dist-server/node.js"]
 ```
 
 ## When to move, and where

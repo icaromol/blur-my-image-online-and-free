@@ -17,9 +17,188 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "preset": "recommended"
+      "preset": "recommended",
+      "correctness": {
+        "noUndeclaredDependencies": "error"
+      },
+      "nursery": {
+        "noFloatingPromises": "error",
+        "noMisusedPromises": "error"
+      },
+      "performance": {
+        "noBarrelFile": "error",
+        "noReExportAll": "error"
+      },
+      "style": {
+        "noNonNullAssertion": "error",
+        "useFilenamingConvention": {
+          "level": "error",
+          "options": { "filenameCases": ["kebab-case"], "requireAscii": true }
+        }
+      },
+      "suspicious": {
+        "noExplicitAny": "error",
+        "noImportCycles": "error"
+      }
     }
   },
+  "overrides": [
+    {
+      "includes": ["**/*.vue"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useFilenamingConvention": {
+              "level": "error",
+              "options": {
+                "filenameCases": ["PascalCase"],
+                "requireAscii": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/**"],
+      "linter": {
+        "rules": {
+          "correctness": { "noNodejsModules": "error" }
+        }
+      }
+    },
+    {
+      "includes": ["src/engine/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": ["vue", "**/ui/**", "**/input/**", "**/export/**"],
+                    "message": "The engine renders operations; it must not depend on the UI, input or export layers."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/input/**", "src/export/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "vue",
+                      "pixi.js",
+                      "pixi.js/**",
+                      "pixi-filters",
+                      "**/engine/**",
+                      "**/ui/**"
+                    ],
+                    "message": "Input and export are plain browser code: no Vue, no PixiJS, no engine."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/ui/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "pixi.js",
+                      "pixi.js/**",
+                      "pixi-filters",
+                      "@jsquash/**",
+                      "**/engine/effects",
+                      "**/engine/renderer"
+                    ],
+                    "message": "The UI loads PixiJS lazily: use `import type` here and `await import()` for the renderer."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["server/**", "api/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": ["**/src/**"],
+                    "message": "Server code must not import the frontend."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "server/proxy/**",
+        "!server/proxy/node-fetch.ts",
+        "!server/proxy/*.test.ts"
+      ],
+      "linter": {
+        "rules": {
+          "correctness": { "noNodejsModules": "error" },
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": ["**/src/**"],
+                    "message": "Server code must not import the frontend."
+                  },
+                  {
+                    "group": ["undici", "undici/**"],
+                    "message": "The proxy runs on every platform; Node-only fetch lives in node-fetch.ts and is injected by the entry."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["server/proxy/**"],
+      "linter": {
+        "rules": {
+          "suspicious": { "noConsole": "error" }
+        }
+      }
+    }
+  ],
   "javascript": {
     "formatter": {
       "quoteStyle": "double"
