@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. Committed on `feat/scaffold-and-proxy` (P
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 0 of 45 `Must` done, 35 in review, 5 in progress, 1 ready.
+Progress: 0 of 45 `Must` done, 36 in review, 5 in progress, 1 ready.
 
 ### E1. Foundation
 
@@ -84,15 +84,15 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-070 | Community files: `CONTRIBUTING.md`, issue forms, PR template, labels, merge settings, saved replies | Must | M | In progress | |
 | BMI-071 | Releases: release-please config and workflow, Conventional Commits check on the PR title | Must | S | Review | BMI-002 |
 | BMI-072 | `CODE_OF_CONDUCT.md` (Contributor Covenant 3.0) and `SECURITY.md`, `SECURITY.md` uses GitHub private reporting (no email); the code of conduct keeps a placeholder contact until a project mailbox exists (Q-003) | Must | S | Review | |
-| BMI-073 | Manual platform settings checklist for Ícaro (GitHub Actions and security, Vercel 2FA, WAF rate-limit rule, toolbar and analytics off, env vars) | Must | S | Idea | BMI-003 |
+| BMI-073 | Manual platform settings checklist for Ícaro (GitHub Actions and security, Vercel 2FA, WAF rate-limit rule, toolbar and analytics off, env vars); each README or hosting claim that only the platform can make true is checked or reworded: 1-hour request-log retention, the 4.5 MB body limit, the rate-limit rule and usage alerts | Must | S | Idea | BMI-003 |
 
 ### E6. Launch readiness
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
 | BMI-050 | Go-public checklist (see details): audit, replace placeholders, decide CLAUDE.md and `.claude/`, flip public, then GitHub protections | Must | M | Idea | all v1 items, BMI-070 to BMI-073 |
-| BMI-051 | README status line and content match what shipped | Must | S | Idea | all v1 items |
-| BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code | Must | S | Ready | BMI-070, BMI-072 |
+| BMI-051 | README status line and content match what shipped | Must | S | Ready | BMI-040 |
+| BMI-052 | Pre-flip audit run, read-only: full-history gitleaks, third-party license notices in the build, `check-dist` and `check-licenses`, README claims checked against the code; findings recorded in [audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md) | Must | S | Review | BMI-072 |
 
 ## Later (post-v1)
 
@@ -120,8 +120,9 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-131 | OpenSSF badge, signed commits, Trusted Types, COEP | Security | Idea |
 | BMI-132 | App version in the UI and in the bug form | Community | Idea |
 | BMI-133 | `GOVERNANCE.md`, `CODEOWNERS`, second admin, Discussions, interaction limits, area labels | Community | Idea |
+| BMI-134 | e2e decode coverage for GIF, AVIF and BMP (PNG only today) | Quality | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-074`; later effects `BMI-109`, features `BMI-127`, other later `BMI-134`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-074`; later effects `BMI-109`, features `BMI-127`, other later `BMI-135`.
 
 ---
 
@@ -223,10 +224,24 @@ Owner: the frontend session (`implementar-v1-editor-pixi`), because the precompi
 
 ### BMI-052 — pre-flip audit run
 
-Split out of BMI-050 so a worker can do the read-only part. Flipping the repo public stays with Ícaro under BMI-050.
+Split out of BMI-050 so a worker can do the read-only part. It doesn't depend on BMI-070: what's left there is GitHub settings, which a read-only audit doesn't need (dispatcher's question, 2026-11-22). Flipping the repo public stays with Ícaro under BMI-050.
 
 - [ ] `gitleaks` over the full history of every branch is clean (report the command and the commit count).
-- [ ] `dist/licenses.md` exists after `pnpm build` and lists every production dependency; `scripts/check-licenses.mjs` and `scripts/check-dist.mjs` pass.
+- [ ] `dist/licenses.md` exists after `pnpm build` and lists every package bundled into the shipped client; `scripts/check-licenses.mjs` and `scripts/check-dist.mjs` pass.
 - [ ] Each claim in the README (formats, shortcuts, privacy, proxy limits, effects, languages) is checked against the code and the e2e specs; every mismatch is reported with file and line, not silently fixed.
 - [ ] No file under the repo, committed or not, contains the maintainer's email, a token or a Vercel team identifier.
 - [ ] Report written to the dispatcher; no files changed.
+
+### BMI-051 — README and docs match what shipped
+
+From the pre-flip audit ([audits/2026-11-22-pre-flip.md](audits/2026-11-22-pre-flip.md), findings A, B, D, E). Owner lane: quality (`README.md`, `docs/hosting.md`). Nothing here changes behavior.
+
+- [ ] The status line says pre-release (v1 built and under review, not deployed) and no longer "planning, nothing implemented". It keeps marketing in its pre-launch posture: no "try it now" until BMI-003 gives a live URL. The live wording is set at go-public (BMI-050).
+- [ ] The proxy portability sentence says `app.ts` is platform-neutral, Vercel and Node ship, and Cloudflare would need its own fetch and entry.
+- [ ] The export text says the format is chosen from a list (PNG, JPG, JPEG, WebP) and the file is named `<name>-blurred.<ext>`.
+- [ ] "Adding a language" mentions the `SUPPORTED_LOCALES` entry as well as the message file.
+- [ ] The Motion description matches the code (a local edge-clamped filter, not stock pixi-filters).
+- [ ] The pre-commit description says Biome and `vue-tsc` on staged files.
+- [ ] The Docker-build-in-CI claim is conditional on `ci.yml` and on `main`, or `ci.yml` is committed first.
+- [ ] `docs/hosting.md` matches the code: `export const GET` in `api/image.ts`, `PROXY_TIMEOUT_MS`, a fixed 3 redirects, Worker entry and DoH resolver marked deferred.
+- [ ] Out of scope here: claims only Vercel can make true (see BMI-073).

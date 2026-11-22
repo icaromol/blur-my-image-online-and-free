@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 45 `Must` done · 35 in review · 5 in progress · 1 ready · 0 blocked. Full list in [backlog.md](backlog.md).
+0 of 45 `Must` done · 36 in review · 5 in progress · 1 ready · 0 blocked. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -54,6 +54,16 @@ Only items that block something. Questions with a default in force are in decisi
 - **D-004** was relayed by the git-owner session, not heard directly. Stays in force unless Ícaro objects.
 
 ## Log
+
+### 2026-11-22 (pre-flip audit)
+
+- BMI-052 finished (read-only). PM re-ran gitleaks (38 commits, no leaks) and spot-checked the README lines. Record in `docs/product/audits/2026-11-22-pre-flip.md`; BMI-052 is `Review`, not `Done`, because that record merges with PR #1. Its license criterion was reworded to the shipped client.
+- Findings A, B, D, E became criteria on BMI-051 (now `Ready`, quality lane, also owns `docs/hosting.md`). Platform-only claims went to BMI-073. GIF/AVIF/BMP e2e is BMI-134 (Later). Finding C is Q-006, default: nothing added to v1.
+- Dispatcher also reports (not verified by PM): Ícaro approved the marketing plan, the `audience.md` corrections are done and in review, SEO, post copy and the launch kit are being worked.
+
+### 2026-11-22 (BMI-052 unblocked)
+
+- BMI-052's dependency on BMI-070 dropped (the remaining GitHub settings don't affect a read-only audit); it depends on BMI-072 only, which is `Review`. Dispatcher reports BMI-060 finished, re-verified and reviewed with no findings, awaiting the git owner's commit id; stays `In progress` until then.
 
 ### 2026-11-22 (dispatcher started, groomed on its request)
 

@@ -10,7 +10,7 @@ Workers are background subagents the dispatcher spawns. Each lane has owned path
 | --- | --- | --- | --- | --- |
 | **ui** | Backlog items in E2 (input), E3 (effects, editing), E4 (export), E5 (i18n), plus BMI-061 and BMI-068 | `src/**`, `e2e/` feature specs for the above | `general-purpose` | sonnet |
 | **server** | BMI-062 to BMI-065, BMI-014 follow-ups | `server/**`, `api/**`, `Dockerfile`, `.dockerignore`, `vercel.json`, `security-headers.ts` and its test | `general-purpose` | sonnet |
-| **quality** | BMI-060, BMI-066, BMI-067, BMI-069 | Config and tooling (`biome.json`, `tsconfig*.json`, `scripts/`), cross-cutting e2e (`a11y`, `privacy`, `exif`), `docs/quality.md`, `README.md` | `general-purpose` | sonnet |
+| **quality** | BMI-060, BMI-066, BMI-067, BMI-069 | Config and tooling (`biome.json`, `tsconfig*.json`, `scripts/`), cross-cutting e2e (`a11y`, `privacy`, `exif`), `docs/quality.md`, `docs/hosting.md`, `README.md` | `general-purpose` | sonnet |
 | **marketing** | `docs/marketing/plans/` and `/marketing` requests. If no plan exists, the dispatcher asks `marketing-strategist` for one, once | `docs/marketing/**`, `marketing/**` | The marketing agents, routed as in `.claude/skills/marketing/SKILL.md` | sonnet |
 | **reviewer** | Every finished item from the other lanes, before it goes to the git owner | Nothing (read-only) | `general-purpose` | opus |
 

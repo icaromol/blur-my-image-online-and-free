@@ -28,6 +28,14 @@ GitHub doesn't give a repo an inbox. The `ID+user@users.noreply.github.com` addr
 
 Recommendation: create one dedicated free mailbox for the project (a separate account, not Ícaro's personal or work address) and use it as the conduct contact. Replace the placeholder with it. Creating the mailbox is Ícaro's action.
 
+### Q-006 — Do the Docker image and server bundle need license notices?
+
+Audit finding C: `dist-server/node.js` bundles hono, `@hono/node-server`, ipaddr.js and undici, and the Dockerfile ships it, but only the client build emits `licenses.md`.
+
+Default in force: **nothing added to v1.** The image is built in CI as an exit path and not published, and a hosted function isn't a distributed copy. The client bundle, which is distributed to browsers, already carries its notices.
+
+Recommendation: before any Docker image is published or pulled by anyone else, add server-bundle notices (the same mechanism, written to `dist-server/`). It's cheap and removes the question. Adding it to v1 is Ícaro's call; say so and it becomes a `Should` item for the server lane.
+
 ### Q-005 — Hosted URL
 
 The URL doesn't exist yet. Checked 2026-11-22 through the Vercel MCP: the Vercel account has one team and no project for this repo. Creating the project in BMI-003 produces the `*.vercel.app` URL. Then the README, the repo website field and the bug form get it. Not blocking before BMI-003. See [../tooling.md](../tooling.md).
