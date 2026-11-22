@@ -43,12 +43,12 @@
       "label": "Gaussiano"
     },
     "pixelate": {
-      "label": "Pixelizar",
-      "warning": "Texto pixelizado às vezes pode ser recuperado. Para senhas ou números de documentos, use uma intensidade alta."
+      "label": "Pixelizar"
     },
     "motion": {
       "label": "Movimento"
-    }
+    },
+    "warning": "Desfoque e pixelização não escondem texto de forma confiável. Para algo secreto, cubra com uma tarja preta em outro editor ou deixe de fora."
   },
   "export": {
     "legend": "Exportar",

@@ -28,12 +28,42 @@ test("editor has no WCAG 2.2 AA violations", async ({ page }) => {
   await expectNoViolations(page);
 });
 
-test("editor with the Pixelate warning has no WCAG 2.2 AA violations", async ({
+for (const scheme of ["light", "dark"] as const) {
+  for (const effect of ["Gaussian", "Pixelate", "Motion"]) {
+    test(`editor with the ${effect} warning has no WCAG 2.2 AA violations in the ${scheme} theme`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ colorScheme: scheme });
+      await openImage(page, "edge");
+      await page.getByText(effect, { exact: true }).click();
+      await expect(page.getByText(/don't reliably hide text/)).toBeVisible();
+      await expectNoViolations(page);
+    });
+  }
+}
+
+test("the effect group, not each effect, is described by the warning", async ({
   page,
 }) => {
   await openImage(page, "edge");
-  await page.getByText("Pixelate", { exact: true }).click();
-  await expectNoViolations(page);
+  const warning = page.locator("#effects-warning");
+  const group = page.getByRole("radiogroup", { name: "Effect" });
+
+  await expect(warning).toHaveText(/don't reliably hide text/);
+  await expect(group).toHaveAttribute("aria-describedby", "effects-warning");
+  await expect(group).toHaveAccessibleDescription(/don't reliably hide text/);
+  await expect(
+    page.locator("input[name=effect][aria-describedby]"),
+  ).toHaveCount(0);
+
+  await page.getByLabel("Language").selectOption("pt-BR");
+
+  const grupo = page.getByRole("radiogroup", { name: "Efeito" });
+  await expect(warning).toHaveText(/não escondem texto de forma confiável/);
+  await expect(grupo).toHaveAttribute("aria-describedby", "effects-warning");
+  await expect(grupo).toHaveAccessibleDescription(
+    /não escondem texto de forma confiável/,
+  );
 });
 
 test("error message has no WCAG 2.2 AA violations", async ({ page }) => {

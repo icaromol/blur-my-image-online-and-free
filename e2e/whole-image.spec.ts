@@ -30,11 +30,36 @@ test("gaussian blur on the whole image softens edges and keeps the size", async 
   expect(image.pixel(WIDTH - 1, HEIGHT - 1)[3]).toBe(255);
 });
 
+const warnings = {
+  en: {
+    text: /Blur and pixelate don't reliably hide text/,
+    effects: ["Gaussian", "Pixelate", "Motion"],
+  },
+  "pt-BR": {
+    text: /Desfoque e pixelização não escondem texto de forma confiável/,
+    effects: ["Gaussiano", "Pixelizar", "Movimento"],
+  },
+};
+
+for (const [locale, { text, effects }] of Object.entries(warnings)) {
+  test(`the text-hiding warning shows with every effect in ${locale}`, async ({
+    page,
+  }) => {
+    await openImage(page, "edge");
+    if (locale !== "en") await page.getByLabel("Language").selectOption(locale);
+
+    for (const effect of effects) {
+      await page.getByText(effect, { exact: true }).click();
+      await expect(page.getByText(text)).toBeVisible();
+    }
+  });
+}
+
 test("pixelate turns the checkerboard into flat blocks", async ({ page }) => {
   await openImage(page, "checker");
   await page.getByText("Pixelate", { exact: true }).click();
   await expect(
-    page.getByText(/Pixelated text can sometimes be recovered/),
+    page.getByText(/Blur and pixelate don't reliably hide text/),
   ).toBeVisible();
   await setIntensity(page, 100);
   await page.getByRole("button", { name: "Blur entire image" }).click();

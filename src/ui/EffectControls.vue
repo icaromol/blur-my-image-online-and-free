@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { type EffectId, effectCatalog, effectIds } from "../engine/effect-catalog";
 import { MAX_INTENSITY, MIN_INTENSITY } from "../engine/intensity";
-import { type MessageKey, useTranslation } from "../i18n";
+import { useTranslation } from "../i18n";
 
 const { t, n } = useTranslation();
 const effect = defineModel<EffectId>("effect", { required: true });
@@ -15,13 +15,13 @@ const definition = computed(() => effectCatalog[effect.value]);
 <template>
   <fieldset class="group">
     <legend>{{ t("toolbar.effect") }}</legend>
-    <div class="segmented" role="radiogroup" :aria-label="t('toolbar.effect')">
+    <div class="segmented" role="radiogroup" :aria-label="t('toolbar.effect')" aria-describedby="effects-warning">
       <label v-for="id in effectIds" :key="id" :class="{ selected: effect === id }">
         <input v-model="effect" type="radio" name="effect" :value="id" />
         {{ t(`effects.${id}.label`) }}
       </label>
     </div>
-    <p v-if="definition.hasWarning" class="warning">{{ t(`effects.${effect}.warning` as MessageKey) }}</p>
+    <p id="effects-warning" class="warning">{{ t("effects.warning") }}</p>
 
     <div class="slider">
       <span><label for="intensity">{{ t("toolbar.intensity") }}</label> <output for="intensity">{{ n(intensity) }}</output></span>

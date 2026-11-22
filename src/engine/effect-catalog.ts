@@ -2,10 +2,10 @@
 // render them live in effects.ts, keyed by the same ids.
 
 export const effectCatalog = {
-  gaussian: { hasAngle: false, hasWarning: false },
-  pixelate: { hasAngle: false, hasWarning: true },
-  motion: { hasAngle: true, hasWarning: false },
-} as const satisfies Record<string, { hasAngle: boolean; hasWarning: boolean }>;
+  gaussian: { hasAngle: false },
+  pixelate: { hasAngle: false },
+  motion: { hasAngle: true },
+} as const satisfies Record<string, { hasAngle: boolean }>;
 
 export type EffectId = keyof typeof effectCatalog;
 

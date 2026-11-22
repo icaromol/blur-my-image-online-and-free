@@ -43,12 +43,12 @@
       "label": "Gaussian"
     },
     "pixelate": {
-      "label": "Pixelate",
-      "warning": "Pixelated text can sometimes be recovered. For passwords or document numbers, use a high intensity."
+      "label": "Pixelate"
     },
     "motion": {
       "label": "Motion"
-    }
+    },
+    "warning": "Blur and pixelate don't reliably hide text. For anything secret, cover it with a solid box in another editor, or leave it out."
   },
   "export": {
     "legend": "Export",
