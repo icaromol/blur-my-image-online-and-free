@@ -141,8 +141,18 @@ Workflows have read-only permissions, pin every action to a full commit SHA and 
 src/
   main.ts               entry: i18n, app mount
   errors.ts             coded errors the UI turns into messages
+  image-size.ts         image dimension type shared by input, engine and ui
   input/                file picker, drag and drop, paste, URL loader, decoding
-  engine/               PixiJS renderer, effect definitions, operation list, masks, history
+  engine/
+    effect-catalog.ts   effect ids and controls, no PixiJS, read by the UI
+    effect-params.ts    effect parameter math (radius, block size), unit tested
+    effects.ts          builds each effect's PixiJS filter
+    motion-blur-filter.ts  custom motion blur filter
+    brush-geometry.ts   brush dab and stroke geometry
+    history.ts          operation list, undo and redo
+    intensity.ts        intensity in source-image pixels
+    load-renderer.ts    lazy import of the renderer chunk
+    renderer.ts         PixiJS renderer, loaded on demand with pixi.js/unsafe-eval
   export/               format encoders and download
   ui/                   Vue components, editor state, keyboard shortcuts
   i18n/                 locale detection, message files (en, pt-BR)
@@ -170,6 +180,8 @@ docs/
 .github/
   workflows/            ci.yml, security.yml, release-please.yml
   dependabot.yml
+security-headers.ts     page CSP and security headers, single source for every host
+vercel.json             same headers (kept in sync by a test), maxDuration for api/image.ts
 Dockerfile
 pnpm-workspace.yaml     supply-chain settings
 ```
