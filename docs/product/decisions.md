@@ -56,6 +56,13 @@ The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the proj
 
 ## Decisions
 
+### D-040 — The Firefox and WebKit job runs on every pull request that touches more than docs (2026-11-23)
+
+**Decision:** widens PM's own path filter from BMI-089, confirmed in D-039 point (7) (no veto had arrived). On a pull request, the `e2e-firefox-webkit` job runs **unless every changed file is documentation**: under `docs/`, `marketing/`, `brand/` or `.claude/`, any `*.md` file, or `LICENSE`. Every other change runs it, including `src/` (all of it: `engine/`, `input/`, `export/`, `ui/`, `i18n/`), `e2e/`, `index.html`, `public/`, `vite.config.ts`, `security-headers.ts`, `package.json`, `pnpm-lock.yaml`, `playwright.config.ts` and `.github/workflows/`. A push to `main` keeps running it always. The YAML comment says exactly this rule and nothing broader.
+**Why:** the opus reviewer of PR B (finding 2) showed that the first list (`ci.yml`, `playwright.config.ts`, `e2e/`, `src/engine/`) left out the very places where Firefox already behaved differently: the paste (`src/input/`), the WebP download (`src/export/`), and a Playwright bump in `package.json`/`pnpm-lock.yaml`, which swaps the Firefox and WebKit binaries. The reviewer proposed adding those four paths; PM goes one step further and lists what may skip the job instead of what must run it, because an allow-list goes stale as code moves (BMI-092's second bug was in `src/ui/editor.ts`, also outside both lists) and a stale list fails the same way PR #2 did: green on the PR, red on `main`. The cost is only CI time (the job has a 25-minute ceiling; the repository is public, so the minutes aren't billed). It adds a check and removes none, the same idea as D-036's Docker path filter.
+**Decided by:** PM, as the owner of the filter it widens. Reversible; Ícaro can overrule.
+**Affects:** D-039 point (7) (the list there is replaced by this rule), BMI-089 (PR B: the `changes` job in `.github/workflows/ci.yml` and the coverage note in `docs/quality.md`, both applied by the Dev Quality worker in the same rework round as the reviewer's other findings), `status.md` "Now".
+
 ### D-039 — Order and eligibility of the delegation plan, by PM (2026-11-23)
 
 **Decision**, by PM, on the plan the Orquestrador drew up in BLU-3. Ícaro passed this decision to PM in BLU-3 on 2026-11-23 and wrote "destrave e prossiga!" in BLU-4 the same day. Each point is open to his veto.

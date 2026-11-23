@@ -15,7 +15,7 @@ Order set by PM (D-039, open to Ícaro's veto). One writing agent at a time, eac
 | # | ID | Item | Lane → agent | Status |
 | --- | --- | --- | --- | --- |
 | 1 | BMI-092 | PR A: no unblurred export without WebGL | ui → Dev UI | `Done` (`715e381`, 2026-11-23) |
-| 2 | BMI-089 | PR B: the WebP download preference, the paste test, `xvfb` in the CI, and the Firefox/WebKit job also on PRs that touch the CI, the Playwright config, `e2e/` or `src/engine/` | quality → Dev Quality | `In progress` (diagnosis done; the PR is next) |
+| 2 | BMI-089 | PR B: the WebP download preference, the paste test, `xvfb` in the CI, and the Firefox/WebKit job also on every PR that changes more than docs (D-040) | quality → Dev Quality | `In progress` (diagnosis done; the PR is next) |
 | 3 | BMI-135 | The e2e never reuses a foreign server on port 4173 | quality → Dev Quality | `Ready` |
 | 4 | BMI-094 | WebGL context loss after the start | ui → Dev UI | `Ready` |
 | 5 | BMI-090 | release-please: the 0.1.0 config and the release sentence (criteria 1 and 4) | quality → Dev Quality | `Ready`, partial |
@@ -53,12 +53,13 @@ Each item carries a recommendation and the default that holds if he doesn't answ
 10. **3 to 5 "good first issue" issues** (publishing an issue is outward-facing, BMI-050). Default: none is created.
 11. **Q-027 and Q-028** (the MCP domain and first delivery). They block nothing. Defaults: no purchase, the spec only.
 
-Decisions relayed by other sessions (D-004, D-006 to D-019, D-033 to D-037) stay in force unless Ícaro objects. D-039 is PM's and open to his veto.
+Decisions relayed by other sessions (D-004, D-006 to D-019, D-033 to D-037) stay in force unless Ícaro objects. D-039 and D-040 are PM's and open to his veto.
 
 ## Log
 
 ### 2026-11-23
 
+- **D-040 (PM):** the opus reviewer of BMI-089 PR B (finding 2) found that the path filter for the Firefox and WebKit job on PRs (D-039 point 7) left out the paste (`src/input/`), the WebP download (`src/export/`) and Playwright bumps (`package.json`, `pnpm-lock.yaml`), the places where Firefox already differed. PM widened it: the job runs on every pull request except one that changes only documentation (`docs/`, `marketing/`, `brand/`, `.claude/`, `*.md`, `LICENSE`). Only CI time is added; no check is removed and no scope changes. The Dev Quality worker applies it to `ci.yml` and `docs/quality.md` with the reviewer's other findings. Ícaro can overrule.
 - **PR #5, PR #4 and PR #7 are merged** (PM read them with `gh`): #5 `b585016` (14:50Z, the post-merge docs), #4 `dc12cbb` (14:51Z, BMI-087 → `Done`) and #7 `715e381` (14:53Z, BMI-092 PR A → `Done`; PM read the diff against every criterion, and the opus reviewer's read of the final diff isn't on record). `main`'s CI: Verify, E2E (Chromium) and Docker green at `b585016` and `715e381`; `E2E (Firefox, WebKit)` failed at `b585016` as expected until PR B (the run at `715e381` was still going when PM read it); release-please red on each push, expected while Ícaro's setting is off. `Must` done: 31 of 54.
 - **D-039, PM's decisions on the delegation plan** (BLU-4, after Ícaro passed the decision to PM in BLU-3 and wrote "destrave e prossiga!" in BLU-4): the queue order in "Now", BMI-094 → `Ready` (PR A merged), BMI-084 and BMI-082 → `Blocked` on Ícaro, partial starts for BMI-090 and BMI-076, the Firefox/WebKit path filter and PR #3 confirmed. Nothing cut.
 - Read with `gh` on 2026-11-23: `squash_merge_commit_message` is `BLANK` (that BMI-070 criterion is done; only the saved replies are left); `index.html` on `main` carries `og:url` and `og:image` on the new domain and the production deployment of `081fa59` serves the alias (BMI-003 criteria checked); CodeQL is `not-configured`; the Actions setting and the scorecard allowlist are still as before.
