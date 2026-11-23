@@ -28,10 +28,6 @@ D-037 says Ícaro wants `mcp.blurmyimage.com` and the same for each tool of the 
 
 Asked for by `-aa` as a question for later. Recommendation: the spec first, and a prototype only after the privacy model (BMI-140) is decided, since the prototype's shape (remote or local) follows from it. Default in force: **only the spec.**
 
-### Q-024 — Do the three use-case pages stay, now that the home is the app screen?
-
-D-032 makes the landing the app's own screen with the copy underneath. BMI-085 planned a home and three use-case pages (blur a license plate, pixelate a screenshot, blur a face) as static pages. Question for Ícaro: do the use-case pages stay as separate pages that the app screen links to, or does everything live on the one screen (sections, no separate pages)? The SEO notes favour separate pages (one query intent per page), at the price of more files to keep true; one screen is simpler and ranks for fewer queries. Recommendation: keep the three use-case pages, small, linked from the sections under the app, since each search intent (plate, screenshot, face) deserves its own answer. Default in force: BMI-085 stays an `Idea` and nothing is built; the copy of BMI-084 is written for the home first. Asked again in BLU-21 on 2026-11-23, together with the landing critique; with D-041 these two answers are all BMI-084 waits on.
-
 ### Q-022 — When may the app's URL be public: canonical, sitemap, README, marketing?
 
 D-016 says the URL stays out of the README and marketing until Ícaro says. Meanwhile `index.html` already carries it (`og:url` and `og:image`, on the repository that is public now), and the landing pages need the real host for `canonical` and `sitemap.xml` (decision 3 of `docs/marketing/landing/seo.md`, read through `-75`; PM hasn't read the file). So the URL is already discoverable, and the question is when it stops being a secret to the places that matter.
@@ -56,6 +52,16 @@ The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the proj
 
 ## Decisions
 
+### D-042 — The three use-case pages stay, each with the editor, and the ten changes of the landing critique are approved (2026-11-23)
+
+**Decision**, Ícaro's own answers to a question card in BLU-21, resolved by him (human only) at 22:10:49Z on 2026-11-23. PM read the card and its result, not a relay: the options he picked are `keep` and `all`.
+(1) **Q-024 is closed: the three use-case pages stay.** His answer: "Ficam: 3 páginas pequenas, cada uma com o editor, linkadas a partir da principal". So BMI-085 builds four pages: the home (the app's screen with the copy underneath, D-032) and three small pages, `/blur-license-plate/`, `/blur-text-in-screenshot/` and `/blur-face-in-photo/`, **each with the editor on it**, all three linked from the home. On those pages the editor's drop zone is the call to action, so they carry no "Open the editor" button. The SEO notes' route (a Vite multi-page build with static copy outside the element the app mounts into, no new dependency) still applies, now with the app mounted on every page.
+(2) **The landing critique: "Sim, as 10".** The ten changes of section D of `.local/landing-improvements.md` are approved for BMI-084's copy: (1) "What people hide with it" on the home (C1-1); (2) the leaked SEO sentence deleted from the screenshot page (C3-1); (3) the Pixelate row caveat (C1-4); (4) three FAQ items, safety first (C1-3); (5) the title tag and `og:title` with "Free" (C1-5); (6) "How it works" renamed "Blur part of an image in three steps" (C1-7); (7) the closing line "drop an image anywhere on this page or press Ctrl+V" in place of the duplicate GitHub line (C1-6), after the scroll check; (8) the meta and JSON-LD description with "or just the parts you paint" (C1-8), after a script recount; (9) a static H1 and subhead above the app (C1-2); (10) "original resolution" in the plate hero, "number plate" once, and the Windows/Mac answer (C2-1, C2-2, C3-2). Change 9 is copy in BMI-084; placing it above the app and the layout check are BMI-085's (ui lane), as are the scroll check of change 7.
+(3) **What he did not decide stays as it is, neither applied nor discarded:** C1-9, C1-10, C1-11, C2-3, C4-1, C4-2 and the "Constraints worth revisiting" of the same file. They are not applied to the copy and not cut; if they come up again, they go to him.
+**Why:** each search intent (plate, screenshot, face) gets its own answer and its own tool; the ten changes were the critique's best impact for the least effort.
+**Decided by:** Ícaro, directly. The split of change 9 between BMI-084 (the words) and BMI-085 (the placement) is PM's reading, open to his veto. Nothing cut.
+**Affects:** Q-024 (closed), D-041 point (5) (BMI-084's last blockers are gone), BMI-084 (`Blocked` → `In progress`), BMI-085 (four pages, the editor on each, the static H1, the scroll check), `status.md` "Now", "Next" and "Blocked".
+
 ### D-041 — The landing: marketing runs in parallel, the visual direction, and a light/dark toggle in the app (2026-11-23)
 
 **Decision**, Ícaro's own words in the BLU-21 chat on 2026-11-23 (PM read both messages there, not relayed): at 22:05, "ao mesmo tempo quero ir avançando com a tarefa de copy a UI UX da página!!! Já imagino a logo grande, visual limpo e claro, crie também um prompt pra mim gerar uma UI em outro agente especializado em landing pages preto e branco, detalhes azul, minimal, fácil, clean, rápido, funcional, SUPER MEGA HIPER RAPIDO"; at 22:07, "adicione tambem essa feature https://ui.shadcn.com/docs/dark-mode".
@@ -67,6 +73,7 @@ The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the proj
 **Why:** he wants the page's copy and look to move now, while the code queue does the privacy and CI work; the toggle is his request for the page he imagines.
 **Decided by:** Ícaro, directly in BLU-21. Points (4)'s placement (`Should`, E8, position 8 of the code queue) and (5)'s reading of `main` are PM's, open to his veto. Nothing cut: every item keeps its milestone and priority.
 **Affects:** D-039 points (1) and (5), D-027 point (4), D-020, BMI-084 (blocker reduced to Q-024 and the critique), BMI-085 (visual reference, both themes), BMI-078, BMI-144 (new), `status.md` "Now", "Next" and "Blocked".
+**Followed by D-042 (2026-11-23, Ícaro):** Q-024 and the landing critique are answered. BMI-084 went straight to `In progress` instead of `Ready`, since the Copywriter had already started on his answers (BLU-57).
 
 ### D-040 — The Firefox and WebKit job runs on every pull request that touches more than docs (2026-11-23)
 
