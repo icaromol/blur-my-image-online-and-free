@@ -1,6 +1,6 @@
 # Use page: blur or pixelate text in a screenshot
 
-> **DRAFT, on hold: Q-024.** Whether the three use-case pages stay is Ícaro's open question. Nothing here is built or reworked beyond three clean-ups and the URL markers: the D-032 removal of the 1-hour Vercel log, the study wording (no numbers, no email claim), and the removal of any advice that a stronger setting protects.
+> **DRAFT. Q-024 answered by Ícaro on 2026-11-23:** the page stays, small, with the editor on it, linked from the home. Changes so far: the D-032 removal of the 1-hour Vercel log, the study wording (no numbers, no email claim), the removal of any advice that a stronger setting protects, and the critique changes Ícaro approved (BMI-084): the leaked SEO sentence deleted, the Windows or Mac answer, step 1 without "open the editor", and the drop zone as the CTA.
 
 > **Internal notes. Not for the page.** The notes below and the final "Choices for the owner" section must not be published.
 
@@ -9,7 +9,7 @@
 - **Target query:** `blur text in screenshot`. Also covered in plain sentences: hide name in screenshot, redact screenshot.
 - **Limits:** title 53 characters (limit 59), meta description 151 characters (limit 154).
 - **Structure:** seo.md "Page 2". Title, meta and H1 are the brief's, unchanged.
-- **Markers:** `[EDITOR-URL]` is the editor button's target. Not a real address.
+- **CTA (Q-024):** the page carries the editor, so the drop zone is the call to action. There is no "Open the editor" button and no `[EDITOR-URL]` on this page.
 - **Anchor id for BMI-085:** the heading "When pixelated text can still be read" must get the id `#when-pixelated-text-can-still-be-read`.
 - **Shared sections are short on purpose.** The full redaction explanation lives on the home page (`/#blur-is-not-redaction`). FAQ answers are written for screenshots.
 - **Detection:** decided: not an opener (D-033). The hero no longer says it. The answer is in the FAQ, once ("Does it find the text for me?"). If the owner wants it as an opener, the PM asks (Q-024).
@@ -34,13 +34,13 @@ Copy the screenshot, press Ctrl+V (Cmd+V on a Mac) in the editor, paint over the
 
 Image files you open, drop or paste never leave your device.
 
-**Button:** [Open the editor]([EDITOR-URL])
+**Editor:** the editor with its drop zone sits here, under the hero text. No button.
 
 ---
 
 ## Paste, paint, download
 
-1. Copy the screenshot to your clipboard and open the editor.
+1. Copy the screenshot to your clipboard.
 2. Press Ctrl+V (Cmd+V on a Mac). The screenshot opens.
 3. Select Pixelate.
 4. Select Brush and drag over the name, email address or number. The Eraser puts back the original pixels where you painted too much, and Ctrl+Z (Cmd+Z) undoes.
@@ -53,8 +53,6 @@ If the screenshot is already a file, drop it anywhere on the page or choose it f
 ## Hide an email address, a name or a number
 
 Paint over the whole value and a little past its edges, so no letters stick out at the ends. Then look at the rest of the screenshot. Names turn up in places you stopped seeing: a browser tab, an avatar, the address bar, a line in the footer.
-
-An email address and an order number get the same treatment.
 
 ---
 
@@ -88,7 +86,7 @@ Paste it into the editor with Ctrl+V (Cmd+V on a Mac), select Pixelate, paint ov
 
 ### How do I blur a screenshot on Windows or Mac?
 
-In a browser, with the steps above. This page does not cover the screenshot tools built into either system.
+The same way on both: copy the screenshot and press Ctrl+V on Windows or Cmd+V on a Mac, or drop the screenshot file on the page.
 
 ### Can I paste a screenshot directly?
 
@@ -130,7 +128,7 @@ No. You paint the area yourself; the editor doesn't pick it for you. It blurs wh
 
 Paste the screenshot, pixelate the name, download.
 
-**Button:** [Open the editor]([EDITOR-URL])
+**CTA:** no button. The drop zone at the top of the page is the action; pasting with Ctrl+V or dropping a file also works from here (`src/ui/App.vue`:97-102).
 
 ---
 
@@ -144,10 +142,4 @@ Paste the screenshot, pixelate the name, download.
 | B | Pixelate a name or number in a screenshot | The persona's own nouns. It is narrower and loses the generic "text" phrase. |
 | C | Hide text in a screenshot | Matches `hide text in screenshot`. "Hide" suggests a guarantee that the redaction section then has to take back. |
 
-**Button text**
-
-| Option | Text | Reason |
-| --- | --- | --- |
-| A (used) | Open the editor | Accurate, and the same on every page. |
-| B | Paste a screenshot | Names the first action, which is the fastest path for this reader. The button opens the editor first, then the paste happens. |
-| C | Blur your screenshot | Names the task. It suggests an instant result. |
+**Button text.** No button since Q-024: the page carries the editor, and its drop zone is the CTA (critique C3-3).

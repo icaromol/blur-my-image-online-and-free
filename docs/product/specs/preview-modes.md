@@ -1,6 +1,6 @@
 # Spec: preview modes (live, before and after, none)
 
-Status: **after v1, first of the two** (D-031, decided by Ícaro, relayed by `-aa`, 2026-11-22). Asked for by him; not in PR #2. **The JavaScript cost is measured before any implementation**: the room under the initial budget is 1.31 kB, and the roughly 1 kB for a before and after divider in this spec is PM's unmeasured estimate.
+Status: **after v1, first of the two** (D-031, decided by Ícaro, relayed by `-aa`, 2026-11-22; confirmed by him directly in D-043, 2026-11-23, and BMI-085's editor layout reserves the place of the toggle). Asked for by him; not in PR #2. **The JavaScript cost is measured before any implementation**: the room under the initial budget is 1.31 kB, and the roughly 1 kB for a before and after divider in this spec is PM's unmeasured estimate.
 
 ## Problem
 
@@ -11,6 +11,10 @@ Status: **after v1, first of the two** (D-031, decided by Ícaro, relayed by `-a
 - Edits are `Action`s (a whole-image effect, a brush stroke, an eraser stroke) in a `History` that moves a pointer. `toOperations` turns the active actions into `Operation`s with masks, and `Renderer.render(operations)` draws them into render textures: `base`, `source`, `mask` and `result`, where `result` is what is on screen and what is exported.
 - A whole-image effect is applied by a button (`blurEntireImage` in `src/ui/editor.ts`), and the brush paints as it moves. Moving the effect, intensity or angle controls does not render the whole image today, so a live preview of the settings (the image changing while a slider moves) does not exist yet; the closest thing to "no preview" is how whole-image effects already behave.
 - The renderer appends one operation incrementally when it can and re-renders everything otherwise.
+
+## Ícaro's description with the landing mockup (D-043, 2026-11-23)
+
+In BLU-21, looking at the mockup's editor: "Só faltou o toogle de preview ou sem preview by default ( corta ao meio e o blur intensity e download vão pra parte de cima das duas imagens, sacou?". So: a **toggle** between preview and no preview, with one of them as the default; in **preview**, the image is cut in half, before and after, and the intensity and the Download move to the top, above the two halves. This is the shape of the "before and after" mode below (a split view, not only a hold), and the default stays to be decided when this spec is groomed. He kept it after v1 in the same task ("Não, continua depois da v1 (o mockup fica com o espaço reservado)").
 
 ## Interpretation to confirm (the questions are in Q-019)
 

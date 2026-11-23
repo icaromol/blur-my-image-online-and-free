@@ -1,6 +1,6 @@
 # Use page: blur a face
 
-> **DRAFT, on hold: Q-024.** Whether the three use-case pages stay is Ícaro's open question. Nothing here is built or reworked beyond four clean-ups and the URL markers: the D-032 removals (the 1-hour Vercel log, the "no automatic detection" opener), the study wording (no numbers), and the removal of any advice that a stronger setting protects.
+> **DRAFT. Q-024 answered by Ícaro on 2026-11-23:** the page stays, small, with the editor on it, linked from the home. Changes so far: the D-032 removals (the 1-hour Vercel log, the "no automatic detection" opener), the study wording (no numbers), the removal of any advice that a stronger setting protects, and the drop zone as the CTA (critique C4-3). The critique's C4-1 and C4-2 were not approved and are not applied.
 
 > **Internal notes. Not for the page.** The notes below and the final "Choices for the owner" section must not be published.
 
@@ -9,7 +9,7 @@
 - **Target query:** `blur face in photo`. Also covered in plain sentences: blur faces in pictures, pixelate face in photo.
 - **Limits:** title 45 characters (limit 59), meta description 129 characters (limit 154).
 - **Structure:** seo.md "Page 3". Title, meta and H1 are the brief's, unchanged.
-- **Markers:** `[EDITOR-URL]` is the editor button's target. Not a real address.
+- **CTA (Q-024):** the page carries the editor, so the drop zone is the call to action. There is no "Open the editor" button and no `[EDITOR-URL]` on this page.
 - **The face SERP is led by "automatic" tools**, but Ícaro did not want the face section to open with "no automatic detection" (D-032). The hero says only that you paint each face with the brush. If the page needs the detection notice, the PM asks him again; it is not added here.
 - **Not read, so not cited:** the Buffalo face-recognition paper and the techpolicy.press article. The recognition caveat appears once, as a limit of this tool, not as a finding from either.
 - **Shared sections are short on purpose.** The redaction explanation lives on the home page (`/#blur-is-not-redaction`). FAQ answers are written for faces.
@@ -35,7 +35,7 @@ You paint each face with the brush.
 
 Image files you open, drop or paste never leave your device.
 
-**Button:** [Open the editor]([EDITOR-URL])
+**Editor:** the editor with its drop zone sits here, under the hero text. No button.
 
 ---
 
@@ -129,7 +129,7 @@ Yes. The Eraser removes the effect where you drag and brings back the original p
 
 Open the photo, paint each face, download.
 
-**Button:** [Open the editor]([EDITOR-URL])
+**CTA:** no button. The drop zone at the top of the page is the action; dropping a file or pasting with Ctrl+V also works from here (`src/ui/App.vue`:97-102).
 
 ---
 
@@ -143,10 +143,4 @@ Open the photo, paint each face, download.
 | B | Blur the faces you choose in a photo | Puts "you choose" in the H1. Longer, and the target phrase is split. |
 | C | Blur faces in a photo, by hand | Says the manual part in three words. "By hand" can read as a drawback. |
 
-**Button text**
-
-| Option | Text | Reason |
-| --- | --- | --- |
-| A (used) | Open the editor | Accurate, and the same on every page. |
-| B | Blur a face | Names the task. It suggests a one-click result, which this page says does not exist. |
-| C | Choose a photo | The first action in the editor. Reads like a file picker on this page. |
+**Button text.** No button since Q-024: the page carries the editor, and its drop zone is the CTA (critique C4-3).
