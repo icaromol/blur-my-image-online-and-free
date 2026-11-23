@@ -4,13 +4,13 @@ Updated: 2026-11-23
 
 ## Milestone: v1
 
-46 of 54 `Must` done · 1 in review · 5 in progress · 2 ready · 0 blocked. PR #9 (BMI-089) is merged and `E2E (Firefox, WebKit)` is green on `main`, so the 14 items held for Firefox are `Done`. The one left in review, BMI-071, is merged but held until release-please opens its PR. Two `Should` items are `Blocked` on Ícaro (BMI-082, BMI-084). Full list in [backlog.md](backlog.md).
+46 of 54 `Must` done · 1 in review · 5 in progress · 2 ready · 0 blocked. PR #9 (BMI-089) is merged and `E2E (Firefox, WebKit)` is green on `main`, so the 14 items held for Firefox are `Done`. The one left in review, BMI-071, is merged but held until release-please opens its PR. Two `Should` items are `Blocked` on Ícaro (BMI-082; BMI-084, which now waits only on Q-024 and the landing critique, D-041). BMI-144, the light/dark toggle Ícaro asked for (D-041), is a new `Should` and `Ready`. Full list in [backlog.md](backlog.md).
 
 ## Now
 
 **Iteration goal (2026-11-23 → 2026-11-29):** close the privacy bug and get `E2E (Firefox, WebKit)` green on `main`, so that the 15 held `Must` items can become `Done`.
 
-Order set by PM (D-039, open to Ícaro's veto). One writing agent at a time, each item on its own branch and PR from `main`. The Orquestrador hands the work out; owners are in [team.md](team.md).
+Order set by PM (D-039, open to Ícaro's veto). One writing agent at a time **in the code queue**, each item on its own branch and PR from `main`. The marketing lane runs in parallel with it (D-041, Ícaro). The Orquestrador hands the work out; owners are in [team.md](team.md).
 
 | # | ID | Item | Lane → agent | Status |
 | --- | --- | --- | --- | --- |
@@ -21,10 +21,12 @@ Order set by PM (D-039, open to Ícaro's veto). One writing agent at a time, eac
 | 5 | BMI-090 | release-please: the 0.1.0 config and the release sentence (criteria 1 and 4) | quality → Dev Quality | `Ready`, partial |
 | 6 | BMI-076 | The dependency-review workflow; the scorecard joins when the allowlist exists | quality → Dev Quality | `Ready`, partial |
 | 7 | BMI-093 | Node 26 everywhere | quality and server | `Ready` (both dependencies merged) |
+| 8 | BMI-144 | Light / Dark / System theme toggle, no flash on load, CSP not loosened (D-041) | ui → Dev UI | `Ready` |
 
 - **BMI-066** (`Must`, dated) takes the next free slot from **2026-11-28**, ahead of any `Should` still queued. Its gate includes a `pnpm install --frozen-lockfile` in a clean copy.
 - BMI-135 is committed in PR #10, from `main`. PR #9 merged first, and GitHub reads PR #10 as `MERGEABLE`, `CLEAN` on top of it (2026-11-23). Until PR #10 is in `main`, branches cut from `main` still have the fixed port 4173 with reuse outside the CI, so the Orquestrador keeps checking that port 4173 is free before each gate. Once PR #10 merges, that check is no longer needed.
 - BMI-075 (PR #6, the logo without blue, D-038) is `Review`: `309829a` is pushed, PR #6 is still a draft. It waits to be marked ready and merged, outside this queue.
+- **Marketing lane, in parallel (D-041):** BMI-084 (the landing copy) is its item. It is `Blocked` only on Q-024 and the landing critique, both asked in BLU-21 on 2026-11-23; once Ícaro answers, PM returns it to `Ready` and the copywriter starts without waiting for the code queue. Nothing is published. Meanwhile Ícaro generates the landing mockup from the `prompt-ui-landing` prompt (BLU-21); it becomes BMI-085's visual reference.
 - Dev UI holds BMI-094 (position 4) until Ícaro picks its `pt-BR` text. Dev Quality is free, and its next item is BMI-090 criteria 1 and 4 (position 5).
 
 ## Next
@@ -34,8 +36,9 @@ Ordering, not a cut: all of it is v1.
 1. Dependabot's PR #3 is closed after BMI-093's PR merges (BMI-093 is `Ready`, position 7 in "Now").
 2. BMI-066 from 2026-11-28 (`pnpm-workspace.yaml`, after the newest locked package turns 7 days old).
 3. BMI-082 after Ícaro's yes to the preview experiment.
-4. BMI-084 after his answers (Q-024, `audience.md`, the critique); then BMI-085 is groomed.
+4. BMI-084 as soon as Ícaro answers Q-024 and the landing critique, in the marketing lane, in parallel with the code queue (D-041).
 5. BMI-078 after PR #6 merges.
+6. BMI-085 is groomed (and split, it is `L`) once BMI-084's copy is approved and Ícaro's mockup is in; it builds on BMI-144 (position 8 in "Now").
 
 ## Blocked / waiting on Ícaro
 
@@ -46,19 +49,21 @@ Each item carries a recommendation and the default that holds if he doesn't answ
 3. ~~Resume Dev Quality and Dev UI~~. Resolved: both are active again (read 2026-11-23).
 4. ~~Hand check in a real Firefox~~. Resolved: Ícaro did it and both checks passed (BLU-37), then PR #9 was merged (2026-11-23).
 5. **BMI-082:** yes to a Vercel preview with the metrics flag on. Default: `Blocked`, out of the queue.
-6. **BMI-084:** Q-024 (recommendation: keep the three use-case pages), the three `audience.md` edits and the landing critique. Default: BMI-085 stays `Idea`, nothing changes and the critique isn't applied.
+6. **BMI-084:** Q-024 (recommendation: keep the three use-case pages) and the landing critique (recommendation: the ten changes of section D). Both asked in BLU-21 on 2026-11-23. The `audience.md` edits are no longer on this list: they are on `main` (D-041). Default: BMI-084 stays `Blocked`, BMI-085 stays `Idea` and the critique isn't applied.
 7. **BMI-003:** the unfurl check and Q-022. Recommendation: release the URL with the go-live of the pages. Default: the URL stays out of the README and marketing.
 8. **CodeQL default setup** (BMI-050). Read 2026-11-23: `not-configured`. Recommendation: turn it on. Default: off.
 9. **BMI-070:** the saved replies, by hand. Default: the item stays `In progress`; it blocks nothing.
 10. **3 to 5 "good first issue" issues** (publishing an issue is outward-facing, BMI-050). Default: none is created.
 11. **Q-027 and Q-028** (the MCP domain and first delivery). They block nothing. Defaults: no purchase, the spec only.
+12. **The landing mockup** (D-041): Ícaro generates it from the `prompt-ui-landing` prompt in BLU-21. Default: BMI-085 has no visual reference and stays `Idea`; nothing else waits on it.
 
-Decisions relayed by other sessions (D-004, D-006 to D-019, D-033 to D-037) stay in force unless Ícaro objects. D-039 and D-040 are PM's and open to his veto.
+Decisions relayed by other sessions (D-004, D-006 to D-019, D-033 to D-037) stay in force unless Ícaro objects. D-039 and D-040 are PM's and open to his veto. D-041 is Ícaro's, read by PM in BLU-21; only its placement of BMI-144 and its reading of `main` are PM's.
 
 ## Log
 
 ### 2026-11-23
 
+- **D-041 (Ícaro, directly in BLU-21, 22:05 and 22:07; PM read both messages):** (1) the marketing lane runs **in parallel** with the code queue: the landing copy no longer stands by (D-039 point 1 changes for marketing only; the code queue keeps one writer, Dev Server still stands by). (2) The landing's look: a big logo at the top, clean and clear, black and white with blue only in details (D-038's two tones, never in the logo), minimal, very fast; it feeds BMI-085 and BMI-078. (3) Ícaro generates a mockup in an external landing-page agent from the Orquestrador's `prompt-ui-landing` prompt; it is BMI-085's visual reference. (4) **New BMI-144** (`Should`, v1, `Ready`, ui lane, position 8): a Light / Dark / System toggle on the shadcn/ui pattern written in Vue, default System, remembered, applied before the first paint without loosening the CSP (`script-src` has no `'unsafe-inline'`, so a `sha256` hash or a same-origin file), no transition; the initial JS budget (43.89 of 45 kB) must hold or the budget goes to Ícaro, never a cut of the toggle. It closes D-027 point (4)'s open "app's color theme". (5) **BMI-084's blocker corrected:** the two `audience.md` edits authorized by D-033 are on `main` (P1 line 54, P2 line 63, P3 line 72, read by PM at `05645f8`); the third was a check, now a criterion. BMI-084 waits only on Q-024 and the landing critique. Nothing cut.
 - **BMI-089 → `Done`, and the 14 items held for Firefox with it.** PR #9 was merged by squash as `05645f8` at 21:51:05Z (PM read it with `gh pr view 9`: `MERGED`). All checks on the PR were green before the merge, `E2E (Firefox, WebKit)` under `xvfb` included, and Ícaro did the hand check in a real Firefox first (BLU-37): a WebP download gives a file, and with `webgl.disabled = true` the WebGL message shows with the effects off. The first `CI` run on `main` after the merge (run 45273836595, read by PM) passed every job: Changed paths, Verify, E2E (Chromium), Docker and `E2E (Firefox, WebKit)` with 108 passed. By BMI-089's last criterion, the held items go to `Done`: BMI-002, 012, 013, 020 to 026, 028, 032, 033 and 067. BMI-071 stays `Review` until release-please opens its PR, and that workflow was red again on `05645f8`, as expected while the setting is off ("Blocked" 1). "Blocked" 4 is resolved. **BMI-093** stays `Ready` with both of its dependencies merged, at queue position 7, after BMI-094, BMI-090 and BMI-076. **BMI-094 → `In progress`** (from the Orquestrador's board, BLU-47): delivered and approved, uncommitted in the shared tree, and the commit waits for Ícaro's `pt-BR` text. `Must`: 46 done, 1 in review, 5 in progress, 2 ready.
 - **BMI-135 → `Review`:** committed as `6cd702c` on `test/e2e-own-server`, PR #10, from `main` (`715e381`), not a draft (PM read it with `git` and `gh`). Files: `playwright.config.ts`, `docs/quality.md` and the new `scripts/e2e-server.mjs`. No AI mention, and `git merge-tree` with PR #9 is clean. Reviews: BLU-40 asked for changes, BLU-41 reworked them, BLU-42 approved with three remarks, BLU-43 applied them, and BLU-44 matched the commit to the approved files by sha256. Checks read by PM: Verify, the title check, E2E (Chromium) and Vercel green. E2E (Firefox, WebKit) and Docker were skipped, because the D-040 filter lives in PR #9. CodeRabbit only posted its rate-limit notice. The two parallel runs and the `cmd.exe` run are as reported by the Orquestrador and Dev Quality; PM didn't rerun them. `Done` after the merge into `main`. Dev UI and Dev Quality are active again, so "Blocked" 3 is resolved.
 - **BMI-089 → `Review`:** PR B is committed as `42ed01c` on `ci/firefox-webkit-e2e` and open as PR #9 (PM read it with `git` and `gh`): `ci.yml` (`xvfb` and the D-040 `changes` job), `docs/quality.md`, `e2e/input.spec.ts`, `playwright.config.ts`; the Orquestrador matched it to the reviewed diff (BLU-25, BLU-30) by sha256. Checks read by PM: Verify, the title check, Changed paths, zizmor, E2E (Chromium) and Vercel green; `E2E (Firefox, WebKit)` (WebKit's first run under `xvfb`) and CodeRabbit still running. Not merged: the merge waits for Ícaro's hand check in a real Firefox ("Blocked" 4). **BMI-093 → `Ready`** by D-039 point 9 (it waited for PR B to be committed). `Must`: 31 done, 16 in review, 4 in progress.
