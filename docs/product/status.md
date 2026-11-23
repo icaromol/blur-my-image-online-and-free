@@ -24,7 +24,7 @@ Order set by PM (D-039, open to Ícaro's veto). One writing agent at a time, eac
 
 - **BMI-066** (`Must`, dated) takes the next free slot from **2026-11-28**, ahead of any `Should` still queued. Its gate includes a `pnpm install --frozen-lockfile` in a clean copy.
 - BMI-135 comes after PR B (the D-036 order, and both touch `playwright.config.ts` and `docs/quality.md`) and before BMI-094, because it removes false failures from every later gate. Until then the Orquestrador checks that port 4173 is free before each gate.
-- BMI-075 (PR #6, the logo without blue, D-038) is the Designer's rework in its own worktree, outside this queue.
+- BMI-075 (PR #6, the logo without blue, D-038) is `Review`: `309829a` is pushed, PR #6 is still a draft. It waits to be marked ready and merged, outside this queue.
 - **Dev UI and Dev Quality are paused** (read 2026-11-23), so the queue doesn't move until Ícaro resumes them.
 
 ## Next
@@ -66,6 +66,7 @@ Decisions relayed by other sessions (D-004, D-006 to D-019, D-033 to D-037) stay
 - `team.md` now names the Paperclip agents instead of the old Claude Code sessions (`-75`, `-5b`, `-aa`).
 
 - **D-038 (Ícaro, directly in BLU-9): the logo is black or white only, and the blue is an accent outside it.** In his words: "O tom de azul ficou legal, mas não gostei da aplicação na logo. Remova, deixe apenas 100% branca ou preta na logo, e o tom de azul você pode deixar para a landing page, detalhes e no brand kit." In the same task he answered the question card "Sim, ícones sem azul", so the favicon and app icons get a dark background and an all-white mark. This replaces points 1 and 3 of D-027. The two-tone blue (`#0d62b8`, `#7cc4ff`) is still the only accent: landing page, interface details, the kit's materials. **BMI-075 goes from `Review` back to `In progress`.** Four criteria are reopened: logos in two colorways (black and white, with the 6 blue SVGs deleted), the icons, the guide, and the OG template. PM checked with `git show` that `og.html` at `8b86a83` loads `logo-horizontal-blue-reverse.svg`. The designer redoes PR #6 (BLU-11, still a draft). The shared tree is on `main` at `715e381`, the same as `origin/main`.
+- **BMI-075 → `Review`:** the D-038 rework is `309829a` on `feat/brand-kit`, pushed, in PR #6 (draft, not merged): black and white logos only, the six blue SVGs deleted, icons without blue, `og.html` on the white logo, the guide updated. Orquestrador's gate passed (`pnpm check`, 303 tests, `pnpm build`), review approved in BLU-13, PR checks green where they ran (PM read `gh pr checks 6`). `Done` after the merge into `main`.
 
 ### 2026-11-22 (new PM session, handoff)
 
