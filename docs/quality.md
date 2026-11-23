@@ -46,6 +46,15 @@ The point: the engine is plain TypeScript around PixiJS, the UI never reaches in
 - A bug fix comes with a test that fails without the fix.
 - `forbidOnly` is on in CI; a leftover `.only` fails the run.
 
+### How the e2e server and port are chosen
+
+- Every run, local or CI, builds the app and starts its own `vite preview` through `scripts/e2e-server.mjs`. It is plain Node using vite's API, so the same command works under `sh` and `cmd.exe`.
+- The server takes a free port. Playwright treats the run as ready only when that process prints its `Local:` address, and exports the port as `E2E_PORT` for `baseURL` and the workers. A foreign process that opens a port in the meantime is never mistaken for the server.
+- `reuseExistingServer` is off everywhere: a run never attaches to a server it did not start. Setting `E2E_PORT` yourself pins the port, and the run fails with "Port … is already in use" if something listens there.
+- Each run builds into its own directory under the OS temp dir instead of `dist/`, so several runs can go at once. It is removed when the server stops normally (`SIGTERM`/`SIGINT`, which Playwright sends at the end of a run on Linux, macOS and WSL). A killed run, or any run on Windows where Playwright cannot signal the server, leaves it in the temp dir.
+- Each run also writes to its own `test-results/<id>/` (failure context, traces, `.last-run.json`), so a run never wipes another run's results. The folders pile up there (git-ignored); delete `test-results/` when you like. Set `E2E_OUTPUT_DIR` to pin one, for example to use `--last-failed`.
+- The HTML report stays in `playwright-report/`, where CI uploads it from. CI behaves as before otherwise: a fresh server and one retry.
+
 ### Coverage
 
 `pnpm test:coverage` enforces thresholds on `src/engine/**` and `server/proxy/**` only:
