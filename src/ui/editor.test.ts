@@ -30,6 +30,7 @@ vi.mock("../export/download", async (original) => ({
   downloadBlob: mocks.downloadBlob,
 }));
 
+import { CodedError } from "../errors";
 import { useEditor } from "./editor";
 
 function deferred<T>() {
@@ -134,6 +135,42 @@ describe("opening images", () => {
     expect(editor.loading.value).toBe(false);
     expect(editor.fileName.value).toBe("newer.png");
   });
+
+  it("clears the reduction notice when the next image needed no reduction", async () => {
+    mocks.decodeImage.mockResolvedValueOnce({
+      ...decoded(),
+      originalSize: { width: 12000, height: 6000 },
+    });
+    const editor = useEditor();
+    await editor.open(blob, "big.png");
+    expect(editor.notice.value).not.toBeNull();
+
+    mocks.decodeImage.mockResolvedValueOnce(decoded());
+    await editor.open(blob, "small.png");
+
+    expect(editor.fileName.value).toBe("small.png");
+    expect(editor.notice.value).toBeNull();
+  });
+
+  it("keeps the previous image and its notice when the next file fails to decode", async () => {
+    const original = { width: 12000, height: 6000 };
+    mocks.decodeImage.mockResolvedValueOnce({
+      ...decoded(),
+      originalSize: original,
+    });
+    const editor = useEditor();
+    await editor.open(blob, "big.png");
+    const notice = editor.notice.value;
+    expect(notice).not.toBeNull();
+
+    mocks.decodeImage.mockRejectedValueOnce(new CodedError("decode_failed"));
+    await editor.open(blob, "broken.png");
+
+    expect(editor.error.value).toBe("decode_failed");
+    expect(editor.fileName.value).toBe("big.png");
+    expect(editor.notice.value).toEqual(notice);
+    expect(mocks.renderer.setImage).toHaveBeenCalledOnce();
+  });
 });
 
 describe("download", () => {
@@ -201,6 +238,40 @@ describe("WebGL context loss", () => {
     expect(editor.notice.value).toEqual(notice);
     expect(mocks.decodeImage).toHaveBeenCalledOnce();
     expect(mocks.renderer.setImage).toHaveBeenCalledOnce();
+  });
+
+  it("keeps the open image, edits and notice when the context drops during decoding", async () => {
+    const original = { width: 12000, height: 6000 };
+    mocks.decodeImage.mockResolvedValueOnce({
+      ...decoded(),
+      originalSize: original,
+    });
+    const editor = useEditor();
+    await editor.open(blob, "first.png");
+    editor.blurEntireImage();
+    const notice = {
+      original,
+      scaled: { width: 10, height: 10 },
+      max: 4096,
+    };
+    expect(editor.canUndo.value).toBe(true);
+
+    const pending = deferred<ReturnType<typeof decoded>>();
+    mocks.decodeImage.mockReturnValueOnce(pending.promise);
+    const reopening = editor.open(blob, "second.png");
+    await vi.waitFor(() => expect(mocks.decodeImage).toHaveBeenCalledTimes(2));
+
+    mocks.renderer.contextLost = true;
+    const next = decoded();
+    pending.resolve(next);
+    await reopening;
+
+    expect(mocks.renderer.setImage).toHaveBeenCalledOnce();
+    expect(next.bitmap.close).toHaveBeenCalledOnce();
+    expect(editor.error.value).toBe("webgl_context_lost");
+    expect(editor.fileName.value).toBe("first.png");
+    expect(editor.canUndo.value).toBe(true);
+    expect(editor.notice.value).toEqual(notice);
   });
 
   it("refuses a link while the context is lost without fetching it", async () => {

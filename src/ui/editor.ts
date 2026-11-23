@@ -116,7 +116,6 @@ export function useEditor() {
       return;
     }
     error.value = "";
-    notice.value = null;
     try {
       const max = instance.maxTextureSize;
       const { bitmap, originalSize } = await decodeImage(blob, max);
@@ -124,14 +123,19 @@ export function useEditor() {
         bitmap.close();
         return;
       }
-      instance.setImage(bitmap);
-      if (originalSize) {
-        notice.value = {
-          original: originalSize,
-          scaled: { width: bitmap.width, height: bitmap.height },
-          max,
-        };
+      if (instance.contextLost) {
+        bitmap.close();
+        error.value = "webgl_context_lost";
+        return;
       }
+      instance.setImage(bitmap);
+      notice.value = originalSize
+        ? {
+            original: originalSize,
+            scaled: { width: bitmap.width, height: bitmap.height },
+            max,
+          }
+        : null;
       history.clear();
       activeStroke = null;
       fileName.value = name;
