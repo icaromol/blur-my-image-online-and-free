@@ -9,6 +9,7 @@ import {
   RenderTexture,
   Sprite,
   Texture,
+  type WebGLRenderer,
 } from "pixi.js";
 import type { ImageSize } from "../image-size";
 import { effectFilters } from "./effects";
@@ -38,14 +39,16 @@ export class Renderer {
   private rendered: readonly Operation[] = [];
   private drawnPoints = new WeakMap<Stroke, number>();
 
-  private constructor(private readonly app: Application) {
+  private constructor(private readonly app: Application<WebGLRenderer>) {
     app.stage.addChild(this.display);
   }
 
   static async create(): Promise<Renderer> {
-    const app = new Application();
+    const app = new Application<WebGLRenderer>();
     await app.init({
-      preference: "webgl",
+      // An array, not a string: a string lets PixiJS fall back to a Canvas2D renderer that
+      // skips every filter, so the app would export the image unblurred.
+      preference: ["webgl"],
       autoStart: false,
       backgroundAlpha: 0,
       width: 1,
@@ -59,10 +62,8 @@ export class Renderer {
   }
 
   get maxTextureSize(): number {
-    const renderer = this.app.renderer;
-    return "gl" in renderer
-      ? renderer.gl.getParameter(renderer.gl.MAX_TEXTURE_SIZE)
-      : 4096;
+    const { gl } = this.app.renderer;
+    return gl.getParameter(gl.MAX_TEXTURE_SIZE);
   }
 
   get size(): ImageSize | null {

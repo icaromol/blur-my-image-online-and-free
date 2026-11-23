@@ -100,7 +100,11 @@ export function useEditor() {
 
   async function show(id: number, blob: Blob, name: string): Promise<void> {
     const instance = await start();
-    if (!instance || id !== latestLoad) return;
+    if (!instance) {
+      if (id === latestLoad) error.value = "webgl_unavailable";
+      return;
+    }
+    if (id !== latestLoad) return;
     error.value = "";
     notice.value = null;
     try {
