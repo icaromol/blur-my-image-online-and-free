@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-0 of 50 `Must` done · 45 in review · 4 in progress · 1 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+30 of 52 `Must` done · 15 in review · 5 in progress · 2 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -55,6 +55,12 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- **BMI-091 done (read-only):** Dependabot's PR #3 (Docker base image to `node:26-slim`) would very likely break the Docker job on `main`, because Node 26 has no corepack and the Dockerfile runs `corepack enable` (inference; no real image build). Node 26 is LTS since 2026-10-28 and Node 24 is in maintenance; Vercel already runs 26.x. Q-026 asks Ícaro: move Docker, CI and the README to 26 (recommended, after BMI-089) or stay on 24; PR #3 stays open and unmerged meanwhile.
+
+- **Post-merge assignments (per `-75`):** BMI-089 (Firefox e2e, `Must`) is `In progress`: a quality-lane worker reproduces the 15 failures in a clean clone at `/tmp/bmi-089/repo` with its own `node_modules` and Playwright, traces in `.local/bmi-089/`; diagnosis and a proposed diff only, nothing removed or relaxed. BMI-087 (the proxied download message) is with the opus reviewer, then `-5b` commits it on `fix/proxied-download-error`, opens its PR and returns the shared tree to `main`. BMI-091 (Dependabot's Node 26 bump): `-f2` reads and tests only, no merge. Queued, one branch each: BMI-090, BMI-076, then BMI-082.
+
+- **PR #2 is merged** (squash `081fa59`, 2026-11-22 23:46Z; PM read it with `gh`). `main`'s status is success and the app's alias serves the new build (200, with the Open Graph tags). **The jobs that run only on `main` found two real failures** (PM read the logs): (1) E2E on **Firefox**: 15 tests fail, all Firefox; the WebKit tests passed; brush, eraser, undo, the four whole-image effects, both WebP exports, EXIF, the privacy flow and the two pastes; cause unknown, headless WebGL is the first suspect and unverified; `docs/quality.md` lists Firefox as supported, so BMI-089 (`Must`) investigates. (2) **release-please** failed ("GitHub Actions is not permitted to create or approve pull requests"), and computed 0.0.0 to 1.0.0; Ícaro decided (D-035): allow Actions to create PRs (his setting or his "pode" to `-5b`), first release 0.1.0 (BMI-090, `Must`), no public release or tag before he merges the release PR. 30 `Must` items are `Done`; 15 stay in `Review` on purpose (the ones whose e2e failed on Firefox, BMI-002 and BMI-071). `Must` is 52. Also: BMI-091 evaluates Dependabot's Node 26 bump read-only (default: not merged); the squash author shows as "Neous", only information.
 
 - **BMI-088 and BMI-086 are `Review`; BMI-084's drafts are committed.** Local on the feature branch, not pushed: `c00002d` (the warning for every effect, with `aria-describedby="effects-warning"` on the radio group and the tests; PM confirmed the commit and the attribute), `a3f312f` (the study wording and no more intensity advice), `ec54b1f` (the README says an `http://` link always goes through the proxy; "keeps nothing" became "doesn't keep a copy of the image" in the landing and in the README line 78) and `2b1492d` (the landing and use-case drafts and the research, waiting for Q-024). The dispatcher's gate on the tree at `ec54b1f`: check clean, 307 tests, build, e2e 50/50, size 43.8 of 45 kB and 192.96 of 195 kB. What closes before the merge: `-aa`'s go to push, CodeRabbit's fifth round and a clean-copy check. BMI-087 stays off PR #2, on its own branch after the merge.
 

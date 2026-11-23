@@ -20,6 +20,14 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-026 — Move Docker, CI and the README to Node 26, or stay on Node 24?
+
+BMI-091 (`-f2`, read-only, via `-75`; PM checked the Dockerfile, `engines` and the CI files): Dependabot's PR #3 changes only the two `FROM` lines of the `Dockerfile` to `node:26-slim`. By the official source (nodejs.org/releases, read by `-f2`), Node 26 has been LTS since 2026-10-28 (end 2029-04-30) and Node 24 is in maintenance since 2026-10-20 (end 2028-04-30); Vercel supports 26 as the default and the hosted project already runs 26.x (`engines` is `>=24`). Docker and `setup-node` in the CI (`node-version: 24`, four places) and the README ("Requires Node.js 24") are on 24. **The PR would break the Docker job on `main`**, as a strong inference: the Dockerfile's line 3 is `RUN corepack enable` and Node 26 doesn't ship corepack (the Docker daemon wasn't running, so no real image build; the CI smoke and the 303 tests pass on Node 26 outside Docker).
+
+Options: (a) move Docker, CI and the README to Node 26 in a PR of ours that replaces corepack with a pinned `npm install -g pnpm@12.18.0` (the version in `packageManager`), then close PR #3; (b) stay on Node 24 and tell Dependabot to ignore the 26 major.
+
+Recommendation: (a), after BMI-089 is settled so that two things don't change in CI at once: Node 26 is the LTS with the longest life, production already runs it, and staying on 24 means running a different runtime in Docker and in CI than the host does. Default in force: **PR #3 stays open and unmerged**, no change to Docker, CI or the README.
+
 ### Q-024 — Do the three use-case pages stay, now that the home is the app screen?
 
 D-032 makes the landing the app's own screen with the copy underneath. BMI-085 planned a home and three use-case pages (blur a license plate, pixelate a screenshot, blur a face) as static pages. Question for Ícaro: do the use-case pages stay as separate pages that the app screen links to, or does everything live on the one screen (sections, no separate pages)? The SEO notes favour separate pages (one query intent per page), at the price of more files to keep true; one screen is simpler and ranks for fewer queries. Recommendation: keep the three use-case pages, small, linked from the sections under the app, since each search intent (plate, screenshot, face) deserves its own answer. Default in force: BMI-085 stays an `Idea` and nothing is built; the copy of BMI-084 is written for the home first.
@@ -47,6 +55,13 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the project's main domain on 2026-11-22, per `-aa`; the earlier `https://blur-my-image.vercel.app` answers 307 to it (PM read both with a plain `GET`). The README, the repo website field and the bug form get it only when Ícaro says (D-016). Not blocking.
 
 ## Decisions
+
+### D-035 — After the merge: Actions may create PRs, the first release is 0.1.0, Dependabot's Node 26 bump waits (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answers: (1) GitHub Actions is allowed to create pull requests (the repository setting "Allow GitHub Actions to create and approve pull requests"; he turns it on in the GitHub settings or says "pode" in `-5b`'s session; `-5b` doesn't accept a relayed go). The `release-please` run on the merge commit failed with "GitHub Actions is not permitted to create or approve pull requests": it created the branch `release-please--branches--main--components--blur-my-image` but no PR, and it computed "updating from 0.0.0 to 1.0.0". (2) The first release is **0.1.0**, not 1.0.0: BMI-090 configures release-please for it; the existing branch is updated or redone without publishing anything; **no GitHub Release and no public tag exist before Ícaro merges the release PR.** (3) Dependabot PR #3 (the Docker base image from `node:24-slim` to `node:26-slim`) is evaluated read-only (BMI-091) and **not merged without his yes**, since it swaps the runtime. Information only: the squash author on `main` shows as "Neous", the public profile name, with the no-reply address.
+**Why:** the release flow needs the permission to open its PR; a first public version of 1.0.0 would promise more than a pre-release is.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-071 (release workflow), BMI-090, BMI-091, README ("Requires Node.js 24").
 
 ### D-034 — The in-app warning: final texts, and it shows for every effect (2026-11-22)
 
