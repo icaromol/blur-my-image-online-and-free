@@ -13,7 +13,7 @@ const PAIRS = [
   [
     "blue-on-dark",
     "black",
-    "Accent text and the logo bar on the dark background",
+    "Accent text and interface details on the dark background",
   ],
   ["white", "black", "White logo on black"],
   [
@@ -34,8 +34,12 @@ const PAIRS = [
   ["black", "grey-100", "Sample card text (OG image)"],
   ["grey-700", "grey-100", "Sample card labels (OG image)"],
   ["black", "white", "Black logo on white"],
-  ["blue-on-light", "white", "Blue logo bar and accent text on white"],
-  ["blue-on-light", "grey-100", "Blue accent on the paper tone"],
+  ["blue-on-light", "white", "Accent text and interface details on white"],
+  [
+    "blue-on-light",
+    "grey-100",
+    "Accent text and interface details on the paper tone",
+  ],
 ];
 
 const channel = (v) => {

@@ -15,15 +15,8 @@ const wordmarks = JSON.parse(
 
 const BLACK = "#0f1115";
 const WHITE = "#ffffff";
-const BLUE_ON_LIGHT = "#0d62b8";
-const BLUE_ON_DARK = "#7cc4ff";
 
-const VARIANTS = {
-  black: { ink: BLACK, bar: BLACK },
-  white: { ink: WHITE, bar: WHITE },
-  blue: { ink: BLACK, bar: BLUE_ON_LIGHT },
-  "blue-reverse": { ink: WHITE, bar: BLUE_ON_DARK },
-};
+const VARIANTS = { black: BLACK, white: WHITE };
 
 const fmt = (n) => String(Math.round(n * 10) / 10);
 
@@ -45,13 +38,13 @@ const MARK_CELLS = [
   [3, 4, 0.62],
 ];
 
-function markShapes(x, y, u, v) {
+function markShapes(x, y, u, ink) {
   const rects = MARK_CELLS.map(
     ([c, r, o]) =>
-      `<rect x="${fmt(x + c * u)}" y="${fmt(y + r * u)}" width="${fmt(u)}" height="${fmt(u)}" fill="${v.ink}" fill-opacity="${o}"/>`,
+      `<rect x="${fmt(x + c * u)}" y="${fmt(y + r * u)}" width="${fmt(u)}" height="${fmt(u)}" fill="${ink}" fill-opacity="${o}"/>`,
   );
   rects.push(
-    `<rect x="${fmt(x + 4 * u)}" y="${fmt(y)}" width="${fmt(u)}" height="${fmt(4 * u)}" fill="${v.bar}"/>`,
+    `<rect x="${fmt(x + 4 * u)}" y="${fmt(y)}" width="${fmt(u)}" height="${fmt(4 * u)}" fill="${ink}"/>`,
   );
   return `<g shape-rendering="crispEdges">${rects.join("")}</g>`;
 }
@@ -60,7 +53,7 @@ function svg(minX, minY, w, h, body, label = "Blur My Image") {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${fmt(minX)} ${fmt(minY)} ${fmt(w)} ${fmt(h)}" role="img" aria-label="${label}"><title>${label}</title>${body}</svg>\n`;
 }
 
-function lockup(kind, v) {
+function lockup(kind, ink) {
   const w = wordmarks[kind];
   const u = Math.round(w.markSize / 5);
   const markX = w.markRightFromOrigin - 5 * u;
@@ -74,25 +67,32 @@ function lockup(kind, v) {
     minY,
     maxX - minX,
     maxY - minY,
-    `${markShapes(markX, markY, u, v)}<path fill="${v.ink}" d="${w.d}"/>`,
+    `${markShapes(markX, markY, u, ink)}<path fill="${ink}" d="${w.d}"/>`,
   );
 }
 
-function markOnly(v) {
+function markOnly(ink) {
   const u = 20;
-  return svg(0, 0, 5 * u, 5 * u, markShapes(0, 0, u, v), "Blur My Image mark");
+  return svg(
+    0,
+    0,
+    5 * u,
+    5 * u,
+    markShapes(0, 0, u, ink),
+    "Blur My Image mark",
+  );
 }
 
-for (const [name, v] of Object.entries(VARIANTS)) {
+for (const [name, ink] of Object.entries(VARIANTS)) {
   writeFileSync(
     join(logosDir, `logo-stacked-${name}.svg`),
-    lockup("stacked", v),
+    lockup("stacked", ink),
   );
   writeFileSync(
     join(logosDir, `logo-horizontal-${name}.svg`),
-    lockup("horizontal", v),
+    lockup("horizontal", ink),
   );
-  writeFileSync(join(logosDir, `mark-${name}.svg`), markOnly(v));
+  writeFileSync(join(logosDir, `mark-${name}.svg`), markOnly(ink));
 }
 
 // Favicon: 4 x 4 cells of 8 units, so each cell is a whole pixel count at 16, 32 and 48 px.
@@ -106,20 +106,16 @@ const FAV_CELLS = [
   [2, 3, 0.5],
   [3, 3, 0.75],
 ];
-function favCells(cls) {
-  const rects = FAV_CELLS.map(
-    ([c, r, o]) =>
-      `<rect class="ink" x="${c * 8}" y="${r * 8}" width="8" height="8" fill-opacity="${o}"/>`,
-  );
-  rects.push(`<rect class="bar" x="24" y="0" width="8" height="24"/>`);
-  return `<g${cls}>${rects.join("")}</g>`;
-}
+const favCells = FAV_CELLS.map(
+  ([c, r, o]) =>
+    `<rect x="${c * 8}" y="${r * 8}" width="8" height="8" fill-opacity="${o}"/>`,
+).join("");
 writeFileSync(
   join(faviconDir, "favicon.svg"),
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Blur My Image"><title>Blur My Image</title><style>.ink{fill:${BLACK}}.bar{fill:${BLUE_ON_LIGHT}}@media (prefers-color-scheme:dark){.ink{fill:${WHITE}}.bar{fill:${BLUE_ON_DARK}}}</style>${favCells("")}</svg>\n`,
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Blur My Image"><title>Blur My Image</title><style>g{fill:${BLACK}}@media (prefers-color-scheme:dark){g{fill:${WHITE}}}</style><g>${favCells}<rect x="24" y="0" width="8" height="24"/></g></svg>\n`,
 );
 
-// Icon tiles for the PNG sizes: dark tile, reverse mark with the blue bar.
+// Icon tiles for the PNG sizes: dark tile with the white mark.
 function tile(size, radiusRatio, markRatio) {
   const cell = Math.round((size * markRatio) / 4);
   const off = Math.floor((size - cell * 4) / 2);
@@ -128,7 +124,7 @@ function tile(size, radiusRatio, markRatio) {
     ([c, r, o]) =>
       `<rect x="${fmt(off + c * 8 * s)}" y="${fmt(off + r * 8 * s)}" width="${fmt(8 * s)}" height="${fmt(8 * s)}" fill="${WHITE}" fill-opacity="${o}"/>`,
   ).join("");
-  const bar = `<rect x="${fmt(off + 24 * s)}" y="${fmt(off)}" width="${fmt(8 * s)}" height="${fmt(24 * s)}" fill="${BLUE_ON_DARK}"/>`;
+  const bar = `<rect x="${fmt(off + 24 * s)}" y="${fmt(off)}" width="${fmt(8 * s)}" height="${fmt(24 * s)}" fill="${WHITE}"/>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect width="${size}" height="${size}" rx="${fmt(size * radiusRatio)}" fill="${BLACK}"/><g shape-rendering="crispEdges">${cells}${bar}</g></svg>`;
 }
 const tiles = {
