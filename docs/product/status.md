@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-30 of 52 `Must` done · 15 in review · 5 in progress · 2 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+30 of 53 `Must` done · 15 in review · 6 in progress · 2 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -55,6 +55,8 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- **URGENT, a privacy bug found by the Firefox diagnosis (BMI-089 → BMI-092, `Must`, `In progress`).** The worker reproduced the 15 failures with the lockfile's Firefox and found three causes. The serious one: in a browser without WebGL, PixiJS falls back silently to a canvas renderer that skips every filter, and **the app exports the photo without the blur and with no error**; the fix is a one-word change in `renderer.ts` (`preference: ["webgl"]`) so that it fails with the existing, translated WebGL message, plus a regression test that fails without it. The hosted app is live at its alias (not advertised). Priority above everything else: PR A (BMI-092, `src/`, opus reviewer), then PR B (test and CI: the WebP download preference, the paste test, `xvfb` in the CI; with a hand check in a real Firefox that a WebP download is a file). 6 of the 15 failing tests were only the test setup, 2 only the paste test; none of this cuts a supported browser. `Must` is 53. Ícaro and `-aa` are told.
 
 - **Three PRs opened by `-5b`, all drafts:** PR #4 (BMI-087, `fix/proxied-download-error`, commit `09fffb5`, validated in a clean copy; the new `pt-BR` string waits for Ícaro), PR #5 (these product docs, `docs/post-merge-status`) and PR #6 (the brand kit, `feat/brand-kit` rebased, BMI-075). `-5b` also confirmed that `main` has everything from the 16 local docs commits (the local feature tree is identical to `main`; the 163 commits `git log` shows are the squash). The shared tree is back on `main` (`081fa59`). Caution from `-5b`: Playwright reuses the server on port 4173 (BMI-135), so two e2e runs at the same time on this machine disturb each other.
 
