@@ -24,6 +24,11 @@ Every factual claim in the landing copy, with where it appears and what proves i
 - "Yet" is gone from "no solid box" (a solid box is in `Later`, BMI-104; "yet" would read as a promise).
 - No advice that a stronger setting protects (#64). The in-app warning and README:58 were corrected by D-033 and BMI-088 and no longer conflict with these pages.
 
+**The mockup (BLU-66, Ícaro's answer in BLU-21 on 2026-11-23 at 22:23).**
+- New on the home page: the four cards under the hero (section 2), the Paste > Blur > Download stepper (section 3) and "Use it your way" with three cards (section 4). New claims: #71 to #78. #12 moved from the effects note to the shortcuts card and gained redo.
+- The mockup sentences that break the rules are not used ("forever", "No files are uploaded" without scope, "No limits", "sensitive information", "Remove personal data", "select the area", "12 px", the dash in "it's that simple"). The list is in `.local/landing-mockup/feedback.md`.
+- The before-and-after preview (BMI-127) and zoom come after v1 (Ícaro) and are not on the page.
+
 **Also dropped from the home page for length:** #2, #8's FAQ copy, #25 (the e2e description), #28, #37 (the app's warning is not quoted).
 
 How to read the tables. "README:78" is line 78 of `README.md`. Code paths are repo-relative. Claim numbers are stable; a removed claim keeps its number and is marked **Removed**. Advice sentences ("paint a little past the edge") are judgments, not facts, and are not listed.
@@ -45,8 +50,8 @@ Files: H = `home.md`, P = `use-blur-license-plate.md`, S = `use-pixelate-screens
 | 9 | Intensity 1 to 100, scaled to the shorter side, so a setting looks the same on a 600 px screenshot and a 6000 px photo | H effects; P | README:52 |
 | 10 | Gaussian: smooth, even softening, for backgrounds, soft focus, whole image. Pixelate: square blocks of averaged color, for faces, plates, names in screenshots, not for text that must stay secret. Motion: streaks in one direction, implied movement | H effects table (the Pixelate row carries the caveat since the critique, C1-4), "What people hide" (Pixelate for a screenshot and a plate); P; S; F | README:46-48. "Names in screenshots" is not in README:47; it is a use example for C1-4, proved by README:17 (paste a screenshot) and README:25 (the Brush paints any area). The caveat is README:47 ("not for text that must stay secret") |
 | 11 | Motion angle 0 to 180 degrees | H effects table | README:53 |
-| 12 | `B` brush, `E` eraser, `[` and `]` brush size, Ctrl/Cmd+Z undo | H effects note; P steps 3-4; S step 4; F steps 3-4 | README:54, 64-71; `src/ui/shortcuts.ts`:32-60 |
-| 13 | The single-key shortcuts work while the image has keyboard focus | P step 3; F step 3 (no longer on H) | README:73; `src/ui/shortcuts.ts`:43-44 |
+| 12 | `B` brush, `E` eraser, `[` and `]` brush size, Ctrl/Cmd+Z undo | H shortcuts card in "Use it your way" (moved from the effects note by BLU-66; see #76); P steps 3-4; S step 4; F steps 3-4 | README:54, 64-71; `src/ui/shortcuts.ts`:32-60 |
+| 13 | The single-key shortcuts work while the image has keyboard focus | P step 3; F step 3; H shortcuts card (back on H since BLU-66, see #76) | README:73; `src/ui/shortcuts.ts`:43-44 |
 | 14 | You paint the area yourself; the editor doesn't pick it for you. It blurs what you paint, or the whole image if you choose Blur entire image | P FAQ and S FAQ, once each, in the body (D-033). **Not on H, not in any hero, and not stated on F**: F "You choose the faces" only describes the brush ("blurs the pixels under your brush, or the whole image if you pick Blur entire image… if you miss a face, it stays visible"), which is a description of the tool, not a detection claim | README:190 lists "Automatic face detection" as backlog; README:24; `grep -i detect src/` (non-test files) returns nothing. The earlier draft that said nothing is blurred unless you paint it was false and is gone |
 | 15 | Images only, not video | P FAQ; F FAQ | README:3 and 28-30 describe images only |
 | 16 | A solid box is not in the editor | H redaction; S FAQ | README:180 |
@@ -132,6 +137,19 @@ The study is PoPETs 2016, Hill, Zhou, Saul and Shacham (`crysp.petsymposium.org/
 | 70 | Static H1 "Blur or pixelate part of an image, in your browser" and the subhead "Paint over a name in a screenshot, a license plate or a face, or blur the whole image." | H "Above the editor" | README:3 (in your browser, paint over parts, blur all of it); README:17 (paste a screenshot); README:47 (faces and plates). The H1 text is seo.md's proposal; where it sits is BMI-085's call |
 | 52 | `WebApplication` fields; `MultimediaApplication` is a valid category | SD | `en.json`:3, :66; README:3; the category is on Google's list (reviewer-verified). Not eligible for the software app rich result |
 
+## The cards, the stepper and "Use it your way" (BLU-66)
+
+| # | Claim | Where | Proof |
+| --- | --- | --- | --- |
+| 71 | Card "Private by design": "Image files you open, drop or paste never leave your device." (exact) and "A link can pass once through our server.", linked to `#the-exception-links` | H section 2 | #17 (D-010, README:3); #20 and #21 (README:78, 103; `src/input/url.ts`:68-109). "Can": only when the image's server refuses or the link is http://. Replaces the mockup's "No files are uploaded", which had no scope |
+| 72 | Card "Fast and simple": "Blur the whole image or just the parts you paint." and "Effects run on your graphics card. Nothing to install." | H section 2 | README:3 ("blur all of it or paint over the parts you want hidden", "in your browser"); `en.json`:4 (the app's tagline); README:97 ("GPU rendering. Effects run as WebGL fragment shaders"). No speed figure is stated; "Fast" is the card title Ícaro approved and the lines say only what runs where |
+| 73 | Card "Works with any image": "Whatever your browser can decode, including PNG, JPEG, WebP, AVIF, BMP and the first frame of a GIF." and "Download as PNG, JPG or WebP at the original resolution." | H section 2 | #4 (README:20); #7 (README:30; `en.json`:57, "Original resolution."). JPEG is left out of the export list because JPG is the same format (README:30). The title's "any" is Ícaro's and not literal (HEIC outside Safari doesn't open, README:192; very large images are scaled down, #8); the line names the formats README:20 lists, and "including" keeps it from reading as the only ones (the browser decides). Open choice in `home.md`, PM note 6. Replaces the mockup's "No limits" |
+| 74 | Card "Free and open source": "No account, no watermark, no paid version." and "The code is public under the MIT license.", linked to the repository | H section 2 | #1 (README:3); #57; #33 (`LICENSE`:1, repository public). No "forever" (hosting may change). Replaces the mockup's "Use it, share it, improve it" |
+| 75 | Stepper, Paste > Blur > Download: "Paste an image with Ctrl+V (Cmd+V on a Mac), drop a file, choose one or paste a link." / "Paint over what you want hidden, or blur the entire image." / "Save it as PNG, JPG or WebP at the original resolution." | H section 3, over the three approved steps | #3 (README:13-18, all four ways named under the label "Paste"); #5 (README:24-26); #7 (README:30). The scale-down exception (#8) is in the long step 3 right under the stepper |
+| 76 | Shortcuts card: `B` brush, `E` eraser, `[` and `]` brush size, Ctrl+Z (Cmd+Z) undo, Ctrl+Shift+Z (Cmd+Shift+Z) redo; "The single keys work while the image has focus: click it or move to it with Tab." Title "Shortcuts from Photoshop" | H section 4 | README:62 ("Shortcuts follow Photoshop's defaults where one exists"), 64-71 (table, redo at :71), 73 (focus rule, "while the image has keyboard focus"); `src/ui/EditorCanvas.vue`:65-70 (`keydown` is handled only on `.canvas-host`, so the single keys stop when focus leaves the image); `src/ui/shortcuts.ts`:40 (Shift turns undo into redo), :46 (single keys only without modifiers). External source for the title (Adobe's default keyboard shortcuts page, `helpx.adobe.com/photoshop/using/default-keyboard-shortcuts.html`): external source not read (HTTP 403 on 2026-11-23), so the title rests on README:62 only. Takes the place of the effects note (#12) |
+| 77 | MCP card: "By design, from devs to devs." (Ícaro's words); an MCP server for agents is in development and not available yet ("in development" is Ícaro's word, D-043 in BLU-21, and not a fact verified in the repository: the spec says "Nothing is implemented", and the default of Q-028 is the spec only); the privacy notes on the page cover the web app only; link to the public spec | H section 4 | D-037 (direction decided, scope not closed); `docs/product/specs/mcp-for-agents.md` ("Only this outline exists. Nothing is implemented"), public on `main` (the repository is public). No tool, date or privacy rule for the MCP is stated (D-037: the web app's promise and the MCP's stay apart). The spec's non-goal "no claim on the landing about the MCP before the privacy statement exists" is raised for the PM in `home.md`, PM note 7. When the MCP page exists, the link changes to it and this row is re-checked |
+| 78 | GitHub card: "Ask for a feature or report a bug", "Pull requests are welcome too.", "New features have to be about blurring an image.", link to the repository's issues | H section 4 | README:200 ("Issues and pull requests are welcome"); README:206 ("New features need to fit the one-job scope above"); README:9-32 (the one job). Same source as #34 |
+
 ## Claims deliberately left out
 
 | Left out | Why |
@@ -155,6 +173,11 @@ The study is PoPETs 2016, Hill, Zhou, Saul and Shacham (`crysp.petsymposium.org/
 | "Yet" after "no solid box" | Reads as a promise; a solid box is in `Later` (BMI-104) |
 | The Buffalo face-recognition paper, the techpolicy.press article | Nobody opened them |
 | User counts, ratings, reviews, testimonials | None exist |
+| Any tool, date, input type or privacy rule for the MCP | Nothing is built (D-037, `specs/mcp-for-agents.md`); the card says only "in development, not available yet" (#77) |
+| The before-and-after preview and zoom | After v1 (Ícaro, BLU-66). Zoom exists in the mockup only |
+| "No limits", "any image" as a literal promise | Caps exist: 100 MiB direct, about 4.2 MiB through the proxy, the graphics card's size (#8, #29, #30). "Works with any image" stays only as Ícaro's card title, scoped by its lines (#73) |
+| "Select the area", any selection tool | The editor has the brush only (README:24-26) |
+| Intensity in px | It runs from 1 to 100 (README:52) |
 | The app's URL | D-016. `[HOME-URL]` (JSON-LD, canonical). `[EDITOR-URL]` is no longer used: since Q-024 every page carries the editor |
 | "Works offline", "no server at all" | A server exists for links |
 | Support promises | README names only GitHub issues |
@@ -169,3 +192,4 @@ The study is PoPETs 2016, Hill, Zhou, Saul and Shacham (`crysp.petsymposium.org/
 3. **The repository** stays public and MIT (#33).
 4. **The app's warning and README:58** were corrected (D-033, BMI-088). If they change again, re-read #37, #42 and #63.
 5. **The study body.** If anyone reads the PDF, the numbers could return with their context; until then the landing carries none.
+6. **The MCP card (#77).** When the MCP page exists, the link changes to it and the card is re-read against the MCP's own privacy statement.

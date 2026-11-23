@@ -6,8 +6,9 @@
 - **Persona:** P1, the work screenshot redactor (primary). A1 reads the privacy section to check it.
 - **Target queries:** `blur part of image online`, `blur image online` (cluster D in seo.md).
 - **Head tags go in `index.html`:** title 54 characters, meta description 148 characters (below, counted by script). One `WebApplication` block goes in the same file (see `structured-data.md`).
-- **Length:** the page copy below, from "Blur part of an image in three steps" to the closing line, is 1,091 words (Python `split()` after removing link targets; the version before the critique was 854 by the same count). The count leaves out the head tags, the H1 block and the footer links.
+- **Length:** the page copy below, from "At a glance" (the four cards) to the closing line, is 1,334 words (Python `split()` after removing link targets and the "For BMI-085" notes). From "Blur part of an image in three steps" to the closing line it is 1,226; it was 1,091 before the cards, the stepper and "Use it your way" (BLU-66), and 854 before the critique, by the same count. The count leaves out the head tags, the H1 block and the footer links.
 - **Use-case pages (Q-024, answered by Ícaro on 2026-11-23):** they stay, three small pages, each with the editor, linked from the home. The home links them from "What people hide with it" and from the footer.
+- **Mockup (BLU-66, Ícaro's answer in BLU-21 on 2026-11-23 at 22:23):** the layout of his external mockup is approved: the four cards under the hero (section 2), "How it works" as a Paste > Blur > Download stepper (section 3) and "Use it your way" with three cards (section 4). Images and the list of mockup sentences that may not go on the page: `.local/landing-mockup/`. The text here replaces the mockup's text. The before-and-after preview (BMI-127) and zoom come after v1 and are not on the page.
 - **Markers:** the editor is above the copy, so this file has no `[EDITOR-URL]`. `[HOME-URL]` is the page's own address, used only in the JSON-LD and the canonical. Neither is a real address.
 - **Sources for every sentence:** `claims-check.md`.
 
@@ -22,7 +23,9 @@
 
 | Id | Heading |
 | --- | --- |
-| `#how-it-works` | Blur part of an image in three steps (the id stays `#how-it-works`) |
+| `#at-a-glance` | At a glance (visually hidden; the four cards) |
+| `#how-it-works` | Blur part of an image in three steps (the id stays `#how-it-works`; the stepper and the three steps) |
+| `#use-it-your-way` | Use it your way |
 | `#what-people-hide` | What people hide with it |
 | `#what-stays-on-your-device` | What stays on your device |
 | `#the-exception-links` | The exception: links |
@@ -58,7 +61,37 @@ Paint over a name in a screenshot, a license plate or a face, or blur the whole 
 
 ## Copy under the editor
 
+> **For BMI-085 (section 2, the four cards).** Four cards in one row on desktop, as in Ícaro's mockup (`.local/landing-mockup/1-hero-and-cards.png`), each with its icon. "At a glance" is a visually hidden `<h2>`, so the card titles can be `<h3>` without skipping a level. Each card is a title and two lines; the line break between them is part of the layout.
+
+## At a glance
+
+### Private by design
+
+Image files you open, drop or paste never leave your device.
+A link can pass once through our server. [How links load](#the-exception-links)
+
+### Fast and simple
+
+Blur the whole image or just the parts you paint.
+Effects run on your graphics card. Nothing to install.
+
+### Works with any image
+
+Whatever your browser can decode, including PNG, JPEG, WebP, AVIF, BMP and the first frame of a GIF.
+Download as PNG, JPG or WebP at the original resolution.
+
+### Free and open source
+
+No account, no watermark, no paid version.
+The code is public under the MIT license. [View on GitHub](https://github.com/icaromol/blur-my-image-online-and-free)
+
+> **For BMI-085 (section 3, the stepper).** The heading keeps the id `#how-it-works`. The stepper is an ordered list (`<ol>`) drawn as Paste > Blur > Download, so it still reads as three steps without CSS. The long text of each step stays right under the stepper, as the three `<h3>` below, in normal flow (no accordion, no tabs), so crawlers and screen readers get it without JavaScript.
+
 ## Blur part of an image in three steps
+
+1. **Paste.** Paste an image with Ctrl+V (Cmd+V on a Mac), drop a file, choose one or paste a link.
+2. **Blur.** Paint over what you want hidden, or blur the entire image.
+3. **Download.** Save it as PNG, JPG or WebP at the original resolution.
 
 ### 1. Load an image
 
@@ -71,6 +104,22 @@ Choose a file in the drop zone, drop one anywhere on the page, paste with Ctrl+V
 ### 3. Download it
 
 Pick PNG, JPG, JPEG or WebP (JPG and JPEG are the same format; the choice sets the extension). The file keeps the original resolution and is named `<name>-blurred.<ext>`. If the image is larger than your graphics card can handle, the editor scales it down and tells you before you start.
+
+## Use it your way
+
+> **For BMI-085 (section 4, three cards).** Three cards in one row, as in Ícaro's mockup (`.local/landing-mockup/4-use-it-your-way.png`), with the mockup's eyebrow line ("More than just a tool") left out. The MCP card links to the public spec for now. **When the MCP page exists, the link changes to that page**; the card's text is re-checked then, and nothing on it may promise a tool, a date or a privacy rule for the MCP (D-037).
+
+### An MCP server for agents
+
+By design, from devs to devs. It is in development and not available yet. The privacy notes on this page cover the web app only. [Read the MCP spec](https://github.com/icaromol/blur-my-image-online-and-free/blob/main/docs/product/specs/mcp-for-agents.md)
+
+### Shortcuts from Photoshop
+
+`B` brush, `E` eraser, `[` and `]` brush size, Ctrl+Z (Cmd+Z) undo, Ctrl+Shift+Z (Cmd+Shift+Z) redo. The single keys work while the image has focus: click it or move to it with Tab.
+
+### Ask for a feature or report a bug
+
+Pull requests are welcome too. New features have to be about blurring an image. [Open an issue on GitHub](https://github.com/icaromol/blur-my-image-online-and-free/issues)
 
 ## What people hide with it
 
@@ -89,8 +138,6 @@ Intensity runs from 1 to 100 and is scaled to the image's shorter side, so a set
 | Gaussian | Smooth, even softening | Backgrounds, soft focus, the whole image |
 | Pixelate | Square blocks of averaged color | Faces, plates, names in screenshots. Not for text that must stay secret |
 | Motion | Streaks in one direction, angle 0 to 180 degrees | Implied movement, a stylized blur |
-
-Shortcuts: `B` brush, `E` eraser, `[` and `]` brush size, Ctrl+Z (Cmd+Z) undo.
 
 ## What stays on your device
 
@@ -175,6 +222,54 @@ To start, drop an image anywhere on this page or press Ctrl+V (Cmd+V on a Mac).
 3. **Use-case pages.** Q-024 is answered: the pages stay. "What people hide with it" links each line to its page, and the footer has the three links (`/blur-license-plate/`, `/blur-text-in-screenshot/`, `/blur-face-in-photo/`). BMI-078 confirms the slugs.
 4. **Hero image.** None is needed now: the editor is the hero. The before-and-after screenshot is optional.
 5. **The in-app warning (BMI-088).** Not quoted on this page.
+
+**What BLU-66 changed (the mockup).**
+
+- **Section 2, the four cards.** Titles are Ícaro's, from the mockup. Each mockup line that broke a rule was replaced: "No files are uploaded" by the scoped sentence plus the link exception (`#the-exception-links`); "JPG, PNG, WebP and more. No limits." by the real format list and the export formats; "Use it, share it, improve it" by the cost line and the MIT license. "Forever" is nowhere.
+- **Section 3, the stepper.** The labels are Ícaro's: Paste > Blur > Download. Step 1 still names all four ways in (paste, drop, choose, link), even under the label "Paste". Each stepper line is the short form of the approved step; the three long steps stay word for word right under the stepper. Their headings ("1. Load an image", "2. Blur it", "3. Download it") stay as approved, though they don't repeat the stepper labels; see choice 2 below.
+- **Section 4, "Use it your way".** Three cards in Ícaro's choices: the MCP (in development, linked to the public spec), the keyboard shortcuts and GitHub issues. The mockup's four cards ("Protect your privacy", "Create clean screenshots", "Built for developers", "Open source") are not used: two of them break the rules ("sensitive information", "Remove personal data") and the other two repeat section 2.
+- **The "Shortcuts:" line moved.** It was the last line of "The three effects": "Shortcuts: `B` brush, `E` eraser, `[` and `]` brush size, Ctrl+Z (Cmd+Z) undo." All of it is now in the shortcuts card, which adds redo (Ctrl+Shift+Z, Cmd+Shift+Z) and the focus rule for the single keys (README:73). Nothing was lost; the line is gone from the effects section so the page doesn't say it twice.
+- **Out of the page, as Ícaro decided:** the before-and-after preview (BMI-127) and zoom (after v1). The mockup's "12 px" intensity and "select the area" are not used either.
+
+**Open for the PM (BLU-66):**
+
+6. **"Works with any image" is Ícaro's title, and "any" is not literally true.** HEIC opens only in Safari, and an image bigger than the graphics card can handle is scaled down. The card's two lines say exactly which formats open, so the title is kept as approved. If Ícaro wants a title that is true on its own, the option is "Works with common formats" (see choice 1).
+7. **The MCP spec says "no claim on the landing about the MCP before the privacy statement exists"** (`specs/mcp-for-agents.md`, Non-goals). Ícaro asked for the card directly, so it is written, and it makes no claim about what the MCP does: it says the server is in development, not available, and that the page's privacy notes cover only the web app (D-037 keeps the two promises apart). The PM should update that non-goal so the spec and the page agree. Until the MCP page exists, the card links to the spec; then the link changes to the page, and the card is re-checked against the MCP's own privacy statement.
+8. **Hero text from the mockup.** "Online, free and open source forever." and "Blur or pixelate any image, right in your browser." are not better than the approved H1 and subhead: the first has "forever", the second "any" and no "part of an image". The H1 and subhead stay. The mockup's logo-as-title over the drop zone is the same `<h1>` question BMI-085 already has (see "Above the editor").
+
+**Choices for BLU-66 (alternatives for the user).**
+
+Choice 1: the format card title.
+
+| Option | Text | Reason |
+| --- | --- | --- |
+| A (used, Ícaro's) | Works with any image | Ícaro's approved card; the two lines below give the exact list. |
+| B | Works with common formats | True on its own, with no reliance on the lines below. |
+| C | Opens what your browser opens | Says the real rule (README:20), but reads less plainly at a glance. |
+
+Choice 2: the step headings under the stepper.
+
+| Option | Text | Reason |
+| --- | --- | --- |
+| A (used, approved) | 1. Load an image / 2. Blur it / 3. Download it | The approved headings; "Load" covers all four ways in, not only paste. |
+| B | 1. Paste / 2. Blur / 3. Download | Repeats the stepper word for word; "Paste" undersells the drop, the file picker and the link. |
+| C | 1. Paste or load an image / 2. Blur it / 3. Download it | Ties step 1 to the stepper label and keeps the other ways in. |
+
+Choice 3: the MCP card title.
+
+| Option | Text | Reason |
+| --- | --- | --- |
+| A (used) | An MCP server for agents | Says what it is and who it is for; Ícaro's phrase "by design, from devs to devs" opens the text. |
+| B | An MCP server, from devs to devs | Ícaro's words in the title; a reader who doesn't know MCP gets no hint of what it is for. |
+| C | Blur My Image for agents (in development) | Puts the status in the title; longer, and the word MCP, the one developers search for, moves to the body. |
+
+Choice 4: the link text on the GitHub card (the card's CTA).
+
+| Option | Text | Reason |
+| --- | --- | --- |
+| A (used) | Open an issue on GitHub | Says where the click goes and what happens there. |
+| B | Request a feature or report a bug | Repeats the card's title; the reader doesn't learn it is GitHub until the page loads. |
+| C | See open issues | Invites reading before writing, so fewer duplicate issues; weaker as a call to act. |
 
 **Headline choices.** The static H1 is seo.md's proposal, approved with the critique (C1-2). How it sits next to the app's own `<h1>` is BMI-085's call (see "Above the editor"). Two alternatives, in case the layout check changes the answer:
 
