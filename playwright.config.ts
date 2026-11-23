@@ -15,7 +15,18 @@ export default defineConfig({
   },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-    { name: "firefox", use: { ...devices["Desktop Firefox"] } },
+    {
+      name: "firefox",
+      use: {
+        ...devices["Desktop Firefox"],
+        // Firefox opens downloaded WebP/AVIF files in a tab instead of firing a download event.
+        launchOptions: {
+          firefoxUserPrefs: {
+            "browser.download.viewableInternally.enabledTypes": "",
+          },
+        },
+      },
+    },
     { name: "webkit", use: { ...devices["Desktop Safari"] } },
   ],
   webServer: {

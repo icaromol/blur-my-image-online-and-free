@@ -14,7 +14,10 @@ test("paste an image from the clipboard", async ({ page }) => {
     const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
     const data = new DataTransfer();
     data.items.add(new File([bytes], "pasted.png", { type: "image/png" }));
-    window.dispatchEvent(new ClipboardEvent("paste", { clipboardData: data }));
+    // Firefox drops the clipboardData given to the ClipboardEvent constructor.
+    const event = new Event("paste", { cancelable: true });
+    Object.defineProperty(event, "clipboardData", { value: data });
+    window.dispatchEvent(event);
   }, png);
   await expect(blurButton(page)).toBeVisible();
 });
@@ -79,7 +82,9 @@ test("paste a link with Ctrl+V outside the URL field", async ({ page }) => {
   await page.evaluate(() => {
     const data = new DataTransfer();
     data.setData("text/plain", "https://images.test/pasted.png");
-    window.dispatchEvent(new ClipboardEvent("paste", { clipboardData: data }));
+    const event = new Event("paste", { cancelable: true });
+    Object.defineProperty(event, "clipboardData", { value: data });
+    window.dispatchEvent(event);
   });
   await expect(blurButton(page)).toBeVisible();
 });

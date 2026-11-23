@@ -94,7 +94,12 @@ The latest two versions of Chrome, Edge, Firefox and Safari, plus iOS Safari and
 | --- | --- |
 | Every PR | Playwright on Chromium |
 | `main` | Playwright on Firefox and WebKit, and the Docker build with a smoke test |
-| By hand, before a release | Real Safari (macOS and iOS) |
+| A PR that changes anything besides documentation | Playwright on Firefox and WebKit too |
+| By hand, before a release | Real Safari (macOS and iOS), and Firefox's default WebP/AVIF download |
+
+A PR counts as documentation-only when every changed file is under `docs/`, `marketing/`, `brand/` or `.claude/`, ends in `.md`, or is `LICENSE`. Every other change, including `src/`, `e2e/`, `package.json`, `pnpm-lock.yaml` and the workflows, runs the Firefox and WebKit job.
+
+In Firefox the e2e turns off the internal viewer for WebP and AVIF (`browser.download.viewableInternally.enabledTypes = ""` in `playwright.config.ts`), so downloads fire a download event. That means Firefox's default behaviour when downloading a WebP is not covered and is checked by hand before a release.
 
 ## Errors and user messages
 
@@ -133,7 +138,7 @@ A change is done when:
 | --- | --- | --- |
 | Verify | Every PR and `main` | Frozen install, `check`, `test:coverage`, `build`, dist check, `build:server`, `size`, `pnpm audit --audit-level=high`, license check |
 | E2E (Chromium) | Every PR and `main` | Playwright with axe, report uploaded on failure |
-| E2E (Firefox, WebKit) | `main` | Same suite on the other engines |
+| E2E (Firefox, WebKit) | `main`, and every PR except one that only changes documentation | Same suite on the other engines, under `xvfb-run` because headless Firefox has no WebGL without a display |
 | Docker | `main` | Builds the image, starts it, expects `/` to answer 200 and `/api/image` without a same-origin header to answer 403 |
 
 Workflows have read-only permissions, pin every action to a full commit SHA and do not persist credentials. `.github/workflows/security.yml` audits dependencies weekly and runs zizmor on any PR that touches a workflow.
