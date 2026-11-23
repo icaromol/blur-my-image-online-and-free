@@ -16,16 +16,16 @@ Order set by PM (D-039, open to Ícaro's veto). One writing agent at a time, eac
 | --- | --- | --- | --- | --- |
 | 1 | BMI-092 | PR A: no unblurred export without WebGL | ui → Dev UI | `Done` (`715e381`, 2026-11-23) |
 | 2 | BMI-089 | PR B: the WebP download preference, the paste test, `xvfb` in the CI, and the Firefox/WebKit job also on every PR that changes more than docs (D-040) | quality → Dev Quality | `Review` (`42ed01c`, PR #9; merge after Ícaro's Firefox check) |
-| 3 | BMI-135 | The e2e never reuses a foreign server on port 4173 | quality → Dev Quality | `Ready` |
+| 3 | BMI-135 | The e2e never reuses a foreign server on port 4173 | quality → Dev Quality | `Review` (`6cd702c`, PR #10) |
 | 4 | BMI-094 | WebGL context loss after the start | ui → Dev UI | `Ready` |
 | 5 | BMI-090 | release-please: the 0.1.0 config and the release sentence (criteria 1 and 4) | quality → Dev Quality | `Ready`, partial |
 | 6 | BMI-076 | The dependency-review workflow; the scorecard joins when the allowlist exists | quality → Dev Quality | `Ready`, partial |
 | 7 | BMI-093 | Node 26 everywhere | quality and server | `Ready` (PR B committed) |
 
 - **BMI-066** (`Must`, dated) takes the next free slot from **2026-11-28**, ahead of any `Should` still queued. Its gate includes a `pnpm install --frozen-lockfile` in a clean copy.
-- BMI-135 comes after PR B (the D-036 order, and both touch `playwright.config.ts` and `docs/quality.md`) and before BMI-094, because it removes false failures from every later gate. Until then the Orquestrador checks that port 4173 is free before each gate.
+- BMI-135 is committed in PR #10, from `main` and separate from PR #9. `git merge-tree` of the two is clean, so either one can merge first. Until PR #10 is in `main`, branches cut from `main` still have the fixed port 4173 with reuse outside the CI, so the Orquestrador keeps checking that port 4173 is free before each gate. Once PR #10 merges, that check is no longer needed.
 - BMI-075 (PR #6, the logo without blue, D-038) is `Review`: `309829a` is pushed, PR #6 is still a draft. It waits to be marked ready and merged, outside this queue.
-- **Dev UI and Dev Quality are paused** (read 2026-11-23), so the queue doesn't move until Ícaro resumes them.
+- Dev UI and Dev Quality are no longer paused. In Paperclip on 2026-11-23 both read `idle`, and Dev Quality did BMI-135 (BLU-38 to BLU-44). The next item for the Orquestrador is BMI-094 (position 4).
 
 ## Next
 
@@ -43,7 +43,7 @@ Each item carries a recommendation and the default that holds if he doesn't answ
 
 1. **"Allow GitHub Actions to create and approve pull requests"** (D-035, BMI-090). Read 2026-11-23: still off. Recommendation: turn it on right after the BMI-090 config PR merges, so the first run proposes 0.1.0. Default: off; BMI-090 and BMI-071 stay open and release-please is red on every push to `main`.
 2. **Allowlist: add `ossf/scorecard-action` at `23f22cd43608bae7a1f1fa2603d7314dee9538a5`** and keep the four existing patterns (D-030, BMI-076). Read 2026-11-23: not there. Recommendation: do it. Default: the dependency-review ships alone and the scorecard waits.
-3. **Resume Dev Quality and Dev UI** (BMI-089 PR B, then BMI-094). Default: nothing runs.
+3. ~~Resume Dev Quality and Dev UI~~. Resolved: both are active again (read 2026-11-23).
 4. **Hand check in a real Firefox**: a WebP download gives a file, and with `webgl.disabled` the WebGL message shows. Recommendation: before the merge of PR B. Default: PR B isn't merged without it.
 5. **BMI-082:** yes to a Vercel preview with the metrics flag on. Default: `Blocked`, out of the queue.
 6. **BMI-084:** Q-024 (recommendation: keep the three use-case pages), the three `audience.md` edits and the landing critique. Default: BMI-085 stays `Idea`, nothing changes and the critique isn't applied.
@@ -59,6 +59,7 @@ Decisions relayed by other sessions (D-004, D-006 to D-019, D-033 to D-037) stay
 
 ### 2026-11-23
 
+- **BMI-135 → `Review`:** committed as `6cd702c` on `test/e2e-own-server`, PR #10, from `main` (`715e381`), not a draft (PM read it with `git` and `gh`). Files: `playwright.config.ts`, `docs/quality.md` and the new `scripts/e2e-server.mjs`. No AI mention, and `git merge-tree` with PR #9 is clean. Reviews: BLU-40 asked for changes, BLU-41 reworked them, BLU-42 approved with three remarks, BLU-43 applied them, and BLU-44 matched the commit to the approved files by sha256. Checks read by PM: Verify, the title check, E2E (Chromium) and Vercel green. E2E (Firefox, WebKit) and Docker were skipped, because the D-040 filter lives in PR #9. CodeRabbit only posted its rate-limit notice. The two parallel runs and the `cmd.exe` run are as reported by the Orquestrador and Dev Quality; PM didn't rerun them. `Done` after the merge into `main`. Dev UI and Dev Quality are active again, so "Blocked" 3 is resolved.
 - **BMI-089 → `Review`:** PR B is committed as `42ed01c` on `ci/firefox-webkit-e2e` and open as PR #9 (PM read it with `git` and `gh`): `ci.yml` (`xvfb` and the D-040 `changes` job), `docs/quality.md`, `e2e/input.spec.ts`, `playwright.config.ts`; the Orquestrador matched it to the reviewed diff (BLU-25, BLU-30) by sha256. Checks read by PM: Verify, the title check, Changed paths, zizmor, E2E (Chromium) and Vercel green; `E2E (Firefox, WebKit)` (WebKit's first run under `xvfb`) and CodeRabbit still running. Not merged: the merge waits for Ícaro's hand check in a real Firefox ("Blocked" 4). **BMI-093 → `Ready`** by D-039 point 9 (it waited for PR B to be committed). `Must`: 31 done, 16 in review, 4 in progress.
 - **D-040 (PM):** the opus reviewer of BMI-089 PR B (finding 2) found that the path filter for the Firefox and WebKit job on PRs (D-039 point 7) left out the paste (`src/input/`), the WebP download (`src/export/`) and Playwright bumps (`package.json`, `pnpm-lock.yaml`), the places where Firefox already differed. PM widened it: the job runs on every pull request except one that changes only documentation (`docs/`, `marketing/`, `brand/`, `.claude/`, `*.md`, `LICENSE`). Only CI time is added; no check is removed and no scope changes. The Dev Quality worker applies it to `ci.yml` and `docs/quality.md` with the reviewer's other findings. Ícaro can overrule.
 - **PR #5, PR #4 and PR #7 are merged** (PM read them with `gh`): #5 `b585016` (14:50Z, the post-merge docs), #4 `dc12cbb` (14:51Z, BMI-087 → `Done`) and #7 `715e381` (14:53Z, BMI-092 PR A → `Done`; PM read the diff against every criterion, and the opus reviewer's read of the final diff isn't on record). `main`'s CI: Verify, E2E (Chromium) and Docker green at `b585016` and `715e381`; `E2E (Firefox, WebKit)` failed at `b585016` as expected until PR B (the run at `715e381` was still going when PM read it); release-please red on each push, expected while Ícaro's setting is off. `Must` done: 31 of 54.
