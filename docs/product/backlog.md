@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. **PR #2 was merged into `main` on 2026-11
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 30 of 53 `Must` done (merged in `081fa59`, 2026-11-22), 15 in review (held by the Firefox and release failures, see below), 6 in progress (BMI-003, 050, 066, 070, 089, 092), 2 ready (BMI-076, BMI-090). Also BMI-074, BMI-080, BMI-081 and BMI-091 (`Should`, `Done`), BMI-075 and BMI-087 (`Should`, `Review`), BMI-135 (`Should`, `Ready`), BMI-093, BMI-078, BMI-084, BMI-082, BMI-083, BMI-085 (`Should`, `Idea` or waiting).
+Progress: 30 of 54 `Must` done (merged in `081fa59`, 2026-11-22), 15 in review (held by the Firefox and release failures, see below), 6 in progress (BMI-003, 050, 066, 070, 089, 092), 2 ready (BMI-076, BMI-090). Also BMI-074, BMI-080, BMI-081 and BMI-091 (`Should`, `Done`), BMI-075 and BMI-087 (`Should`, `Review`), BMI-135 (`Should`, `Ready`), BMI-093, BMI-078, BMI-084, BMI-082, BMI-083, BMI-085 (`Should`, `Idea` or waiting).
 
 ### E1. Foundation
 
@@ -109,6 +109,19 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-092 | A Firefox (or any browser) without WebGL must not export the image unblurred: the renderer falls back silently to a canvas renderer that skips every filter; make it fail loudly with the existing WebGL message (a privacy bug found by BMI-089) | Must | S | In progress | |
 | BMI-135 | Playwright must not reuse another process's server on port 4173 outside the CI (or must use a free port): it has caused a false failure twice and now disturbs the Firefox diagnosis; moved up from `Later` by Ícaro (D-036) | Should | S | Ready | |
 | BMI-093 | Move Docker, the CI, `engines` and the README to Node 26 (D-036): pinned pnpm 12.18.0 in place of corepack, `setup-node` in four places, then close Dependabot's PR #3; the Docker job also runs on PRs that change the `Dockerfile`; after BMI-089 and BMI-092 | Should | S | Idea | BMI-089, BMI-092 |
+| BMI-094 | The WebGL context can be lost after the start (`webglcontextlost`) and nobody listens: the textures come back empty and the cache isn't invalidated, so the export is silently empty (a transparent PNG, a white JPEG); detect it, tell the user, and re-render on restore | Must | M | Idea | BMI-092 |
+
+### E10. MCP and discovery by agents (D-037): `Idea` items only, after v1, scope not closed
+
+Spec outline: [specs/mcp-for-agents.md](specs/mcp-for-agents.md). Nothing here is built; the domain is Q-027; whether the first delivery is only the spec is Q-028.
+
+| ID | Item | Priority | Size | Status | Depends on |
+| --- | --- | --- | --- | --- | --- |
+| BMI-139 | MCP architecture spec for the whole family: remote server (HTTP), local package (stdio) or both; which tools; URL or file input; limits | Could | M | Idea | |
+| BMI-140 | Privacy model for the MCP surface: its own honest declaration, or a local-first design; the rule that the web app's promise and the MCP's are never mixed in the README or on the landing | Could | S | Idea | BMI-139 |
+| BMI-141 | Hosting and cost for an MCP: Vercel Hobby is non-commercial and has a 4.5 MB request body limit, and agents share an IP against the 30 per 60 s rule | Could | S | Idea | BMI-139 |
+| BMI-142 | Discovery by agents (GEO/AEO) research with sources: `llms.txt`, structured data, MCP registries, tool descriptions, how agents choose | Could | M | Idea | |
+| BMI-143 | A measurable criterion for "the best MCP for agents": evals, time, success rate, cost per call, collected without recording images | Could | S | Idea | BMI-139 |
 
 ### E6. Launch readiness
 
@@ -158,7 +171,7 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-136 | Marketing templates: `marketing/social/templates/brand.css` imports Google Fonts at render time (a network request on every render, for the `tip.html` template); self-host the font or drop the import. Only matters if `tip.html` is used; the app is not affected | Quality | Idea |
 | BMI-137 | Image loading by link on phones: the real ceiling is decoding memory, not the 100 MiB cap (a compressed file of tens of MB can exceed 100 megapixels, over 400 MB as RGBA, and end in `decode_failed`; a body just under the cap sits whole in a Blob, kept in RAM on iOS Safari and able to reload the tab); a lower or device-aware cap, or a clearer message when decoding fails on a very large file | Quality | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-094`; later effects `BMI-109`, features `BMI-129`, other later `BMI-139`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-095`; later effects `BMI-109`, features `BMI-129`, other later `BMI-139`.
 
 ---
 
@@ -441,8 +454,9 @@ The push to `main` ran the jobs that only run there. Verify, E2E (Chromium) and 
 
 Found by the BMI-089 worker (2026-11-22, via `-75`; PM didn't run it, the evidence is in `.local/bmi-089/`, git-ignored): in Firefox 159 headless without a display, `getContext('webgl')` and `getContext('webgl2')` are `null`; PixiJS 8.23, given `preference: "webgl"` (a string) in `src/engine/renderer.ts` line 48, silently falls back to its Canvas2D renderer, which skips every filter ("CanvasRenderer: filter ... is not supported ... will be skipped"), and the app **exports the image without the blur, with no error**. It is a product bug and not only a CI one: a visitor whose browser has no WebGL "blurs" a photo of a plate or a face and downloads it intact, believing it hidden. The hosted app is live at its alias today (not advertised, D-016), so this is the first thing to fix. The proposed fix, proven in the worker's clone: `preference: ["webgl"]` (an array), so that Pixi throws; the editor already maps that to the `webgl_unavailable` message ("Your browser couldn't start WebGL, which this app needs to render effects.", with the buttons disabled), already translated in `en` and `pt-BR`, so no new string.
 
-- [ ] `src/engine/renderer.ts` makes the renderer fail loudly when WebGL isn't available, instead of falling back to a renderer that skips filters; PM's note for the reviewer: check that no other path can fall back silently (a renderer option, a WebGL context loss after the start, a second renderer).
-- [ ] A regression test that fails without the fix: an e2e (in Chromium, which has WebGL) that forces `getContext('webgl')` and `getContext('webgl2')` to return `null` and requires the `webgl_unavailable` message and the disabled effect and export buttons; the worker writes it in the clone.
+- [ ] `src/engine/renderer.ts` makes the renderer fail loudly when WebGL isn't available, instead of falling back to a renderer that skips filters. The opus reviewer checked the rest (via `-75`): there is no other renderer in `src/` (only `renderer.ts` lines 46 to 48), the export always uses the same renderer (no 2D canvas bypasses the filter), and WebGPU also goes away with the array. Dead code: the `: 4096` branch of `renderer.ts` is removed (a `SHOULD`).
+- [ ] **A MUST the reviewer found in the same area:** in the editor (`src/ui/editor.ts`), `openUrl` clears the error and calls `show()`, which returns in silence when the renderer doesn't exist; without WebGL, loading by **link** erases the `webgl_unavailable` message and nothing happens. A one-line change in `show()` keeps the message. PR A is `renderer.ts` + the editor + the regression e2e for a file and for a link.
+- [ ] A regression test that fails without the fix: an e2e (in Chromium, which has WebGL) that forces `getContext('webgl')` and `getContext('webgl2')` to return `null` and requires the `webgl_unavailable` message and the disabled effect and export buttons, **for an image opened from a file and for one opened by link**; the worker writes it in the clone.
 - [ ] An export can never produce an image that skipped an effect without telling the user: the test also loads an image, tries an effect and shows that nothing downloadable carries a missing blur.
 - [ ] No new text; the existing `webgl_unavailable` strings stay as they are.
 - [ ] In a PR of its own (the `-aa` rule: `src/` apart), read by the opus reviewer, ahead of BMI-089's other work because it is a privacy issue; then the held effect items can leave `Review` (BMI-020 to 026, 028).
@@ -457,7 +471,7 @@ Owner lane: quality, with the ui lane if an app bug turns up. `-5b` or a worker 
 - [ ] Reproduce on Firefox with the project's own Playwright setup (`pnpm exec playwright install firefox`, then the `firefox` project), attach the reports and traces; and on a machine with a real GPU and on one without (or with software rendering), and write down per test whether it fails in both.
 - [ ] For each of the 15 tests: decide **app bug** or **environment**, with the evidence (a screenshot or the pixel values, and whether the app works by hand in Firefox on the same build).
 - [ ] An app bug is fixed in a PR of its own, with a test. For what is only the environment, the fix is proposed for the CI or the test **without skipping, relaxing or removing any test** and without taking Firefox off the supported list: any reduction of coverage or support needs Ícaro's direct yes (`-aa`, relaying his rule; this replaces PM's first wording, which allowed a documented skip). `docs/quality.md` says what is and isn't covered on Firefox.
-- [ ] BMI-089 goes in a PR separate from the others.
+- [ ] BMI-089 goes in a PR separate from the others. **PM's decision, for `-aa` and Ícaro to veto:** the `e2e-firefox-webkit` job (it runs only on a push to `main`, `ci.yml` line 68) also runs on pull requests that touch `ci.yml`, `playwright.config.ts`, `e2e/**` or `src/engine/**`, through a path filter, so that PR B's `xvfb` step is proven on GitHub **before** the merge instead of after; it adds a check and removes none. The same idea as Ícaro's rule for the Dockerfile (D-036).
 - [ ] `E2E (Firefox, WebKit)` passes on `main`; the held items go to `Done` once their e2e is green on both browsers.
 - [ ] Nothing here cuts a supported browser from `docs/quality.md` without Ícaro's yes.
 
@@ -480,6 +494,14 @@ Read and test locally; the executor is `-f2` or a worker of the server lane; no 
 - [x] A report to PM; the merge needs Ícaro's yes because it swaps the runtime; default: not merged.
 
 **Result (2026-11-22, `-f2` via `-75`; PM checked the Dockerfile, `engines` and the CI files):** nothing merged, closed or changed. PR #3 changes only the two `FROM` lines; Node 26 has no corepack and the Dockerfile line 3 is `RUN corepack enable`, so the Docker build on `main` would very likely fail (inference: no real image build, the daemon was stopped; the CI smoke and 303 tests pass on Node 26 outside Docker). Node 26 is LTS since 2026-10-28 (end 2029-04-30) and Node 24 is in maintenance since 2026-10-20 (end 2028-04-30); Vercel's default is 26 and the hosted project already runs 26.x; `engines` is `>=24`; Docker and the CI's `setup-node` (four places) and the README are on 24. The choice is Ícaro's (Q-026); if he picks Node 26, PM grooms the item. Marked `Done` on the same basis as BMI-074: a read-only evaluation, nothing to merge.
+
+### BMI-094 — WebGL context loss after the start
+
+Found by the opus reviewer of BMI-092 (2026-11-22, via `-75`; PM didn't run it): `webglcontextlost` isn't listened to; Pixi re-emits `contextChange`, the textures come back empty and the `rendered` cache in `src/engine/renderer.ts` isn't invalidated, so the export comes out **empty** (a transparent PNG, a white JPEG) without an error. The reviewer found no path that exports the original without the filter, so it is not a privacy leak, but it is silent loss of the user's work. A separate item, not in PR A. Before PR A's fix is released the order is: PR A (BMI-092), PR B (BMI-089), and then this.
+
+- [ ] The worker proves it with an e2e (`WEBGL_lose_context`: measure the pixels after the loss, restore, apply again) before any fix.
+- [ ] On loss the app shows an error and `download()` refuses while `gl.isContextLost()`; on restore the cache is cleared (`this.rendered = []`) and the operation list is rendered again, so the user's edits come back.
+- [ ] Texts through the existing message files in `en` and `pt-BR` (a new `pt-BR` string is read by Ícaro); the key-parity test, check, unit and e2e tests and `pnpm size` pass.
 
 ### BMI-135 — The e2e must not reuse a foreign server
 

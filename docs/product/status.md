@@ -4,7 +4,7 @@ Updated: 2026-11-22
 
 ## Milestone: v1
 
-30 of 53 `Must` done · 15 in review · 6 in progress · 2 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+30 of 54 `Must` done · 15 in review · 6 in progress · 2 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -55,6 +55,10 @@ Only items that block something. Questions with a default in force are in decisi
 ## Log
 
 ### 2026-11-22 (new PM session, handoff)
+
+- **Strategic direction from Ícaro (D-037, relayed by `-aa`): an MCP for each tool of the family.** "We have to have mcp.blurmyimage.com", and the same for every micro-SaaS, each established on the web with SEO and GEO/AEO as the free global MCP that works best for agents; he plans to launch several separate tools. PM opened epic E10 with `Idea` items only (BMI-139 architecture, BMI-140 the honest privacy model, BMI-141 hosting and cost, BMI-142 discovery research, BMI-143 a measurable criterion) and an outline spec, `specs/mcp-for-agents.md`; nothing is built and no pull request is touched. The sharpest point in the outline: the web app promises that image files never leave the device, and a remote MCP receives the image on a server, so the two promises must never be mixed. Q-027 (buying a domain; default: none) and Q-028 (only the spec first; default: only the spec). PM read no MCP documentation yet; the spec's author does that first.
+
+- **The opus reviewer approved the Firefox and WebGL diagnosis and found more** (via `-75`): a MUST in PR A, the editor's `openUrl` clears the `webgl_unavailable` message and `show()` returns in silence, so loading by link without WebGL shows nothing at all (a one-line fix, PR A is now `renderer.ts` + the editor + the e2e for a file and a link, plus removing the dead `: 4096` branch); no other renderer or silent path exists in `src/`. A separate new item, BMI-094 (`Must`, `Idea` until PR A is done): WebGL context loss after the start isn't listened to, so the export comes out empty without an error (no unfiltered export, but silent loss of work); `Must` is 54. The reviewer suggested PR B before PR A; PM keeps A first (privacy). PM's decision for `-aa` and Ícaro to veto: the Firefox and WebKit job also runs on PRs that touch the CI, the Playwright config, `e2e/` or `src/engine/` (a path filter), so that PR B's `xvfb` step is proven before the merge. The WebP preference: the reviewer read the code and logs, Firefox saves the file and opens a tab without emitting the `download` event (browser behavior by extension, the app already uses `<a download>` with the right blob); the hand check in a real Firefox is still pending (the worker is on it).
 
 - **D-036 (Ícaro, relayed by `-aa`):** the `pt-BR` of the cut-download error (BMI-087, PR #4) is approved as it is; BMI-135 (the e2e must not reuse a foreign server on port 4173) moves up from `Later` to `Ready`, `Should`, quality; Node 26: he chose to move everything (Docker with a pinned pnpm 12.18.0, the CI in four places, `engines`, the README), PR #3 closed afterwards, in a PR of its own after BMI-089 and BMI-092, with the Docker job also running on PRs that change the `Dockerfile` (new BMI-093, `Should`, `Idea` until its turn); the privacy bug (BMI-092) keeps the highest priority and the plan is approved. Q-026 is closed. Still with him: the manual Firefox check (a WebP download gives a file) and a test without WebGL, which `-aa` takes to him.
 

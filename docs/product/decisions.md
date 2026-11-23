@@ -20,6 +20,14 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-027 — Buy a domain for the MCP (`mcp.<domain>`)?
+
+D-037 says Ícaro wants `mcp.blurmyimage.com` and the same for each tool of the family. A subdomain needs the parent domain, and buying a domain is his decision (D-016, Q-005: the app lives today on a `*.vercel.app` address). PM raises it and decides nothing. Recommendation: wait for the architecture spec (BMI-139): a local package run over stdio needs no domain, and the choice between remote and local changes what is worth buying. Default in force: **no purchase and no domain work.**
+
+### Q-028 — Is the first delivery of the MCP only the spec, or a prototype too?
+
+Asked for by `-aa` as a question for later. Recommendation: the spec first, and a prototype only after the privacy model (BMI-140) is decided, since the prototype's shape (remote or local) follows from it. Default in force: **only the spec.**
+
 ### Q-024 — Do the three use-case pages stay, now that the home is the app screen?
 
 D-032 makes the landing the app's own screen with the copy underneath. BMI-085 planned a home and three use-case pages (blur a license plate, pixelate a screenshot, blur a face) as static pages. Question for Ícaro: do the use-case pages stay as separate pages that the app screen links to, or does everything live on the one screen (sections, no separate pages)? The SEO notes favour separate pages (one query intent per page), at the price of more files to keep true; one screen is simpler and ranks for fewer queries. Recommendation: keep the three use-case pages, small, linked from the sections under the app, since each search intent (plate, screenshot, face) deserves its own answer. Default in force: BMI-085 stays an `Idea` and nothing is built; the copy of BMI-084 is written for the home first.
@@ -47,6 +55,13 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the project's main domain on 2026-11-22, per `-aa`; the earlier `https://blur-my-image.vercel.app` answers 307 to it (PM read both with a plain `GET`). The README, the repo website field and the bug form get it only when Ícaro says (D-016). Not blocking.
 
 ## Decisions
+
+### D-037 — Strategic direction: an MCP for each tool of the family (2026-11-22)
+
+**Decision** (a direction, scope not closed), as relayed by `-aa` from Ícaro's own words: "we have to have mcp.blurmyimage.com" and, for each micro-SaaS, the same ("mcp.cut...", "mcp.pixelate", "mcp.backgroundremove" and so on): "this is where the value lives": each tool is established on the web with SEO and GEO/AEO as the free, global MCP that works best for agents. He also plans to launch several separate tools (a map is in `.local/tool-sites/`, git-ignored). PM opens a new epic, E10 (MCP and discovery by agents), with `Idea` items only and a spec outline first (`specs/mcp-for-agents.md`); nothing is implemented, no domain is bought, and no pull request is touched. The spec covers the family, not only blur. The label D-036 that `-aa` used is taken by the answers after the merge, so this is D-037.
+**Why:** his strategy for where the product's value lies.
+**Decided by:** Ícaro, per the orchestrator session. Scope closed later.
+**Affects:** epic E10, BMI-139 to BMI-143, Q-027, Q-028, the landing and README (nothing may mix the promise of the web app with the MCP's).
 
 ### D-036 — Answers after the merge: the BMI-087 text, the Playwright port, Node 26, and the priority of the privacy bug (2026-11-22)
 
