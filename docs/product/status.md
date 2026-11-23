@@ -4,7 +4,7 @@ Updated: 2026-11-23
 
 ## Milestone: v1
 
-31 of 54 `Must` done · 15 in review · 5 in progress · 3 ready · 0 blocked. The 15 in review are merged but held until `E2E (Firefox, WebKit)` is green on `main` (BMI-089) or release-please opens its PR (BMI-071). Two `Should` items are `Blocked` on Ícaro (BMI-082, BMI-084). Full list in [backlog.md](backlog.md).
+31 of 54 `Must` done · 16 in review · 4 in progress · 3 ready · 0 blocked. BMI-089 is in review in PR #9; the other 15 in review are merged but held until `E2E (Firefox, WebKit)` is green on `main` (BMI-089) or release-please opens its PR (BMI-071). Two `Should` items are `Blocked` on Ícaro (BMI-082, BMI-084). Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -15,12 +15,12 @@ Order set by PM (D-039, open to Ícaro's veto). One writing agent at a time, eac
 | # | ID | Item | Lane → agent | Status |
 | --- | --- | --- | --- | --- |
 | 1 | BMI-092 | PR A: no unblurred export without WebGL | ui → Dev UI | `Done` (`715e381`, 2026-11-23) |
-| 2 | BMI-089 | PR B: the WebP download preference, the paste test, `xvfb` in the CI, and the Firefox/WebKit job also on every PR that changes more than docs (D-040) | quality → Dev Quality | `In progress` (diagnosis done; the PR is next) |
+| 2 | BMI-089 | PR B: the WebP download preference, the paste test, `xvfb` in the CI, and the Firefox/WebKit job also on every PR that changes more than docs (D-040) | quality → Dev Quality | `Review` (`42ed01c`, PR #9; merge after Ícaro's Firefox check) |
 | 3 | BMI-135 | The e2e never reuses a foreign server on port 4173 | quality → Dev Quality | `Ready` |
 | 4 | BMI-094 | WebGL context loss after the start | ui → Dev UI | `Ready` |
 | 5 | BMI-090 | release-please: the 0.1.0 config and the release sentence (criteria 1 and 4) | quality → Dev Quality | `Ready`, partial |
 | 6 | BMI-076 | The dependency-review workflow; the scorecard joins when the allowlist exists | quality → Dev Quality | `Ready`, partial |
-| 7 | BMI-093 | Node 26 everywhere | quality and server | `Idea` until BMI-089 PR B is committed |
+| 7 | BMI-093 | Node 26 everywhere | quality and server | `Ready` (PR B committed) |
 
 - **BMI-066** (`Must`, dated) takes the next free slot from **2026-11-28**, ahead of any `Should` still queued. Its gate includes a `pnpm install --frozen-lockfile` in a clean copy.
 - BMI-135 comes after PR B (the D-036 order, and both touch `playwright.config.ts` and `docs/quality.md`) and before BMI-094, because it removes false failures from every later gate. Until then the Orquestrador checks that port 4173 is free before each gate.
@@ -31,7 +31,7 @@ Order set by PM (D-039, open to Ícaro's veto). One writing agent at a time, eac
 
 Ordering, not a cut: all of it is v1.
 
-1. BMI-093 once BMI-089 PR B is committed; then Dependabot's PR #3 is closed.
+1. Dependabot's PR #3 is closed after BMI-093's PR merges (BMI-093 is `Ready`, position 7 in "Now").
 2. BMI-066 from 2026-11-28 (`pnpm-workspace.yaml`, after the newest locked package turns 7 days old).
 3. BMI-082 after Ícaro's yes to the preview experiment.
 4. BMI-084 after his answers (Q-024, `audience.md`, the critique); then BMI-085 is groomed.
@@ -59,6 +59,7 @@ Decisions relayed by other sessions (D-004, D-006 to D-019, D-033 to D-037) stay
 
 ### 2026-11-23
 
+- **BMI-089 → `Review`:** PR B is committed as `42ed01c` on `ci/firefox-webkit-e2e` and open as PR #9 (PM read it with `git` and `gh`): `ci.yml` (`xvfb` and the D-040 `changes` job), `docs/quality.md`, `e2e/input.spec.ts`, `playwright.config.ts`; the Orquestrador matched it to the reviewed diff (BLU-25, BLU-30) by sha256. Checks read by PM: Verify, the title check, Changed paths, zizmor, E2E (Chromium) and Vercel green; `E2E (Firefox, WebKit)` (WebKit's first run under `xvfb`) and CodeRabbit still running. Not merged: the merge waits for Ícaro's hand check in a real Firefox ("Blocked" 4). **BMI-093 → `Ready`** by D-039 point 9 (it waited for PR B to be committed). `Must`: 31 done, 16 in review, 4 in progress.
 - **D-040 (PM):** the opus reviewer of BMI-089 PR B (finding 2) found that the path filter for the Firefox and WebKit job on PRs (D-039 point 7) left out the paste (`src/input/`), the WebP download (`src/export/`) and Playwright bumps (`package.json`, `pnpm-lock.yaml`), the places where Firefox already differed. PM widened it: the job runs on every pull request except one that changes only documentation (`docs/`, `marketing/`, `brand/`, `.claude/`, `*.md`, `LICENSE`). Only CI time is added; no check is removed and no scope changes. The Dev Quality worker applies it to `ci.yml` and `docs/quality.md` with the reviewer's other findings. Ícaro can overrule.
 - **PR #5, PR #4 and PR #7 are merged** (PM read them with `gh`): #5 `b585016` (14:50Z, the post-merge docs), #4 `dc12cbb` (14:51Z, BMI-087 → `Done`) and #7 `715e381` (14:53Z, BMI-092 PR A → `Done`; PM read the diff against every criterion, and the opus reviewer's read of the final diff isn't on record). `main`'s CI: Verify, E2E (Chromium) and Docker green at `b585016` and `715e381`; `E2E (Firefox, WebKit)` failed at `b585016` as expected until PR B (the run at `715e381` was still going when PM read it); release-please red on each push, expected while Ícaro's setting is off. `Must` done: 31 of 54.
 - **D-039, PM's decisions on the delegation plan** (BLU-4, after Ícaro passed the decision to PM in BLU-3 and wrote "destrave e prossiga!" in BLU-4): the queue order in "Now", BMI-094 → `Ready` (PR A merged), BMI-084 and BMI-082 → `Blocked` on Ícaro, partial starts for BMI-090 and BMI-076, the Firefox/WebKit path filter and PR #3 confirmed. Nothing cut.
