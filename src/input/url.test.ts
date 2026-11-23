@@ -95,6 +95,67 @@ describe("fetchImage", () => {
     });
   });
 
+  describe("a proxied download that doesn't finish", () => {
+    const viaProxy = (response: () => Response) =>
+      vi.fn(async (input: RequestInfo | URL) => {
+        if (String(input).startsWith(PROXY)) return response();
+        throw new TypeError("Failed to fetch");
+      });
+
+    function failingBody(error: unknown, bytesFirst: number) {
+      return new Response(
+        new ReadableStream<Uint8Array>({
+          start(controller) {
+            if (bytesFirst) controller.enqueue(new Uint8Array(bytesFirst));
+            controller.error(error);
+          },
+        }),
+        { headers: { "content-type": "image/png" } },
+      );
+    }
+
+    it("reports download_interrupted when the proxy cuts the body mid-stream", async () => {
+      const fetcher = viaProxy(() =>
+        failingBody(new TypeError("terminated"), 4_000),
+      );
+
+      await expect(fetchImage(target, PROXY, fetcher)).rejects.toMatchObject({
+        code: "download_interrupted",
+      });
+    });
+
+    it("reports download_interrupted when the connection drops before any bytes", async () => {
+      const fetcher = viaProxy(() =>
+        failingBody(new TypeError("network error"), 0),
+      );
+
+      await expect(fetchImage(target, PROXY, fetcher)).rejects.toMatchObject({
+        code: "download_interrupted",
+      });
+    });
+
+    it("keeps the proxy's JSON too_large", async () => {
+      const fetcher = viaProxy(() =>
+        Response.json({ error: "too_large" }, { status: 413 }),
+      );
+
+      await expect(fetchImage(target, PROXY, fetcher)).rejects.toMatchObject({
+        code: "too_large",
+      });
+    });
+
+    it("leaves the direct path alone: a cut direct body is not download_interrupted", async () => {
+      const fetcher = vi.fn(async () =>
+        failingBody(new TypeError("network error"), 10),
+      );
+
+      await expect(
+        fetchImage(target, PROXY, fetcher),
+      ).rejects.not.toMatchObject({ code: "download_interrupted" });
+      expect(fetcher).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe("when the platform's rate limit denies the proxy request", () => {
     const viaProxy = (response: () => Response) =>
       vi.fn(async (input: RequestInfo | URL) => {

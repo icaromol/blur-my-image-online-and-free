@@ -76,6 +76,7 @@
     "not_an_image": "That link doesn't point to an image.",
     "too_large": "That image is too large to load by link. Download it and open the file instead.",
     "rate_limited": "Too many requests from your network right now. Try again in about a minute.",
+    "download_interrupted": "The download was interrupted. If the image is large, download it and open the file instead.",
     "timeout": "The site took too long to respond.",
     "too_many_redirects": "The link redirects too many times.",
     "bad_redirect": "The link redirects somewhere invalid.",

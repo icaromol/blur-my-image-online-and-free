@@ -106,5 +106,11 @@ export async function fetchImage(
     throw new CodedError(code);
   }
   if (!isImage(proxied)) throw new CodedError("not_an_image");
-  return proxied.blob();
+  // Past its cap the proxy cuts a body of undeclared size mid-stream; the browser sees the same
+  // error as for a dropped connection, so the message can't claim either cause.
+  try {
+    return await proxied.blob();
+  } catch {
+    throw new CodedError("download_interrupted");
+  }
 }
