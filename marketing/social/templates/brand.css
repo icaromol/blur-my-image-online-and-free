@@ -1,15 +1,4 @@
-/* Starter tokens. Replace with the real brand once it is defined. */
-@import url("https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700&family=JetBrains+Mono:wght@500&display=block");
-
-:root {
-  --bg: #0f1115;
-  --surface: #181b21;
-  --text: #f2f3f5;
-  --muted: #9aa1ad;
-  --accent: #7cc4ff;
-  --font-sans: "Inter Tight", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
-}
+@import "../../../brand/tokens.css";
 
 * {
   box-sizing: border-box;

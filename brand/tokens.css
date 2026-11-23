@@ -1,0 +1,27 @@
+:root {
+  --color-black: #0f1115;
+  --color-white: #ffffff;
+
+  --grey-900: #181b21;
+  --grey-700: #454c5c;
+  --grey-400: #9aa1ad;
+  --grey-100: #eceef2;
+  --grey-50: #f2f3f5;
+
+  --blue-on-dark: #7cc4ff;
+  --blue-on-light: #0d62b8;
+
+  --bg: var(--color-black);
+  --surface: var(--grey-900);
+  --text: var(--grey-50);
+  --muted: var(--grey-400);
+  --accent: var(--blue-on-dark);
+
+  --paper: var(--grey-100);
+  --ink: var(--color-black);
+  --ink-muted: var(--grey-700);
+  --accent-on-light: var(--blue-on-light);
+
+  --font-sans: "Liberation Sans", Arimo, Arial, Helvetica, sans-serif;
+  --font-mono: "Liberation Mono", Cousine, "Courier New", monospace;
+}
