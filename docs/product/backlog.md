@@ -2,20 +2,20 @@
 
 Single source of truth for work items. Statuses, priority and size are defined in `.claude/skills/pm/SKILL.md`. Current iteration and log live in [status.md](status.md); decisions in [decisions.md](decisions.md).
 
-Last synced with the code: 2026-11-23 (`main` at `715e381`). **PR #2 was merged into `main` on 2026-11-22 (squash `081fa59`)**; it replaced PR #1, which GitHub closed during the history rewrite. On 2026-11-23 PR #5 (`b585016`, these docs), PR #4 (`dc12cbb`, BMI-087) and PR #7 (`715e381`, BMI-092 PR A) were merged; PM read the merges with `gh`. BMI-089 PR B is committed as `42ed01c` on `ci/firefox-webkit-e2e`, in PR #9 (open, not merged). BMI-135 is committed as `6cd702c` on `test/e2e-own-server`, in PR #10 (open, not merged). The `Done` items below are merged; the ones still in `Review` are held on purpose (BMI-089 for Firefox, BMI-071 and BMI-090 for release-please). `Review` means committed on a branch or merged but held, not `Done`.
+Last synced with the code: 2026-11-23 (`main` at `05645f8`). **PR #2 was merged into `main` on 2026-11-22 (squash `081fa59`)**; it replaced PR #1, which GitHub closed during the history rewrite. On 2026-11-23 PR #5 (`b585016`, these docs), PR #4 (`dc12cbb`, BMI-087) and PR #7 (`715e381`, BMI-092 PR A) were merged; PM read the merges with `gh`. PR #9 (`05645f8`, BMI-089 PR B) was merged at 21:51Z and the first `main` run after it was green, `E2E (Firefox, WebKit)` included, so BMI-089 and the 14 items held for Firefox are `Done`. BMI-135 is committed as `6cd702c` on `test/e2e-own-server`, in PR #10 (open, not merged). The `Done` items below are merged; BMI-071 is still held in `Review` on purpose, for release-please. `Review` means committed on a branch or merged but held, not `Done`.
 
 ## Milestone v1
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 31 of 54 `Must` done (30 merged in `081fa59` on 2026-11-22, BMI-092 in `715e381` on 2026-11-23), 16 in review (15 held by the Firefox and release failures, see below, and BMI-089 in PR #9), 4 in progress (BMI-003, 050, 066, 070), 3 ready (BMI-076, BMI-090, BMI-094). Also BMI-074, BMI-080, BMI-081, BMI-087 and BMI-091 (`Should`, `Done`), BMI-075 (`Should`, `Review`, `309829a` in PR #6, D-038), BMI-093 (`Should`, `Ready`), BMI-135 (`Should`, `Review`, `6cd702c` in PR #10), BMI-082 and BMI-084 (`Should`, `Blocked` on Ícaro, D-039), BMI-078, BMI-083, BMI-085 (`Should`, `Idea`).
+Progress: 46 of 54 `Must` done (30 merged in `081fa59` on 2026-11-22; BMI-092 in `715e381` on 2026-11-23; BMI-089 in `05645f8` on 2026-11-23, which also released BMI-002, 012, 013, 020 to 026, 028, 032, 033 and 067), 1 in review (BMI-071, held for release-please), 5 in progress (BMI-003, 050, 066, 070, 094), 2 ready (BMI-076, BMI-090). Also BMI-074, BMI-080, BMI-081, BMI-087 and BMI-091 (`Should`, `Done`), BMI-075 (`Should`, `Review`, `309829a` in PR #6, D-038), BMI-093 (`Should`, `Ready`), BMI-135 (`Should`, `Review`, `6cd702c` in PR #10), BMI-082 and BMI-084 (`Should`, `Blocked` on Ícaro, D-039), BMI-078, BMI-083, BMI-085 (`Should`, `Idea`).
 
 ### E1. Foundation
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
 | BMI-001 | Scaffold: Vue 3 + Vite + TS, Biome, Vitest, Playwright, husky pre-commit | Must | M | Done | |
-| BMI-002 | CI: check, unit, e2e, Docker build on every PR; Dependabot | Must | S | Review | BMI-001 |
+| BMI-002 | CI: check, unit, e2e, Docker build on every PR; Dependabot | Must | S | Done | BMI-001 |
 | BMI-003 | Deploy to Vercel Hobby (static site + `/api/image` function); Git integration, production on every merge to `main` (D-005); authorized by D-012; see tooling.md and the details below | Must | S | In progress | BMI-001, BMI-014 |
 | BMI-004 | Docker image (static site + proxy on Node) built in CI as the exit path | Must | S | Done | BMI-014 |
 
@@ -25,8 +25,8 @@ Progress: 31 of 54 `Must` done (30 merged in `081fa59` on 2026-11-22, BMI-092 in
 | --- | --- | --- | --- | --- | --- |
 | BMI-010 | Load via file picker | Must | S | Done | BMI-001 |
 | BMI-011 | Load via drag and drop anywhere on the page | Must | S | Done | BMI-010 |
-| BMI-012 | Load via paste (`Ctrl/Cmd+V` with an image on the clipboard) | Must | S | Review | BMI-010 |
-| BMI-013 | Load via URL field and via pasting a copied link; direct CORS first, proxy fallback | Must | M | Review | BMI-014 |
+| BMI-012 | Load via paste (`Ctrl/Cmd+V` with an image on the clipboard) | Must | S | Done | BMI-010 |
+| BMI-013 | Load via URL field and via pasting a copied link; direct CORS first, proxy fallback | Must | M | Done | BMI-014 |
 | BMI-014 | URL proxy `/api/image`: Hono, SSRF checks per redirect, `image/*` only, `MAX_BYTES`, timeout, cross-site rejection | Must | M | Done | |
 | BMI-015 | Large images: read `MAX_TEXTURE_SIZE`, downscale to fit, tell the user before editing | Must | S | Done | BMI-010 |
 
@@ -34,15 +34,15 @@ Progress: 31 of 54 `Must` done (30 merged in `081fa59` on 2026-11-22, BMI-092 in
 
 | ID | Item | Priority | Size | Status | Depends on |
 | --- | --- | --- | --- | --- | --- |
-| BMI-020 | Operation list + PixiJS renderer, whole-image operations | Must | M | Review | BMI-001 |
-| BMI-021 | Gaussian effect, intensity 1–100 relative to the image's shorter side | Must | S | Review | BMI-020 |
-| BMI-022 | Pixelate effect + "blur is not redaction" warning next to it | Must | S | Review | BMI-020 |
-| BMI-023 | Motion effect + angle control (0–180°) | Must | S | Review | BMI-020 |
-| BMI-024 | Effect selector in the toolbar | Must | S | Review | BMI-022 |
-| BMI-025 | Brush: paint the current effect + intensity as a mask; strokes with the same setting don't compound; `B` shortcut | Must | L | Review | BMI-020 |
-| BMI-026 | Eraser: restore original pixels; `E` shortcut | Must | M | Review | BMI-025 |
+| BMI-020 | Operation list + PixiJS renderer, whole-image operations | Must | M | Done | BMI-001 |
+| BMI-021 | Gaussian effect, intensity 1–100 relative to the image's shorter side | Must | S | Done | BMI-020 |
+| BMI-022 | Pixelate effect + "blur is not redaction" warning next to it | Must | S | Done | BMI-020 |
+| BMI-023 | Motion effect + angle control (0–180°) | Must | S | Done | BMI-020 |
+| BMI-024 | Effect selector in the toolbar | Must | S | Done | BMI-022 |
+| BMI-025 | Brush: paint the current effect + intensity as a mask; strokes with the same setting don't compound; `B` shortcut | Must | L | Done | BMI-020 |
+| BMI-026 | Eraser: restore original pixels; `E` shortcut | Must | M | Done | BMI-025 |
 | BMI-027 | Brush size from toolbar and `[` / `]` | Must | S | Done | BMI-025 |
-| BMI-028 | Undo / redo as a pointer in the operation list; `Ctrl/Cmd+Z`, `Ctrl/Cmd+Shift+Z` | Must | M | Review | BMI-020 |
+| BMI-028 | Undo / redo as a pointer in the operation list; `Ctrl/Cmd+Z`, `Ctrl/Cmd+Shift+Z` | Must | M | Done | BMI-020 |
 
 ### E4. Export
 
@@ -50,8 +50,8 @@ Progress: 31 of 54 `Must` done (30 merged in `081fa59` on 2026-11-22, BMI-092 in
 | --- | --- | --- | --- | --- | --- |
 | BMI-030 | Export PNG at original resolution | Must | S | Done | BMI-020 |
 | BMI-031 | Export JPG / JPEG (user picks extension), transparency flattened on white, quality 0.92 | Must | S | Done | BMI-030 |
-| BMI-032 | Export WebP; feature-detect Safari's silent PNG fallback and lazy-load `@jsquash/webp` | Must | M | Review | BMI-030 |
-| BMI-033 | Export guarantees: output equals preview at full resolution, no EXIF in any format (e2e) | Must | S | Review | BMI-031, BMI-032 |
+| BMI-032 | Export WebP; feature-detect Safari's silent PNG fallback and lazy-load `@jsquash/webp` | Must | M | Done | BMI-030 |
+| BMI-033 | Export guarantees: output equals preview at full resolution, no EXIF in any format (e2e) | Must | S | Done | BMI-031, BMI-032 |
 
 ### E5. Internationalization — spec: [specs/i18n.md](specs/i18n.md)
 
@@ -78,7 +78,7 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-064 | Proxy platform: `maxDuration: 15`, Docker base image pinned by digest, shared `security-headers.ts` on static responses, split `ssrf.ts` into pure `address.ts` + Node-only `node-fetch.ts` | Must | M | Done | BMI-062 |
 | BMI-065 | Page security headers and CSP: `pixi.js/unsafe-eval`, single `security-headers.ts`, Vite preview and Vercel config, Playwright runs under the real CSP, remote fetch with `credentials: "omit"` and no referrer | Must | M | Done | BMI-003, BMI-064 |
 | BMI-066 | Supply chain: `pnpm-workspace.yaml` safety settings, Dependabot cooldown, CI `pnpm audit`, license and dist checks, `security.yml` | Must | S | In progress | BMI-002 |
-| BMI-067 | Privacy tests: e2e (same-origin requests only, no cookies, no CSP violations), EXIF/GPS sentinel check on PNG/JPG/WebP including the jsquash path, proxy privacy test | Must | M | Review | BMI-033, BMI-062 |
+| BMI-067 | Privacy tests: e2e (same-origin requests only, no cookies, no CSP violations), EXIF/GPS sentinel check on PNG/JPG/WebP including the jsquash path, proxy privacy test | Must | M | Done | BMI-033, BMI-062 |
 | BMI-068 | Accessibility: axe e2e at WCAG 2.2 AA; single-key shortcuts (`B`, `E`, `[`, `]`) only while the canvas has focus; a click without drag paints one dab | Must | M | Done | BMI-025 |
 | BMI-069 | README honesty and sync: privacy and proxy text says Vercel's request log keeps the image URL, IP and user agent for 1 hour; shortcut focus rule; contributing links; layout tree; new scripts | Must | S | Done | BMI-068 |
 | BMI-070 | Community files: `CONTRIBUTING.md`, issue forms, PR template, labels, merge settings, saved replies | Must | M | In progress | |
@@ -103,13 +103,13 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-086 | Correct statements that are false or imprecise and already public: the "roughly 20 px" figure and the Unredacter wording in the README and in the project and marketing notes, and the README's account of which links use the proxy; before the merge of PR #2 | Must | S | Done | |
 | BMI-087 | A proxied download cut at the proxy's cap, with no declared size, shows the generic error; the user should learn that the image is too large for the proxy | Should | S | Done | |
 | BMI-088 | Rewrite the in-app redaction warning (line 47 of `en.json` and `pt-BR.json`): blur and pixelate don't really hide what must stay secret, and a secret is covered in another editor or left out; the shortest wording, no new feature; Ícaro reads the `pt-BR` before the merge | Must | S | Done | |
-| BMI-089 | The end-to-end suite fails on Firefox on `main` (15 tests): find out whether it is an app bug or the headless CI environment, and fix it or show why it is only the environment | Must | M | Review (PR B `42ed01c`, PR #9; merge waits for Ícaro's hand check in a real Firefox) | |
+| BMI-089 | The end-to-end suite fails on Firefox on `main` (15 tests): find out whether it is an app bug or the headless CI environment, and fix it or show why it is only the environment | Must | M | Done | |
 | BMI-090 | release-please opens its PR (needs Ícaro's setting, D-035) and the first release is 0.1.0, not 1.0.0, with no public release or tag before he merges the release PR | Must | S | Ready (criteria 1 and 4 now; 2 and 3 wait for Ícaro's setting, D-039) | BMI-071 (counts as met to start, D-039) |
 | BMI-091 | Evaluate Dependabot PR #3 (Docker base image Node 24 to 26) read-only: Node 26 against the README's "Requires Node.js 24", `engines` and the Docker build and smoke test; do not merge or close it | Should | S | Done | |
 | BMI-092 | A Firefox (or any browser) without WebGL must not export the image unblurred: the renderer falls back silently to a canvas renderer that skips every filter; make it fail loudly with the existing WebGL message (a privacy bug found by BMI-089) | Must | S | Done | |
 | BMI-135 | Playwright must not reuse another process's server on port 4173 outside the CI (or must use a free port): it has caused a false failure twice and now disturbs the Firefox diagnosis; moved up from `Later` by Ícaro (D-036) | Should | S | Review | |
-| BMI-093 | Move Docker, the CI, `engines` and the README to Node 26 (D-036): pinned pnpm 12.18.0 in place of corepack, `setup-node` in four places, then close Dependabot's PR #3; the Docker job also runs on PRs that change the `Dockerfile`; after BMI-089 and BMI-092 | Should | S | Ready (D-039 point 9) | BMI-089 (PR B committed), BMI-092 (done) |
-| BMI-094 | The WebGL context can be lost after the start (`webglcontextlost`) and nobody listens: the textures come back empty and the cache isn't invalidated, so the export is silently empty (a transparent PNG, a white JPEG); detect it, tell the user, and re-render on restore | Must | M | Ready | BMI-092 (done) |
+| BMI-093 | Move Docker, the CI, `engines` and the README to Node 26 (D-036): pinned pnpm 12.18.0 in place of corepack, `setup-node` in four places, then close Dependabot's PR #3; the Docker job also runs on PRs that change the `Dockerfile`; after BMI-089 and BMI-092 | Should | S | Ready (D-039 point 9) | BMI-089 (done), BMI-092 (done) |
+| BMI-094 | The WebGL context can be lost after the start (`webglcontextlost`) and nobody listens: the textures come back empty and the cache isn't invalidated, so the export is silently empty (a transparent PNG, a white JPEG); detect it, tell the user, and re-render on restore | Must | M | In progress | BMI-092 (done) |
 
 ### E10. MCP and discovery by agents (D-037): `Idea` items only, after v1, scope not closed
 
@@ -476,14 +476,16 @@ Found by the BMI-089 worker (2026-11-22, via `-75`; PM didn't run it, the eviden
 
 **`Review` (2026-11-23, PM read it with `git` and `gh`):** PR B is committed as `42ed01c` on `ci/firefox-webkit-e2e` and is open as PR #9, not merged. Four files: `.github/workflows/ci.yml` (`xvfb-run` for the Firefox and WebKit job, and a `changes` job that runs it on every push to `main` and on every pull request unless every changed file is documentation, D-040), `docs/quality.md`, `e2e/input.spec.ts` (the paste event built with `Object.defineProperty`) and `playwright.config.ts` (the Firefox project turns off the internal WebP/AVIF viewer). The Orquestrador checked that it is exactly the diff the reviewer read in BLU-25 and BLU-30 (same sha256). PR #9 checks read by PM: Verify, Conventional Commits title, Changed paths, zizmor, E2E (Chromium) and Vercel green; `E2E (Firefox, WebKit)`, the first run of WebKit under `xvfb`, and CodeRabbit were still running. **Merge condition:** Ícaro's hand check in a real Firefox (a WebP download gives a file; with `webgl.disabled` the WebGL message shows), `status.md` "Blocked" 4. `Done` only after the merge into `main` and a green `E2E (Firefox, WebKit)` there; then the held items can leave `Review`.
 
+**Merged (2026-11-23):** PR #9, squash `05645f8`, 21:51:05Z (PM read it with `gh pr view 9`: `MERGED`, merge commit `05645f8`). Before the merge every check on the PR was green, `E2E (Firefox, WebKit)` under `xvfb` included. Ícaro did the hand check in a real Firefox first (BLU-37): downloading a WebP gives a file, and with `webgl.disabled = true` the WebGL message shows with the effects off. The first `CI` run on `main` after the merge (run 45273836595, read by PM) passed every job: Changed paths, Verify, E2E (Chromium), Docker and `E2E (Firefox, WebKit)` (108 passed). Every criterion below is met. **`Done`.** The 14 items held for this job go to `Done` with it (BMI-002, 012, 013, 020 to 026, 028, 032, 033, 067). BMI-071 stays `Review` for release-please (BMI-090); that workflow was red again on `05645f8`, as expected while the setting is off.
+
 Owner lane: quality, with the ui lane if an app bug turns up. `-5b` or a worker runs the suite; nobody publishes anything.
 
-- [ ] Reproduce on Firefox with the project's own Playwright setup (`pnpm exec playwright install firefox`, then the `firefox` project), attach the reports and traces; and on a machine with a real GPU and on one without (or with software rendering), and write down per test whether it fails in both.
-- [ ] For each of the 15 tests: decide **app bug** or **environment**, with the evidence (a screenshot or the pixel values, and whether the app works by hand in Firefox on the same build).
-- [ ] An app bug is fixed in a PR of its own, with a test. For what is only the environment, the fix is proposed for the CI or the test **without skipping, relaxing or removing any test** and without taking Firefox off the supported list: any reduction of coverage or support needs Ícaro's direct yes (`-aa`, relaying his rule; this replaces PM's first wording, which allowed a documented skip). `docs/quality.md` says what is and isn't covered on Firefox.
-- [ ] BMI-089 goes in a PR separate from the others. **PM's decision, for `-aa` and Ícaro to veto:** the `e2e-firefox-webkit` job (it runs only on a push to `main`, `ci.yml` line 68) also runs on pull requests that touch `ci.yml`, `playwright.config.ts`, `e2e/**` or `src/engine/**`, through a path filter, so that PR B's `xvfb` step is proven on GitHub **before** the merge instead of after; it adds a check and removes none. The same idea as Ícaro's rule for the Dockerfile (D-036). **Widened by D-040 (2026-11-23), after the reviewer's finding 2 on PR B:** on a pull request the job runs unless every changed file is documentation (`docs/`, `marketing/`, `brand/`, `.claude/`, any `*.md`, `LICENSE`); `src/input/`, `src/export/`, `package.json` and `pnpm-lock.yaml`, which the first list missed, are covered, and so is everything else that isn't docs. The YAML comment and `docs/quality.md` state that rule.
-- [ ] `E2E (Firefox, WebKit)` passes on `main`; the held items go to `Done` once their e2e is green on both browsers.
-- [ ] Nothing here cuts a supported browser from `docs/quality.md` without Ícaro's yes.
+- [x] Reproduce on Firefox with the project's own Playwright setup (`pnpm exec playwright install firefox`, then the `firefox` project), attach the reports and traces; and on a machine with a real GPU and on one without (or with software rendering), and write down per test whether it fails in both.
+- [x] For each of the 15 tests: decide **app bug** or **environment**, with the evidence (a screenshot or the pixel values, and whether the app works by hand in Firefox on the same build).
+- [x] An app bug is fixed in a PR of its own, with a test. For what is only the environment, the fix is proposed for the CI or the test **without skipping, relaxing or removing any test** and without taking Firefox off the supported list: any reduction of coverage or support needs Ícaro's direct yes (`-aa`, relaying his rule; this replaces PM's first wording, which allowed a documented skip). `docs/quality.md` says what is and isn't covered on Firefox.
+- [x] BMI-089 goes in a PR separate from the others. **PM's decision, for `-aa` and Ícaro to veto:** the `e2e-firefox-webkit` job (it runs only on a push to `main`, `ci.yml` line 68) also runs on pull requests that touch `ci.yml`, `playwright.config.ts`, `e2e/**` or `src/engine/**`, through a path filter, so that PR B's `xvfb` step is proven on GitHub **before** the merge instead of after; it adds a check and removes none. The same idea as Ícaro's rule for the Dockerfile (D-036). **Widened by D-040 (2026-11-23), after the reviewer's finding 2 on PR B:** on a pull request the job runs unless every changed file is documentation (`docs/`, `marketing/`, `brand/`, `.claude/`, any `*.md`, `LICENSE`); `src/input/`, `src/export/`, `package.json` and `pnpm-lock.yaml`, which the first list missed, are covered, and so is everything else that isn't docs. The YAML comment and `docs/quality.md` state that rule.
+- [x] `E2E (Firefox, WebKit)` passes on `main`; the held items go to `Done` once their e2e is green on both browsers.
+- [x] Nothing here cuts a supported browser from `docs/quality.md` without Ícaro's yes.
 
 ### BMI-090 — release-please: opens its PR, first release 0.1.0
 
@@ -515,6 +517,8 @@ As a user who edits a photo for a while, I want to be told if the browser drops 
 
 **`Ready` (2026-11-23, PM):** PR A (BMI-092) is merged (`715e381`), which was its only dependency. Size `M`. Ui lane, in a PR of its own from `main`, read by the opus reviewer; queue position 4 in D-039 (after BMI-089 PR B and BMI-135). It touches `src/engine/renderer.ts`, `src/ui/editor.ts`, the two message files and a new e2e; no shared-file lock unless a new string needs `README.md`.
 
+**`In progress` (2026-11-23, per the Orquestrador's board, BLU-47; PM didn't run the gates):** Dev UI delivered it (BLU-48, reworked in BLU-50 and BLU-52) and the Revisor approved it with reservations, nothing blocking (BLU-51). The six files are uncommitted in the shared tree on `main`. The commit waits for Ícaro's choice of the `pt-BR` text of `errors.webgl_context_lost` (BLU-47); then Git branches it as `fix/webgl-context-loss`. With PR #9 merged, a branch from `main` now runs the new e2e on Firefox and WebKit in CI too. `Review` once committed.
+
 - [ ] The worker proves it with an e2e (`WEBGL_lose_context`: measure the pixels after the loss, restore, apply again) before any fix.
 - [ ] On loss the app shows an error and `download()` refuses while `gl.isContextLost()`; on restore the cache is cleared (`this.rendered = []`) and the operation list is rendered again, so the user's edits come back.
 - [ ] Texts through the existing message files in `en` and `pt-BR` (a new `pt-BR` string is read by Ícaro); the key-parity test, check, unit and e2e tests and `pnpm size` pass.
@@ -535,6 +539,8 @@ Moved from `Later` to `Ready` by Ícaro (D-036, relayed). Quality lane; `playwri
 Decided by Ícaro (D-036, relayed): option (a) of the former Q-026. A PR of its own, **after** BMI-089 and BMI-092. Facts from BMI-091 (read-only, via `-75`): Node 26 is LTS since 2026-10-28 (end 2029-04-30); Node 24 is in maintenance since 2026-10-20; Node 26 has no corepack and the `Dockerfile` line 3 is `RUN corepack enable`.
 
 **`Ready` (2026-11-23, PM, D-039 point 9):** BMI-089 PR B is committed (`42ed01c`, PR #9) and BMI-092 is merged (`715e381`). Queue position 7. PR #3 stays open and unmerged until this item's PR merges; a Dependabot rebase of it is ignored.
+
+**Both dependencies merged (2026-11-23):** BMI-092 (`715e381`) and BMI-089 (`05645f8`). Nothing blocks it any more; it keeps queue position 7 (D-039), after BMI-094, BMI-090 (criteria 1 and 4) and BMI-076. Its branch starts from `main` at `05645f8` or later, so the Docker path filter can sit next to the D-040 `changes` job that PR #9 added to `ci.yml`.
 
 - [ ] The `Dockerfile` uses `node:26-slim` (both stages, pinned by digest as now) and installs pnpm at the version of `packageManager`, 12.18.0, in place of corepack.
 - [ ] `setup-node` is 26 in the four places of `ci.yml` and `security.yml`; `engines` and the README ("Requires Node.js 24") say 26.
