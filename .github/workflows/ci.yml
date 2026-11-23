@@ -63,9 +63,38 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
+  changes:
+    name: Changed paths
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      browsers: ${{ steps.scope.outputs.browsers }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      # On pull_request the checkout is the merge ref: HEAD is a merge commit whose first parent is the
+      # base branch tip, so with fetch-depth 2 `git diff HEAD^1 HEAD` is the whole PR, not its last commit.
+      - id: scope
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT" = push ]; then
+            echo "browsers=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(git diff --name-only --no-renames HEAD^1 HEAD)
+          if grep -qvE '^(docs/|marketing/|brand/|\.claude/|LICENSE$)|\.md$' <<<"$files"; then
+            echo "browsers=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "browsers=false" >> "$GITHUB_OUTPUT"
+          fi
+
   e2e-firefox-webkit:
     name: E2E (Firefox, WebKit)
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: changes
+    if: needs.changes.outputs.browsers == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -79,7 +108,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps firefox webkit
-      - run: pnpm exec playwright test --project=firefox --project=webkit
+      # Headless Firefox has no WebGL without a display.
+      - run: xvfb-run --auto-servernum pnpm exec playwright test --project=firefox --project=webkit
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
         with:
