@@ -56,6 +56,29 @@ The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the proj
 
 ## Decisions
 
+### D-039 — Order and eligibility of the delegation plan, by PM (2026-11-23)
+
+**Decision**, by PM, on the plan the Orquestrador drew up in BLU-3. Ícaro passed this decision to PM in BLU-3 on 2026-11-23 and wrote "destrave e prossiga!" in BLU-4 the same day. Each point is open to his veto.
+(1) **Order**, one writing agent at a time, each on its own branch and PR: BMI-092 PR A → BMI-089 PR B → BMI-135 → BMI-094 → BMI-090 (config part) → BMI-076 (dependency-review) → BMI-093. BMI-066 takes the next free slot from 2026-11-28, ahead of any `Should` still queued, and its gate includes a clean `pnpm install --frozen-lockfile`. BMI-082 is out of the queue. Marketing and Dev Server stand by. Being later in the queue is ordering, not a cut.
+(2) **BMI-135 after PR B**, which keeps the PR A → PR B order of D-036 and stops two PRs from editing `playwright.config.ts` and `docs/quality.md` at the same time. It comes before BMI-094, although it is a `Should`, because it removes false failures from every later gate.
+(3) **BMI-090's dependency on BMI-071 counts as met to start**: its files are on `main`. BMI-071 becomes `Done` together with BMI-090.
+(4) **BMI-090 and BMI-076 start on the part that doesn't need Ícaro** (the 0.1.0 config and the release sentence; the dependency-review). Both items stay open until every criterion is met. If the scorecard allowlist doesn't exist when the PR leaves draft, the scorecard goes in a second PR with the same criteria.
+(5) **BMI-084 → `Blocked`** on Ícaro (Q-024, the three `audience.md` edits, the landing critique), not `Ready`.
+(6) **BMI-082 → `Blocked`** on Ícaro's yes to the Vercel preview experiment, which is outward-facing.
+(7) **The Firefox/WebKit job also runs on PRs** that touch `ci.yml`, `playwright.config.ts`, `e2e/**` or `src/engine/**` (BMI-089): confirmed. It adds a check and removes none.
+(8) **Dependabot's PR #3 stays open and unmerged** until BMI-093 closes it (D-036).
+(9) BMI-094 becomes `Ready` once PR A is committed; it was merged as `715e381`, so it is `Ready`. BMI-093 becomes `Ready` once BMI-089 PR B is committed.
+**Why:** privacy first (D-036), then the CI that proves Firefox, then what removes false failures, then the rest by dependency. Items whose next step is Ícaro's can't be picked up by a lane, so they aren't `Ready`.
+**Decided by:** PM, at Ícaro's direction in BLU-3 and BLU-4. Scope unchanged: every item stays in v1 with the same priority.
+**Affects:** BMI-066, 076, 082, 084, 089, 090, 093, 094, 135; `status.md` "Now" and "Next".
+
+### D-038 — The logo is black or white only; the blue is an accent outside the logo (2026-11-23)
+
+**Decision**, Ícaro's own words in the BLU-9 task (2026-11-23, not relayed): "O tom de azul ficou legal, mas não gostei da aplicação na logo. Remova, deixe apenas 100% branca ou preta na logo, e o tom de azul você pode deixar para a landing page, detalhes e no brand kit." (1) The logo (horizontal and stacked lockups, and the mark on its own) exists only in **black** and in **white**. The two blue colorways are removed. (2) The two-tone blue (`#0d62b8` on light backgrounds, `#7cc4ff` on dark ones) stays the only accent color. It is used on the landing page, in interface details and in the brand kit's materials, and **never in the logo**. (3) The icons and favicon (16, 32, 48, 180, 192 and 512 px) are applications of the logo, so they lose the blue too: dark background, all-white mark. Ícaro answered the BLU-9 question card directly on 2026-11-23: "Sim, ícones sem azul".
+**Why:** he liked the blue but not on the logo.
+**Decided by:** Ícaro, directly in BLU-9.
+**Affects:** D-027 (points 1 and 3 replaced as above: four colorways become two, and the icons lose the blue bar; the two-tone blue as the only accent still stands), BMI-075 (criteria changed, back to `In progress` while the designer redoes PR #6), BMI-078 (the favicon it puts in `public/` is the new one), `brand/README.md` in PR #6.
+
 ### D-037 — Strategic direction: an MCP for each tool of the family (2026-11-22)
 
 **Decision** (a direction, scope not closed), as relayed by `-aa` from Ícaro's own words: "we have to have mcp.blurmyimage.com" and, for each micro-SaaS, the same ("mcp.cut...", "mcp.pixelate", "mcp.backgroundremove" and so on): "this is where the value lives": each tool is established on the web with SEO and GEO/AEO as the free, global MCP that works best for agents. He also plans to launch several separate tools (a map is in `.local/tool-sites/`, git-ignored). PM opens a new epic, E10 (MCP and discovery by agents), with `Idea` items only and a spec outline first (`specs/mcp-for-agents.md`); nothing is implemented, no domain is bought, and no pull request is touched. The spec covers the family, not only blur. The label D-036 that `-aa` used is taken by the answers after the merge, so this is D-037.
@@ -129,6 +152,8 @@ The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the proj
 **Affects:** BMI-079 (the notice), BMI-080 (docs on the rate limit), BMI-081 (the deny's message), BMI-073, the README privacy text.
 
 ### D-027 — Brand kit: his original lettering, the two-tone blue and the icons are accepted (2026-11-22)
+
+**Partly replaced by D-038 (2026-11-23):** the logo is black or white only, with no blue colorways, and the icons have no blue bar. The blue stays the only accent, outside the logo.
 
 **Decision**, as relayed by `-aa` from Ícaro's direct answers, closing Q-016: (1) the wordmark is **his original lettering**, vectorized from `brand/source/logo-horizontal.png` (1983x793); Liberation Sans stays for running text only. The designer redoes the SVGs (horizontal and stacked, four colorways each) and touches the mark only if it has to change; vectorizing uses a mature tool (potrace or an equivalent) and the result is compared side by side with the original at small sizes. (2) The blue is two tones, `#0d62b8` on light backgrounds and `#7cc4ff` on dark ones, as the only accent: accepted. (3) The icons (favicon, apple-touch, 192, 512), as drawn now with a dark background and a light blue bar: accepted. (4) Applying the identity to the site (`index.html`, `public/`, the OG image) is a PR of its own after the merge of PR #2; the kit is a PR of its own too (`feat/brand-kit`), not part of #2. The app's color theme is still to be decided with him later.
 **Why:** it is his logo and his brand, and D-022 lets the kit start from it.

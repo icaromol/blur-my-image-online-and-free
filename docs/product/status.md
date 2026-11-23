@@ -1,58 +1,71 @@
 # Status
 
-Updated: 2026-11-22
+Updated: 2026-11-23
 
 ## Milestone: v1
 
-30 of 54 `Must` done · 15 in review · 6 in progress · 2 ready · 0 blocked. Plus BMI-074 (`Should`, `Done`): unexplained e2e failure, still unexplained. Full list in [backlog.md](backlog.md).
+31 of 54 `Must` done · 15 in review · 5 in progress · 3 ready · 0 blocked. The 15 in review are merged but held until `E2E (Firefox, WebKit)` is green on `main` (BMI-089) or release-please opens its PR (BMI-071). Two `Should` items are `Blocked` on Ícaro (BMI-082, BMI-084). Full list in [backlog.md](backlog.md).
 
 ## Now
 
-**Iteration goal (2026-11-23 → 2026-11-29):** merge the scaffold and proxy, put CI in place, and make the app bilingual before any new screen is built.
+**Iteration goal (2026-11-23 → 2026-11-29):** close the privacy bug and get `E2E (Firefox, WebKit)` green on `main`, so that the 15 held `Must` items can become `Done`.
 
-| ID | Item | Owner | Status |
-| --- | --- | --- | --- |
-| BMI-001, 004, 010, 014, 020, 021, 030 | Scaffold, proxy, Docker, file picker, gaussian, PNG export (branch `feat/scaffold-and-proxy`) | git-owner session | Review |
-| BMI-002 | CI + Dependabot | git-owner session | In progress, on hold until `pnpm size` is green |
-| BMI-040 | i18n foundation | git-owner session committed `b010671` | Review |
-| BMI-041 | Locale resolution + switcher | same commit | Review |
-| BMI-042 | Translate existing UI (now ~5 components + effect and export labels; re-size to M) | same commit | Review |
-| BMI-043 | Errors as codes | same commit | Review |
-| BMI-044 | Number formatting + plurals | same commit | Review |
+Order set by PM (D-039, open to Ícaro's veto). One writing agent at a time, each item on its own branch and PR from `main`. The Orquestrador hands the work out; owners are in [team.md](team.md).
 
-**Committed (`43525ae`, PR #2):** drag and drop, paste, URL loading, Pixelate, Motion, brush, eraser, undo/redo, JPG/JPEG/WebP export and large images, with unit and e2e specs. `Review` until PR #2 is merged and the checks are green.
+| # | ID | Item | Lane → agent | Status |
+| --- | --- | --- | --- | --- |
+| 1 | BMI-092 | PR A: no unblurred export without WebGL | ui → Dev UI | `Done` (`715e381`, 2026-11-23) |
+| 2 | BMI-089 | PR B: the WebP download preference, the paste test, `xvfb` in the CI, and the Firefox/WebKit job also on PRs that touch the CI, the Playwright config, `e2e/` or `src/engine/` | quality → Dev Quality | `In progress` (diagnosis done; the PR is next) |
+| 3 | BMI-135 | The e2e never reuses a foreign server on port 4173 | quality → Dev Quality | `Ready` |
+| 4 | BMI-094 | WebGL context loss after the start | ui → Dev UI | `Ready` |
+| 5 | BMI-090 | release-please: the 0.1.0 config and the release sentence (criteria 1 and 4) | quality → Dev Quality | `Ready`, partial |
+| 6 | BMI-076 | The dependency-review workflow; the scorecard joins when the allowlist exists | quality → Dev Quality | `Ready`, partial |
+| 7 | BMI-093 | Node 26 everywhere | quality and server | `Idea` until BMI-089 PR B is committed |
 
-## i18n: committed (`b010671`)
-
-BMI-040 to BMI-044 are built over the committed UI (D-003) and verified by PM on 2026-11-22: `vue-tsc` clean, 218 unit tests, build, 26 e2e (including `pt-BR` and language-switch specs). `Review` until PR #2 is merged. New UI text goes into `src/i18n/messages/*.json`, never inline.
-
-Open on this item:
-- BMI-044: no file-size string exists in the app yet, so the "4,4 MB" case has nothing to format. Dimensions, angle, intensity and brush size use locale formatting. Revisit when a size is first shown.
-- `index.html` keeps a static English meta description (not covered by the spec); matters for Q-001.
-- Heads-up: `pnpm check` currently fails on two format errors in another session's files (`security-headers.test.ts`, the coverage block in `vite.config.ts`). None are in i18n files.
-
-## Standards package (D-004)
-
-New epic E7 (BMI-060 to BMI-073): quality bar, proxy hardening, CSP and headers, supply chain, privacy tests, accessibility, community files, releases. Grooming comes after i18n lands, because BMI-061 and BMI-068 touch the same components. Written to `Idea` for now; each item gets acceptance criteria from `.local/standards/*.md` when groomed. The reports are in a git-ignored folder, so the only durable record is the backlog and D-004.
-
-**Dated item:** `pnpm-workspace.yaml` supply-chain settings go in on **2026-11-28** (BMI-066), after the newest locked package turns 7 days old.
+- **BMI-066** (`Must`, dated) takes the next free slot from **2026-11-28**, ahead of any `Should` still queued. Its gate includes a `pnpm install --frozen-lockfile` in a clean copy.
+- BMI-135 comes after PR B (the D-036 order, and both touch `playwright.config.ts` and `docs/quality.md`) and before BMI-094, because it removes false failures from every later gate. Until then the Orquestrador checks that port 4173 is free before each gate.
+- BMI-075 (PR #6, the logo without blue, D-038) is the Designer's rework in its own worktree, outside this queue.
+- **Dev UI and Dev Quality are paused** (read 2026-11-23), so the queue doesn't move until Ícaro resumes them.
 
 ## Next
 
-In order, after i18n. Build order, not a scope cut: all of it is v1. Most of the items below already exist on the PR and need review and merge, not building.
+Ordering, not a cut: all of it is v1.
 
-1. BMI-003 (Vercel project, preview deployment) and BMI-070 (GitHub settings) in parallel with the BMI-050 pre-flip checks
-2. BMI-050: flip, protections, CodeRabbit app, PR #2 out of draft, corrections (D-013)
-3. Merge PR #2 after CodeRabbit's corrections with green checks; the first production deploy follows (D-005)
+1. BMI-093 once BMI-089 PR B is committed; then Dependabot's PR #3 is closed.
+2. BMI-066 from 2026-11-28 (`pnpm-workspace.yaml`, after the newest locked package turns 7 days old).
+3. BMI-082 after Ícaro's yes to the preview experiment.
+4. BMI-084 after his answers (Q-024, `audience.md`, the critique); then BMI-085 is groomed.
+5. BMI-078 after PR #6 merges.
 
 ## Blocked / waiting on Ícaro
 
-Only items that block something. Questions with a default in force are in decisions.md and don't wait.
+Each item carries a recommendation and the default that holds if he doesn't answer. No default cuts scope.
 
-- **Nothing waits on a question to Ícaro right now.** Tagline and privacy wording, Q-009 and Q-010 are decided (D-010, D-015, D-016); the WAF rule and the bypass revocation are done.
-- **D-004 and D-006 to D-019** were relayed by other sessions, not heard directly. They stay in force unless Ícaro objects.
+1. **"Allow GitHub Actions to create and approve pull requests"** (D-035, BMI-090). Read 2026-11-23: still off. Recommendation: turn it on right after the BMI-090 config PR merges, so the first run proposes 0.1.0. Default: off; BMI-090 and BMI-071 stay open and release-please is red on every push to `main`.
+2. **Allowlist: add `ossf/scorecard-action` at `23f22cd43608bae7a1f1fa2603d7314dee9538a5`** and keep the four existing patterns (D-030, BMI-076). Read 2026-11-23: not there. Recommendation: do it. Default: the dependency-review ships alone and the scorecard waits.
+3. **Resume Dev Quality and Dev UI** (BMI-089 PR B, then BMI-094). Default: nothing runs.
+4. **Hand check in a real Firefox**: a WebP download gives a file, and with `webgl.disabled` the WebGL message shows. Recommendation: before the merge of PR B. Default: PR B isn't merged without it.
+5. **BMI-082:** yes to a Vercel preview with the metrics flag on. Default: `Blocked`, out of the queue.
+6. **BMI-084:** Q-024 (recommendation: keep the three use-case pages), the three `audience.md` edits and the landing critique. Default: BMI-085 stays `Idea`, nothing changes and the critique isn't applied.
+7. **BMI-003:** the unfurl check and Q-022. Recommendation: release the URL with the go-live of the pages. Default: the URL stays out of the README and marketing.
+8. **CodeQL default setup** (BMI-050). Read 2026-11-23: `not-configured`. Recommendation: turn it on. Default: off.
+9. **BMI-070:** the saved replies, by hand. Default: the item stays `In progress`; it blocks nothing.
+10. **3 to 5 "good first issue" issues** (publishing an issue is outward-facing, BMI-050). Default: none is created.
+11. **Q-027 and Q-028** (the MCP domain and first delivery). They block nothing. Defaults: no purchase, the spec only.
+
+Decisions relayed by other sessions (D-004, D-006 to D-019, D-033 to D-037) stay in force unless Ícaro objects. D-039 is PM's and open to his veto.
 
 ## Log
+
+### 2026-11-23
+
+- **PR #5, PR #4 and PR #7 are merged** (PM read them with `gh`): #5 `b585016` (14:50Z, the post-merge docs), #4 `dc12cbb` (14:51Z, BMI-087 → `Done`) and #7 `715e381` (14:53Z, BMI-092 PR A → `Done`; PM read the diff against every criterion, and the opus reviewer's read of the final diff isn't on record). `main`'s CI: Verify, E2E (Chromium) and Docker green at `b585016` and `715e381`; `E2E (Firefox, WebKit)` failed at `b585016` as expected until PR B (the run at `715e381` was still going when PM read it); release-please red on each push, expected while Ícaro's setting is off. `Must` done: 31 of 54.
+- **D-039, PM's decisions on the delegation plan** (BLU-4, after Ícaro passed the decision to PM in BLU-3 and wrote "destrave e prossiga!" in BLU-4): the queue order in "Now", BMI-094 → `Ready` (PR A merged), BMI-084 and BMI-082 → `Blocked` on Ícaro, partial starts for BMI-090 and BMI-076, the Firefox/WebKit path filter and PR #3 confirmed. Nothing cut.
+- Read with `gh` on 2026-11-23: `squash_merge_commit_message` is `BLANK` (that BMI-070 criterion is done; only the saved replies are left); `index.html` on `main` carries `og:url` and `og:image` on the new domain and the production deployment of `081fa59` serves the alias (BMI-003 criteria checked); CodeQL is `not-configured`; the Actions setting and the scorecard allowlist are still as before.
+- **Correction of PM's BLU-4 comment:** it listed "Vercel 2FA and usage alerts" (BMI-073) as still open. They are not: BMI-073 is `Done` and Ícaro said both are on (nobody can read them). They are off the list for him.
+- `team.md` now names the Paperclip agents instead of the old Claude Code sessions (`-75`, `-5b`, `-aa`).
+
+- **D-038 (Ícaro, directly in BLU-9): the logo is black or white only, and the blue is an accent outside it.** In his words: "O tom de azul ficou legal, mas não gostei da aplicação na logo. Remova, deixe apenas 100% branca ou preta na logo, e o tom de azul você pode deixar para a landing page, detalhes e no brand kit." In the same task he answered the question card "Sim, ícones sem azul", so the favicon and app icons get a dark background and an all-white mark. This replaces points 1 and 3 of D-027. The two-tone blue (`#0d62b8`, `#7cc4ff`) is still the only accent: landing page, interface details, the kit's materials. **BMI-075 goes from `Review` back to `In progress`.** Four criteria are reopened: logos in two colorways (black and white, with the 6 blue SVGs deleted), the icons, the guide, and the OG template. PM checked with `git show` that `og.html` at `8b86a83` loads `logo-horizontal-blue-reverse.svg`. The designer redoes PR #6 (BLU-11, still a draft). The shared tree is on `main` at `715e381`, the same as `origin/main`.
 
 ### 2026-11-22 (new PM session, handoff)
 
