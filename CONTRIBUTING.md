@@ -63,7 +63,7 @@ Do not skip the hook with `--no-verify`. If it fails on something you did not ch
 
 The repository uses **squash merge only**. The **pull request title** becomes the commit on `main`, so that is the one line that has to be right. It follows [Conventional Commits](https://www.conventionalcommits.org/): `type: short description` in the imperative, lowercase, no period. Commits inside your branch can say anything.
 
-[release-please](https://github.com/googleapis/release-please) reads those titles on `main` to pick the next version and write the changelog, so you never edit `CHANGELOG.md` or the `version` in `package.json`.
+[release-please](https://github.com/googleapis/release-please) reads those titles on `main` to pick the next version and write the changelog, so you never edit `CHANGELOG.md` or the `version` in `package.json`. A release is made in two steps: release-please opens a release pull request with the next version and the changelog, and the release only goes out when the maintainer merges that pull request.
 
 | Type | Use it for | Effect on the release |
 | --- | --- | --- |
