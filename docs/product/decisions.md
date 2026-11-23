@@ -20,6 +20,14 @@ Default in force: **English only**, as the marketing skill says. The app itself 
 
 Recommendation: launch in English; once the app has real visits, add Portuguese posts and a Portuguese listing aimed at Brazilian communities, scoped by `marketing-strategist`. Keeps launch effort on one language.
 
+### Q-027 — Buy a domain for the MCP (`mcp.<domain>`)?
+
+D-037 says Ícaro wants `mcp.blurmyimage.com` and the same for each tool of the family. A subdomain needs the parent domain, and buying a domain is his decision (D-016, Q-005: the app lives today on a `*.vercel.app` address). PM raises it and decides nothing. Recommendation: wait for the architecture spec (BMI-139): a local package run over stdio needs no domain, and the choice between remote and local changes what is worth buying. Default in force: **no purchase and no domain work.**
+
+### Q-028 — Is the first delivery of the MCP only the spec, or a prototype too?
+
+Asked for by `-aa` as a question for later. Recommendation: the spec first, and a prototype only after the privacy model (BMI-140) is decided, since the prototype's shape (remote or local) follows from it. Default in force: **only the spec.**
+
 ### Q-024 — Do the three use-case pages stay, now that the home is the app screen?
 
 D-032 makes the landing the app's own screen with the copy underneath. BMI-085 planned a home and three use-case pages (blur a license plate, pixelate a screenshot, blur a face) as static pages. Question for Ícaro: do the use-case pages stay as separate pages that the app screen links to, or does everything live on the one screen (sections, no separate pages)? The SEO notes favour separate pages (one query intent per page), at the price of more files to keep true; one screen is simpler and ranks for fewer queries. Recommendation: keep the three use-case pages, small, linked from the sections under the app, since each search intent (plate, screenshot, face) deserves its own answer. Default in force: BMI-085 stays an `Idea` and nothing is built; the copy of BMI-084 is written for the home first.
@@ -47,6 +55,27 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the project's main domain on 2026-11-22, per `-aa`; the earlier `https://blur-my-image.vercel.app` answers 307 to it (PM read both with a plain `GET`). The README, the repo website field and the bug form get it only when Ícaro says (D-016). Not blocking.
 
 ## Decisions
+
+### D-037 — Strategic direction: an MCP for each tool of the family (2026-11-22)
+
+**Decision** (a direction, scope not closed), as relayed by `-aa` from Ícaro's own words: "we have to have mcp.blurmyimage.com" and, for each micro-SaaS, the same ("mcp.cut...", "mcp.pixelate", "mcp.backgroundremove" and so on): "this is where the value lives": each tool is established on the web with SEO and GEO/AEO as the free, global MCP that works best for agents. He also plans to launch several separate tools (a map is in `.local/tool-sites/`, git-ignored). PM opens a new epic, E10 (MCP and discovery by agents), with `Idea` items only and a spec outline first (`specs/mcp-for-agents.md`); nothing is implemented, no domain is bought, and no pull request is touched. The spec covers the family, not only blur. The label D-036 that `-aa` used is taken by the answers after the merge, so this is D-037.
+**Why:** his strategy for where the product's value lies.
+**Decided by:** Ícaro, per the orchestrator session. Scope closed later.
+**Affects:** epic E10, BMI-139 to BMI-143, Q-027, Q-028, the landing and README (nothing may mix the promise of the web app with the MCP's).
+
+### D-036 — Answers after the merge: the BMI-087 text, the Playwright port, Node 26, and the priority of the privacy bug (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answers: (1) the `pt-BR` text of the cut-download error (BMI-087, PR #4) is **approved as it is**: "O download foi interrupido. Se a imagem for grande, baixe o arquivo e abra-o aqui." (2) **BMI-135** (the shared port 4173 of the e2e, `reuseExistingServer`) **moves from `Later` to `Ready`**, `Should`, quality lane: it has already caused a false failure twice and now contaminates the Firefox diagnosis; outside the CI Playwright must not reuse another process's server (or must use a free port). (3) **Node 26**, closing Q-026: he chose **(a), move everything to 26**: Docker with a pinned pnpm 12.18.0 in place of corepack, the CI (`setup-node`, four places), `engines` and the README; PR #3 is closed afterwards; in a PR of its own, **after BMI-089 and BMI-092**; extra criterion: the Docker job also runs on PRs that change the `Dockerfile` (a path filter), so that the change is proven before the merge, since PR #3's green proved nothing because that job runs only on `main`. (4) **BMI-092 has the highest priority**: plan approved, PR A first (`src/engine/renderer.ts` with `preference: ["webgl"]` and a regression test that fails without the fix), PR B (e2e and CI) after; `-aa` checked line 48 of `renderer.ts` on `main`; the worker (Firefox 159) reproduced it. `-aa` takes the manual Firefox check (a WebP download gives a file) and a test without WebGL (`webgl.disabled`) to him. None of this cuts support.
+**Why:** the privacy bug is the one thing that makes the product do the opposite of what it says; the port problem wastes diagnosis time; Node 26 is the longer-lived LTS and the one the host already runs.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-087, BMI-135, BMI-093 (new), BMI-092, BMI-089.
+
+### D-035 — After the merge: Actions may create PRs, the first release is 0.1.0, Dependabot's Node 26 bump waits (2026-11-22)
+
+**Decision**, as relayed by `-aa` from Ícaro's direct answers: (1) GitHub Actions is allowed to create pull requests (the repository setting "Allow GitHub Actions to create and approve pull requests"; he turns it on in the GitHub settings or says "pode" in `-5b`'s session; `-5b` doesn't accept a relayed go). The `release-please` run on the merge commit failed with "GitHub Actions is not permitted to create or approve pull requests": it created the branch `release-please--branches--main--components--blur-my-image` but no PR, and it computed "updating from 0.0.0 to 1.0.0". (2) The first release is **0.1.0**, not 1.0.0: BMI-090 configures release-please for it; the existing branch is updated or redone without publishing anything; **no GitHub Release and no public tag exist before Ícaro merges the release PR.** (3) Dependabot PR #3 (the Docker base image from `node:24-slim` to `node:26-slim`) is evaluated read-only (BMI-091) and **not merged without his yes**, since it swaps the runtime. Information only: the squash author on `main` shows as "Neous", the public profile name, with the no-reply address.
+**Why:** the release flow needs the permission to open its PR; a first public version of 1.0.0 would promise more than a pre-release is.
+**Decided by:** Ícaro, per the orchestrator session.
+**Affects:** BMI-071 (release workflow), BMI-090, BMI-091, README ("Requires Node.js 24").
 
 ### D-034 — The in-app warning: final texts, and it shows for every effect (2026-11-22)
 
