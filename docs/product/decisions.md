@@ -52,6 +52,22 @@ The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the proj
 
 ## Decisions
 
+### D-043 — Ícaro's mockup is BMI-085's visual reference; preview and zoom come after v1; section 4 "Use it your way" has three cards (2026-11-23)
+
+**Decision**, Ícaro's own words in BLU-21: his comment at 22:23:22Z on 2026-11-23 with the three images of the mockup he generated from the `prompt-ui-landing` prompt, and his answers to a question card there, resolved by him (human only) at 22:30:52Z. PM read the comment, the card and its result, not a relay. The options he picked: `preview: after`, `zoom: after`, `mcp: spec`, `cards: shortcuts, issues`. The images and a summary are in `.local/landing-mockup/` (git-ignored) and in the `mockup-feedback` document of BLU-21.
+(1) **The mockup is BMI-085's visual reference**, which ends the wait of D-041 point (3). In his words: "Seção 1 e 2 tá bem bom nessa imagem". Section 1 is the hero: the big logo, a supporting line, the drop zone and the link field. Section 2 is four cards: Private by design, Fast and simple, Works with any image, Free and open source. **Section 3, "How it works", becomes a stepper**, Paste > Blur > Download: "Separados e demonstrando com facilidade". In the editor he liked "o menu lateral. Do blur intensity com download logo abaixo. Com arrows": the side menu of tools, the right panel with the intensity and the Download right below it, and the undo and redo arrows.
+(2) **BMI-127, the preview toggle, stays after v1** (D-031 confirmed). He asked for it ("Só faltou o toogle de preview ou sem preview by default"): off or on, and in preview the image is cut in half, before and after, with the intensity and the Download above the two halves. To the card's question whether it moves into v1 with the landing, he answered "Não, continua depois da v1 (o mockup fica com o espaço reservado)". So BMI-085's editor layout reserves the place of the toggle, and his description goes into `specs/preview-modes.md`.
+(3) **Zoom in the editor is a new item after v1, BMI-129**, next to BMI-127. He liked the mockup's zoom ("Com arrows e zoom"); the app has none today (PM grepped `src/` on `main`, `05645f8`: the only "zoom" is a comment in `src/engine/intensity.ts`). To the card's question he answered "Depois da v1". So BMI-085 builds no zoom control, and the mockup's magnifiers and "100%" don't go into v1's editor.
+(4) **Section 4, "Use it your way", has three cards:**
+- **The MCP**, "by design, from devs to devs": visible now and marked as in development, linking to the public spec on GitHub, `docs/product/specs/mcp-for-agents.md` (on `main` since `b585016`). The link becomes the MCP's page when that page exists (E10, Q-027). His answer: "Card visível com 'em desenvolvimento', linkando a spec pública no GitHub; vira link da página do MCP quando ela existir". The card makes no privacy promise for the MCP and nothing of the MCP's promise mixes with the app's (D-037, BMI-140).
+- **Keyboard shortcuts**, from the README's table (`B`, `E`, `[` and `]`, `Ctrl/Cmd+Z`, `Ctrl/Cmd+Shift+Z`, `Ctrl/Cmd+V`) and its note that the single keys work while the image has focus.
+- **Ask for a feature or report a bug on GitHub**, through the repository's issue forms (`.github/ISSUE_TEMPLATE/`, a bug form and a feature form).
+The other two options of the card (run your own copy with Docker, bring your language) were not chosen; they were only suggestions for the cards, so nothing is cut.
+(5) **The port keeps every control of the app.** The mockup doesn't show Motion (with its angle), Blur entire image or the choice of format; they stay, as do the brush size, the eraser, the redaction warning shown with every effect (D-034), the notice under the link field (BMI-079), the large-image notice (BMI-015), the language picker and the theme toggle (BMI-144). The side menu may group the tools (Brush, Eraser, Blur entire image) and the effects go in the panel. **The mockup's sentences that promise too much are replaced by the approved copy:** "forever", "No limits", "No files are uploaded" without the exception for links, "sensitive information" and "Remove personal data", "select the area" (the app has only the brush), the dash in "it's that simple", and "12 px" (the intensity is 1 to 100). The table is in `.local/landing-mockup/feedback.md`, read by PM against `claims-check.md`'s rules. Nothing leaves the scope.
+**Why:** the mockup has the look he imagined in D-041; the preview and the zoom change the renderer and the editor's input, and v1 is already built and under review; section 4 shows what the page has nowhere else.
+**Decided by:** Ícaro, directly in BLU-21. PM's readings, open to his veto: the stepper is a layout, so the heading approved in D-042 change 6 ("Blur part of an image in three steps") stays unless he says otherwise; BMI-129's place among the post-v1 items (only "after v1", next to BMI-127; the order among them is not decided); the list of controls in point (5), taken from the README and the backlog.
+**Affects:** D-041 point (3) (the mockup has arrived), D-031 (confirmed), BMI-085 (criteria for sections 1 to 4, the editor's layout, the reserved place of the toggle, every control kept; the mockup is no longer a dependency), BMI-084 (the cards, the stepper and section 4, written by the Copywriter in BLU-66), BMI-127 (the reserved place and his description), BMI-129 (new), `specs/preview-modes.md`, `status.md` "Now", "Next" and "Blocked".
+
 ### D-042 — The three use-case pages stay, each with the editor, and the ten changes of the landing critique are approved (2026-11-23)
 
 **Decision**, Ícaro's own answers to a question card in BLU-21, resolved by him (human only) at 22:10:49Z on 2026-11-23. PM read the card and its result, not a relay: the options he picked are `keep` and `all`.
@@ -74,6 +90,7 @@ The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the proj
 **Decided by:** Ícaro, directly in BLU-21. Points (4)'s placement (`Should`, E8, position 8 of the code queue) and (5)'s reading of `main` are PM's, open to his veto. Nothing cut: every item keeps its milestone and priority.
 **Affects:** D-039 points (1) and (5), D-027 point (4), D-020, BMI-084 (blocker reduced to Q-024 and the critique), BMI-085 (visual reference, both themes), BMI-078, BMI-144 (new), `status.md` "Now", "Next" and "Blocked".
 **Followed by D-042 (2026-11-23, Ícaro):** Q-024 and the landing critique are answered. BMI-084 went straight to `In progress` instead of `Ready`, since the Copywriter had already started on his answers (BLU-57).
+**Followed by D-043 (2026-11-23, Ícaro):** the mockup arrived and is BMI-085's visual reference (point 3).
 
 ### D-040 — The Firefox and WebKit job runs on every pull request that touches more than docs (2026-11-23)
 
@@ -157,6 +174,7 @@ The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the proj
 **Why:** v1 is the README plus i18n, already built and under review; the two ideas change the renderer and the undo model.
 **Decided by:** Ícaro, per the orchestrator session.
 **Affects:** BMI-127, BMI-128, `specs/preview-modes.md`, `specs/effect-stack.md`.
+**Confirmed by D-043 (2026-11-23, Ícaro, directly):** asked again with the mockup, he kept BMI-127 after v1; BMI-085's editor layout reserves the place of its toggle.
 
 ### D-030 — The rate-limit message in `pt-BR` is approved; `ossf/scorecard-action` is allowed (2026-11-22)
 
