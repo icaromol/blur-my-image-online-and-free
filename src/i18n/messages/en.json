@@ -64,6 +64,7 @@
     "file_not_image": "That file isn't an image.",
     "invalid_link": "Enter an http or https link to an image.",
     "webgl_unavailable": "Your browser couldn't start WebGL, which this app needs to render effects.",
+    "webgl_context_lost": "Your browser interrupted WebGL, which this app needs to render effects. Your edits are kept and come back when WebGL does. If nothing changes, reload the page and open the image again.",
     "export_failed": "The image couldn't be exported.",
     "load_failed": "The image couldn't be loaded from that link.",
     "invalid_url": "That link isn't a valid web address.",

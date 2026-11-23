@@ -69,6 +69,12 @@ export function useEditor() {
   function start(): Promise<Renderer | null> {
     ready ??= loadRenderer().then(
       (instance) => {
+        instance.canvas.addEventListener("webglcontextlost", () => {
+          error.value = "webgl_context_lost";
+        });
+        instance.canvas.addEventListener("webglcontextrestored", () => {
+          if (error.value === "webgl_context_lost") error.value = "";
+        });
         renderer.value = instance;
         return instance;
       },
@@ -105,6 +111,10 @@ export function useEditor() {
       return;
     }
     if (id !== latestLoad) return;
+    if (instance.contextLost) {
+      error.value = "webgl_context_lost";
+      return;
+    }
     error.value = "";
     notice.value = null;
     try {
@@ -138,6 +148,10 @@ export function useEditor() {
   }
 
   async function openUrl(url: URL): Promise<void> {
+    if (renderer.value?.contextLost) {
+      error.value = "webgl_context_lost";
+      return;
+    }
     const id = ++latestLoad;
     loading.value = true;
     error.value = "";
@@ -198,6 +212,10 @@ export function useEditor() {
   async function download(): Promise<void> {
     const instance = renderer.value;
     if (!instance || !hasImage.value) return;
+    if (instance.contextLost) {
+      error.value = "webgl_context_lost";
+      return;
+    }
     error.value = "";
     const chosen = format.value;
     const name = exportFileName(

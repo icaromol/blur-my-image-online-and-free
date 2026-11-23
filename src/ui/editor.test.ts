@@ -7,6 +7,8 @@ const mocks = vi.hoisted(() => ({
   downloadBlob: vi.fn(),
   renderer: {
     maxTextureSize: 4096,
+    canvas: new EventTarget(),
+    contextLost: false,
     setImage: vi.fn(),
     render: vi.fn(),
     toCanvas: vi.fn(() => ({})),
@@ -48,6 +50,8 @@ const blob = new Blob(["x"]);
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mocks.renderer.contextLost = false;
+  mocks.renderer.canvas = new EventTarget();
   vi.stubGlobal("requestAnimationFrame", () => 0);
   vi.stubGlobal("cancelAnimationFrame", () => {});
 });
@@ -152,5 +156,86 @@ describe("download", () => {
       encoded,
       "first-blurred.png",
     );
+  });
+
+  it("refuses while the WebGL context is lost and downloads again after", async () => {
+    mocks.decodeImage.mockResolvedValue(decoded());
+    mocks.encodeImage.mockResolvedValue(new Blob(["encoded"]));
+    const editor = useEditor();
+    await editor.open(blob, "photo.png");
+
+    mocks.renderer.contextLost = true;
+    await editor.download();
+    expect(editor.error.value).toBe("webgl_context_lost");
+    expect(mocks.renderer.toCanvas).not.toHaveBeenCalled();
+    expect(mocks.downloadBlob).not.toHaveBeenCalled();
+
+    mocks.renderer.contextLost = false;
+    await editor.download();
+    expect(editor.error.value).toBe("");
+    expect(mocks.downloadBlob).toHaveBeenCalledOnce();
+  });
+});
+
+describe("WebGL context loss", () => {
+  it("refuses to open a file while the context is lost and keeps the open image", async () => {
+    const original = { width: 12000, height: 6000 };
+    mocks.decodeImage.mockResolvedValue({
+      ...decoded(),
+      originalSize: original,
+    });
+    const editor = useEditor();
+    await editor.open(blob, "first.png");
+    const notice = {
+      original,
+      scaled: { width: 10, height: 10 },
+      max: 4096,
+    };
+    expect(editor.notice.value).toEqual(notice);
+
+    mocks.renderer.contextLost = true;
+    await editor.open(blob, "second.png");
+
+    expect(editor.error.value).toBe("webgl_context_lost");
+    expect(editor.fileName.value).toBe("first.png");
+    expect(editor.notice.value).toEqual(notice);
+    expect(mocks.decodeImage).toHaveBeenCalledOnce();
+    expect(mocks.renderer.setImage).toHaveBeenCalledOnce();
+  });
+
+  it("refuses a link while the context is lost without fetching it", async () => {
+    mocks.decodeImage.mockResolvedValue(decoded());
+    const editor = useEditor();
+    await editor.open(blob, "first.png");
+
+    mocks.renderer.contextLost = true;
+    await editor.openUrl(new URL("https://images.test/other.png"));
+
+    expect(editor.error.value).toBe("webgl_context_lost");
+    expect(editor.fileName.value).toBe("first.png");
+    expect(editor.loading.value).toBe(false);
+    expect(mocks.fetchImage).not.toHaveBeenCalled();
+  });
+
+  it("shows an error when the context is lost and clears it when restored", async () => {
+    mocks.decodeImage.mockResolvedValue(decoded());
+    const editor = useEditor();
+    await editor.open(blob, "photo.png");
+
+    mocks.renderer.canvas.dispatchEvent(new Event("webglcontextlost"));
+    expect(editor.error.value).toBe("webgl_context_lost");
+
+    mocks.renderer.canvas.dispatchEvent(new Event("webglcontextrestored"));
+    expect(editor.error.value).toBe("");
+  });
+
+  it("keeps an unrelated error when the context is restored", async () => {
+    mocks.decodeImage.mockResolvedValue(decoded());
+    const editor = useEditor();
+    await editor.open(blob, "photo.png");
+
+    editor.error.value = "decode_failed";
+    mocks.renderer.canvas.dispatchEvent(new Event("webglcontextrestored"));
+    expect(editor.error.value).toBe("decode_failed");
   });
 });

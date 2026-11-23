@@ -36,11 +36,19 @@ export class Renderer {
   private image: ImageBitmap | null = null;
   private targets: Targets | null = null;
   private readonly display = new Sprite();
+  private operations: readonly Operation[] = [];
   private rendered: readonly Operation[] = [];
   private drawnPoints = new WeakMap<Stroke, number>();
 
   private constructor(private readonly app: Application<WebGLRenderer>) {
     app.stage.addChild(this.display);
+    // PixiJS reuploads the original on restore but not the render targets, which come back
+    // empty, so everything is drawn again from the last operation list asked for.
+    app.canvas.addEventListener("webglcontextrestored", () => {
+      if (!this.targets || !this.original) return;
+      this.renderAll(this.operations);
+      this.show(this.operations, this.targets);
+    });
   }
 
   static async create(): Promise<Renderer> {
@@ -66,6 +74,10 @@ export class Renderer {
     return gl.getParameter(gl.MAX_TEXTURE_SIZE);
   }
 
+  get contextLost(): boolean {
+    return this.app.renderer.gl.isContextLost();
+  }
+
   get size(): ImageSize | null {
     return this.image && { width: this.image.width, height: this.image.height };
   }
@@ -88,7 +100,8 @@ export class Renderer {
   }
 
   render(operations: readonly Operation[]): void {
-    if (!this.targets || !this.original) return;
+    this.operations = operations;
+    if (!this.targets || !this.original || this.contextLost) return;
     const previous = this.rendered;
     const last = operations.at(-1);
 
@@ -114,8 +127,12 @@ export class Renderer {
       this.renderAll(operations);
     }
 
+    this.show(operations, this.targets);
+  }
+
+  private show(operations: readonly Operation[], targets: Targets): void {
     this.rendered = operations;
-    this.display.texture = this.targets.result;
+    this.display.texture = targets.result;
     this.app.render();
   }
 
@@ -222,6 +239,7 @@ export class Renderer {
     this.original = null;
     this.image?.close();
     this.image = null;
+    this.operations = [];
     this.rendered = [];
     this.display.texture = Texture.EMPTY;
   }

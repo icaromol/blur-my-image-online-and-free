@@ -64,6 +64,7 @@
     "file_not_image": "Esse arquivo não é uma imagem.",
     "invalid_link": "Digite um link http ou https que leve a uma imagem.",
     "webgl_unavailable": "Seu navegador não conseguiu iniciar o WebGL, que o app precisa para aplicar os efeitos.",
+    "webgl_context_lost": "Seu navegador interrompeu o WebGL, que o app precisa para aplicar os efeitos. Suas edições estão guardadas e voltam quando o WebGL voltar. Se nada mudar, recarregue a página e abra a imagem de novo.",
     "export_failed": "Não foi possível exportar a imagem.",
     "load_failed": "Não foi possível carregar a imagem desse link.",
     "invalid_url": "Esse link não é um endereço web válido.",
