@@ -8,7 +8,7 @@ Last synced with the code: 2026-11-22. **PR #2 was merged into `main` on 2026-11
 
 Everything the README describes, plus i18n (D-001). Ships when every `Must` is `Done`.
 
-Progress: 30 of 53 `Must` done (merged in `081fa59`, 2026-11-22), 15 in review (held by the Firefox and release failures, see below), 6 in progress (BMI-003, 050, 066, 070, 089, 092), 2 ready (BMI-076, BMI-090). Also BMI-074, BMI-080, BMI-081 and BMI-091 (`Should`, `Done`), BMI-075 and BMI-087 (`Should`, `Review`), BMI-078, BMI-084, BMI-082, BMI-083, BMI-085 (`Should`).
+Progress: 30 of 53 `Must` done (merged in `081fa59`, 2026-11-22), 15 in review (held by the Firefox and release failures, see below), 6 in progress (BMI-003, 050, 066, 070, 089, 092), 2 ready (BMI-076, BMI-090). Also BMI-074, BMI-080, BMI-081 and BMI-091 (`Should`, `Done`), BMI-075 and BMI-087 (`Should`, `Review`), BMI-135 (`Should`, `Ready`), BMI-093, BMI-078, BMI-084, BMI-082, BMI-083, BMI-085 (`Should`, `Idea` or waiting).
 
 ### E1. Foundation
 
@@ -107,6 +107,8 @@ Approved package from three research reports (quality and CI, security baseline,
 | BMI-090 | release-please opens its PR (needs Ícaro's setting, D-035) and the first release is 0.1.0, not 1.0.0, with no public release or tag before he merges the release PR | Must | S | Ready | BMI-071 |
 | BMI-091 | Evaluate Dependabot PR #3 (Docker base image Node 24 to 26) read-only: Node 26 against the README's "Requires Node.js 24", `engines` and the Docker build and smoke test; do not merge or close it | Should | S | Done | |
 | BMI-092 | A Firefox (or any browser) without WebGL must not export the image unblurred: the renderer falls back silently to a canvas renderer that skips every filter; make it fail loudly with the existing WebGL message (a privacy bug found by BMI-089) | Must | S | In progress | |
+| BMI-135 | Playwright must not reuse another process's server on port 4173 outside the CI (or must use a free port): it has caused a false failure twice and now disturbs the Firefox diagnosis; moved up from `Later` by Ícaro (D-036) | Should | S | Ready | |
+| BMI-093 | Move Docker, the CI, `engines` and the README to Node 26 (D-036): pinned pnpm 12.18.0 in place of corepack, `setup-node` in four places, then close Dependabot's PR #3; the Docker job also runs on PRs that change the `Dockerfile`; after BMI-089 and BMI-092 | Should | S | Idea | BMI-089, BMI-092 |
 
 ### E6. Launch readiness
 
@@ -155,9 +157,8 @@ From the README backlog, in the README's order. Not scheduled. Moving any of the
 | BMI-138 | Proxy answers `413 too_large` in JSON when the body passes `MAX_BYTES`, by reading up to `MAX_BYTES + 1` before replying (gives up streaming, about 4.4 MB of memory a request, under Vercel's 4.5 MB); the alternative to BMI-087's front-only message; a proxy architecture decision | Quality | Idea |
 | BMI-136 | Marketing templates: `marketing/social/templates/brand.css` imports Google Fonts at render time (a network request on every render, for the `tip.html` template); self-host the font or drop the import. Only matters if `tip.html` is used; the app is not affected | Quality | Idea |
 | BMI-137 | Image loading by link on phones: the real ceiling is decoding memory, not the 100 MiB cap (a compressed file of tens of MB can exceed 100 megapixels, over 400 MB as RGBA, and end in `decode_failed`; a body just under the cap sits whole in a Blob, kept in RAM on iOS Safari and able to reload the tab); a lower or device-aware cap, or a clearer message when decoding fails on a very large file | Quality | Idea |
-| BMI-135 | Playwright config: don't silently reuse another process's server on port 4173 outside CI (`reuseExistingServer`); no evidence yet that this caused the 2026-11-22 failure (BMI-074) | Quality | Idea |
 
-Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-093`; later effects `BMI-109`, features `BMI-129`, other later `BMI-139`.
+Next free IDs: v1 `BMI-005`, `BMI-016`, `BMI-029`, `BMI-034`, `BMI-045`, `BMI-053`, `BMI-094`; later effects `BMI-109`, features `BMI-129`, other later `BMI-139`.
 
 ---
 
@@ -480,6 +481,24 @@ Read and test locally; the executor is `-f2` or a worker of the server lane; no 
 
 **Result (2026-11-22, `-f2` via `-75`; PM checked the Dockerfile, `engines` and the CI files):** nothing merged, closed or changed. PR #3 changes only the two `FROM` lines; Node 26 has no corepack and the Dockerfile line 3 is `RUN corepack enable`, so the Docker build on `main` would very likely fail (inference: no real image build, the daemon was stopped; the CI smoke and 303 tests pass on Node 26 outside Docker). Node 26 is LTS since 2026-10-28 (end 2029-04-30) and Node 24 is in maintenance since 2026-10-20 (end 2028-04-30); Vercel's default is 26 and the hosted project already runs 26.x; `engines` is `>=24`; Docker and the CI's `setup-node` (four places) and the README are on 24. The choice is Ícaro's (Q-026); if he picks Node 26, PM grooms the item. Marked `Done` on the same basis as BMI-074: a read-only evaluation, nothing to merge.
 
+### BMI-135 — The e2e must not reuse a foreign server
+
+Moved from `Later` to `Ready` by Ícaro (D-036, relayed). Quality lane; `playwright.config.ts` is a shared-file lock. The config has `reuseExistingServer: !process.env.CI` on the fixed port 4173 with `--strictPort`, so on a machine with several sessions a run can attach to another process's preview server, and a run during someone else's build fails for no reason (a false failure twice, now in the Firefox diagnosis).
+
+- [ ] Outside the CI Playwright doesn't attach to a server it didn't start: either it picks a free port (and `baseURL` follows it) or it fails loudly when the port is busy; never a silent reuse.
+- [ ] Two e2e runs at the same time on one machine don't disturb each other (shown by running two).
+- [ ] The CI behavior is unchanged (a fresh server, one retry) and `docs/quality.md` says how the port is chosen.
+- [ ] Not mixed into the BMI-089 or BMI-092 PRs.
+
+### BMI-093 — Node 26 everywhere
+
+Decided by Ícaro (D-036, relayed): option (a) of the former Q-026. A PR of its own, **after** BMI-089 and BMI-092. Facts from BMI-091 (read-only, via `-75`): Node 26 is LTS since 2026-10-28 (end 2029-04-30); Node 24 is in maintenance since 2026-10-20; Node 26 has no corepack and the `Dockerfile` line 3 is `RUN corepack enable`.
+
+- [ ] The `Dockerfile` uses `node:26-slim` (both stages, pinned by digest as now) and installs pnpm at the version of `packageManager`, 12.18.0, in place of corepack.
+- [ ] `setup-node` is 26 in the four places of `ci.yml` and `security.yml`; `engines` and the README ("Requires Node.js 24") say 26.
+- [ ] The Docker job runs **also on pull requests that change the `Dockerfile`** (a path filter), so that the change is proven before the merge: PR #3's green proved nothing because the job runs only on `main`.
+- [ ] A clean `pnpm install --frozen-lockfile`, check, tests, build, e2e and the Docker smoke test pass on Node 26; Dependabot's PR #3 is closed after this PR merges.
+
 ### BMI-087 — A proxied download cut at the proxy's cap
 
 The reviewer found, in the code (PM didn't run it): when the proxy cuts its stream at `MAX_BYTES` (4,400,000 bytes) and the origin server declared no size, `proxied.blob()` rejects with an error the app doesn't recognize, and the user sees "Something went wrong. Try again."; the `too_large` 413 comes only when the origin declares the size (`server/proxy/app.ts` near line 203). Ui lane, `Should`.
@@ -494,7 +513,7 @@ This is after the merge of PR #2, in a PR of its own (the PR is clean and is not
 - [ ] The new code has its `en` and `pt-BR` text (no inline text); the `pt-BR` is read by Ícaro before the merge of that PR; the key-parity test, check, unit and e2e tests and `pnpm size` pass.
 - [ ] Nothing in `server/` changes.
 
-**Committed (2026-11-22, per `-5b`):** branch `fix/proxied-download-error`, commit `09fffb5`, **PR #4** (draft), validated in a clean copy (307 tests, e2e 50/50, size 43.8 and 192.96 kB, licenses ok); the PR description says the `pt-BR` string is new and that Ícaro reads it before the merge. `Review` until PR #4 merges.
+**Committed (2026-11-22, per `-5b`):** branch `fix/proxied-download-error`, commit `09fffb5`, **PR #4** (draft), validated in a clean copy (307 tests, e2e 50/50, size 43.8 and 192.96 kB, licenses ok); the PR description says the `pt-BR` string is new; **Ícaro approved the `pt-BR` text as it is** (D-036): "O download foi interrompido. Se a imagem for grande, baixe o arquivo e abra-o aqui." `Review` until PR #4 merges.
 
 ### BMI-085 — Landing pages built
 
