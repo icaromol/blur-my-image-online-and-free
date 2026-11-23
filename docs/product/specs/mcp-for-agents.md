@@ -19,7 +19,9 @@ Agents (assistants that call tools) need a tool that blurs, pixelates or edits a
 
 ## Non-goals (for this spec)
 
-Building anything; buying a domain; changing the web app; making any claim in the README or on the landing about the MCP before the privacy statement exists.
+Building anything; buying a domain; changing the web app; making any claim about the MCP in the README, or on the landing beyond the one card below, before the privacy statement exists.
+
+**The landing's MCP card (D-043).** Ícaro asked for it directly in BLU-21: section 4 of the landing, "Use it your way", has a card for the MCP, visible now and marked as in development. Until the MCP's own privacy statement exists (BMI-140), the card may carry his line "by design, from devs to devs" and say only that the MCP is in development and not available yet and that the page's privacy notes cover the web app only, with a link to this spec (to the MCP's own page once it exists, Q-027). It states no tool, input type, date or privacy rule for the MCP, and nothing of the MCP's promise mixes with the web app's (D-037). When the link moves to the MCP's page, the card is checked again against that statement. The rule is row 77 of `docs/marketing/landing/claims-check.md`. This paragraph aligns the non-goal with D-043 (BLU-73, raised by the Copywriter in BLU-66); it adds nothing to the MCP's scope.
 
 ## Questions the spec answers (one item each)
 
