@@ -1,15 +1,15 @@
 # Use page: blur a license plate
 
-> **DRAFT, on hold: Q-024.** Whether the three use-case pages stay is Ícaro's open question. Nothing here is built or reworked beyond three clean-ups and the URL markers: the D-032 removal of the 1-hour Vercel log, the study wording (no numbers, no email claim), and the removal of any advice that a stronger setting protects.
+> **DRAFT. Q-024 answered by Ícaro on 2026-11-23:** the page stays, small, with the editor on it, linked from the home. Changes so far: the D-032 removal of the 1-hour Vercel log, the study wording (no numbers, no email claim), the removal of any advice that a stronger setting protects, and the critique changes Ícaro approved (BMI-084): "original resolution" in the hero, "number plates" once, and the drop zone as the CTA.
 
 > **Internal notes. Not for the page.** The notes below and the final "Choices for the owner" section must not be published.
 
 - **Persona:** P2, the private seller (secondary): someone posting photos of a car, not technical, a few times a year.
 - **Page:** `/blur-license-plate/` (slug from seo.md; BMI-078 confirms).
 - **Target query:** `blur license plate in photo`. Also covered in plain sentences: blur number plate, hide license plate in photo.
-- **Limits:** title 54 characters (limit 59), meta description 137 characters (limit 154).
+- **Limits:** title 54 characters (limit 59), meta description 137 characters (limit 154). Hero subhead 137 characters (no limit; counted by script).
 - **Structure:** seo.md "Page 1". Title, meta and H1 are the brief's, unchanged.
-- **Markers:** `[EDITOR-URL]` is the editor button's target. Not a real address.
+- **CTA (Q-024):** the page carries the editor, so the drop zone is the call to action. There is no "Open the editor" button and no `[EDITOR-URL]` on this page.
 - **Shared sections are short on purpose.** The redaction explanation lives on the home page (`/#blur-is-not-redaction`); this page gives two sentences and a link. FAQ answers are written for plates.
 - **Detection:** decided: not an opener (D-033). The hero no longer says it. The answer is in the FAQ, once ("Does it find the plate by itself?"). If the owner wants it as an opener, the PM asks (Q-024).
 - **Left out on purpose:** anything legal about plates, video, phones, claims of automatic detection. Sources: `claims-check.md`.
@@ -28,11 +28,11 @@
 
 # Blur a license plate in a photo
 
-Paint over the plate with the brush, pixelate it or blur it, and download the photo. No account, no watermark.
+Paint over the plate with the brush, pixelate it or blur it, and download the photo at its original resolution. No account, no watermark.
 
 Image files you open, drop or paste never leave your device.
 
-**Button:** [Open the editor]([EDITOR-URL])
+**Editor:** the editor with its drop zone sits here, under the hero text. No button.
 
 ---
 
@@ -62,7 +62,7 @@ Paint each plate. Every stroke uses the effect and intensity selected at the mom
 
 ## A marketplace that blurs plates
 
-carsales, an Australian marketplace, [blurs plates in listing photos automatically](https://business.carsales.com.au/insights/auto-industry-news/carsales-innovation-tackles-number-plate-cloning/) to make cloning harder.
+carsales, an Australian marketplace, [blurs number plates in listing photos automatically](https://business.carsales.com.au/insights/auto-industry-news/carsales-innovation-tackles-number-plate-cloning/) to make cloning harder.
 
 ---
 
@@ -126,7 +126,7 @@ No, unless the photo is larger than your graphics card can handle. Then the edit
 
 Open the photo, pixelate the plate, download.
 
-**Button:** [Open the editor]([EDITOR-URL])
+**CTA:** no button. The drop zone at the top of the page is the action; dropping a file or pasting with Ctrl+V also works from here (`src/ui/App.vue`:97-102).
 
 ---
 
@@ -140,10 +140,4 @@ Open the photo, pixelate the plate, download.
 | B | Blur a number plate or license plate in a photo | Covers the UK and Australian wording in the H1. Longer, and the page body already uses both words. |
 | C | Hide a license plate in a photo | The `hide` variants also appear in autocomplete. "Hide" promises more than blur can keep, so it fits the page less well. |
 
-**Button text**
-
-| Option | Text | Reason |
-| --- | --- | --- |
-| A (used) | Open the editor | Accurate, and the same on every page. |
-| B | Blur your photo | Names the task. It suggests an instant result. |
-| C | Choose a photo | The first action in the editor. Reads like a file picker on this page. |
+**Button text.** No button since Q-024: the page carries the editor, and its drop zone is the CTA (critique C2-4).
