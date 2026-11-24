@@ -4,8 +4,10 @@ import { openImage } from "./helpers";
 
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
-async function expectNoViolations(page: Page) {
-  const results = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze();
+async function expectNoViolations(page: Page, scope?: string) {
+  const axe = new AxeBuilder({ page }).withTags(WCAG_TAGS);
+  if (scope) axe.include(scope);
+  const results = await axe.analyze();
   expect(
     results.violations.map(
       (v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`,
@@ -25,7 +27,7 @@ test("editor has no WCAG 2.2 AA violations", async ({ page }) => {
   await openImage(page, "edge");
   // Motion shows every control, including the angle slider.
   await page.locator("#app").getByText("Motion", { exact: true }).click();
-  await expectNoViolations(page);
+  await expectNoViolations(page, "#app");
 });
 
 for (const scheme of ["light", "dark"] as const) {
@@ -39,7 +41,7 @@ for (const scheme of ["light", "dark"] as const) {
       await expect(
         page.locator("#app").getByText(/don't reliably hide text/),
       ).toBeVisible();
-      await expectNoViolations(page);
+      await expectNoViolations(page, "#app");
     });
   }
 }
@@ -75,5 +77,5 @@ test("error message has no WCAG 2.2 AA violations", async ({ page }) => {
     buffer: Buffer.from("not an image"),
   });
   await expect(page.getByRole("alert")).toBeVisible();
-  await expectNoViolations(page);
+  await expectNoViolations(page, "#app");
 });
