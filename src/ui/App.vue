@@ -9,6 +9,7 @@ import { useEditor } from "./editor";
 import ImageInput from "./ImageInput.vue";
 import LanguageSelect from "./LanguageSelect.vue";
 import { type Command, globalCommandFor } from "./shortcuts";
+import ThemeSelect from "./ThemeSelect.vue";
 import ToolControls from "./ToolControls.vue";
 
 const { t, n } = useTranslation();
@@ -119,7 +120,10 @@ onBeforeUnmount(() => {
     <header class="header">
       <div class="title">
         <h1>{{ t("app.title") }}</h1>
-        <LanguageSelect />
+        <div class="preferences">
+          <LanguageSelect />
+          <ThemeSelect />
+        </div>
       </div>
       <p class="tagline">{{ t("app.tagline") }}</p>
     </header>
@@ -195,6 +199,12 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.preferences {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .header h1 {

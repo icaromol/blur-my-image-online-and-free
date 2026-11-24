@@ -37,6 +37,10 @@ The interface is available in English and Brazilian Portuguese. It follows your 
 
 Adding a language means adding one message file and one entry in `SUPPORTED_LOCALES` (`src/i18n/locales.ts`); see [docs/product/specs/i18n.md](docs/product/specs/i18n.md).
 
+## Theme
+
+The interface is light or dark. It follows your system's setting (`prefers-color-scheme`), and the theme button in the header, next to the language picker, overrides it with Light, Dark or System. Your choice is remembered in this browser.
+
 ## Blur effects
 
 v1 ships the three effects people reach for most. The ranking comes from comparing what Photoshop, Illustrator and the free online blur tools all have in common (details in [docs/research.md](docs/research.md)).
