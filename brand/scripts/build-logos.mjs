@@ -12,6 +12,10 @@ mkdirSync(faviconDir, { recursive: true });
 const wordmarks = JSON.parse(
   readFileSync(join(here, "wordmark-paths.json"), "utf8"),
 );
+// Written by measure-mark.mjs from the raw PNGs: block size, position and ink opacity.
+const marks = JSON.parse(
+  readFileSync(join(here, "mark-geometry.json"), "utf8"),
+);
 
 const BLACK = "#0f1115";
 const WHITE = "#ffffff";
@@ -20,31 +24,13 @@ const VARIANTS = { black: BLACK, white: WHITE };
 
 const fmt = (n) => String(Math.round(n * 10) / 10);
 
-// Mark cells on a 5 x 5 grid: [column, row, ink opacity]. The solid bar is column 4, rows 0 to 3.
-const MARK_CELLS = [
-  [2, 0, 0.4],
-  [3, 0, 0.72],
-  [1, 1, 0.18],
-  [2, 1, 0.55],
-  [3, 1, 0.85],
-  [0, 2, 0.14],
-  [1, 2, 0.32],
-  [2, 2, 0.72],
-  [3, 2, 0.92],
-  [1, 3, 0.18],
-  [2, 3, 0.55],
-  [3, 3, 0.85],
-  [2, 4, 0.3],
-  [3, 4, 0.62],
-];
-
-function markShapes(x, y, u, ink) {
-  const rects = MARK_CELLS.map(
+function markShapes(m, x, y, w, h, ink) {
+  const rects = m.cells.map(
     ([c, r, o]) =>
-      `<rect x="${fmt(x + c * u)}" y="${fmt(y + r * u)}" width="${fmt(u)}" height="${fmt(u)}" fill="${ink}" fill-opacity="${o}"/>`,
+      `<rect x="${fmt(x + c * w)}" y="${fmt(y + r * h)}" width="${fmt(w)}" height="${fmt(h)}" fill="${ink}"${o < 1 ? ` fill-opacity="${o}"` : ""}/>`,
   );
   rects.push(
-    `<rect x="${fmt(x + 4 * u)}" y="${fmt(y)}" width="${fmt(u)}" height="${fmt(4 * u)}" fill="${ink}"/>`,
+    `<rect x="${fmt(x + m.barColumn * w)}" y="${fmt(y)}" width="${fmt(w)}" height="${fmt(m.barRows * h)}" fill="${ink}"/>`,
   );
   return `<g shape-rendering="crispEdges">${rects.join("")}</g>`;
 }
@@ -55,30 +41,31 @@ function svg(minX, minY, w, h, body, label = "Blur My Image") {
 
 function lockup(kind, ink) {
   const w = wordmarks[kind];
-  const u = Math.round(w.markSize / 5);
-  const markX = w.markRightFromOrigin - 5 * u;
-  const markY = w.markTopFromOrigin;
-  const minX = Math.min(0, markX);
-  const minY = Math.min(0, markY);
-  const maxX = Math.max(w.width, markX + 5 * u);
-  const maxY = Math.max(w.height, markY + 5 * u);
+  const m = marks[kind];
+  const minX = Math.min(0, m.x);
+  const minY = Math.min(0, m.y);
+  const maxX = Math.max(w.width, m.x + 5 * m.cellWidth);
+  const maxY = Math.max(w.height, m.y + 5 * m.cellHeight);
   return svg(
     minX,
     minY,
     maxX - minX,
     maxY - minY,
-    `${markShapes(markX, markY, u, ink)}<path fill="${ink}" d="${w.d}"/>`,
+    `${markShapes(m, m.x, m.y, m.cellWidth, m.cellHeight, ink)}<path fill="${ink}" d="${w.d}"/>`,
   );
 }
 
+// The mark alone uses the stacked drawing, whose blocks are closest to square, at 20 units per block height.
 function markOnly(ink) {
-  const u = 20;
+  const m = marks.stacked;
+  const h = 20;
+  const w = (m.cellWidth / m.cellHeight) * h;
   return svg(
     0,
     0,
-    5 * u,
-    5 * u,
-    markShapes(0, 0, u, ink),
+    5 * w,
+    5 * h,
+    markShapes(m, 0, 0, w, h, ink),
     "Blur My Image mark",
   );
 }

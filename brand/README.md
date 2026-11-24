@@ -14,10 +14,11 @@ Origin of the logos: created by Ícaro, the maintainer.
 | `favicon/favicon.svg` | Simplified mark, 4 x 4 blocks, black in a light color scheme and white in a dark one (`prefers-color-scheme`) |
 | `favicon/icon-16.png`, `icon-32.png`, `icon-48.png` | Dark rounded tile with the white mark, fallback for browsers without SVG favicons |
 | `favicon/apple-touch-icon-180.png`, `icon-192.png`, `icon-512.png` | Full-bleed dark tile with the white mark, for the home screen and web app manifest |
-| `tokens.css`, `tokens.json` | Colors and fonts |
+| `tokens.css`, `tokens.json` | Colors, fonts, and the site's fluid spacing and type scale |
+| `home-direction.md` | Design direction for the home: audit, spacing and type scale, identity devices, layout per section |
 | `contrast.md` | WCAG 2.2 contrast of every color pair in use |
 | `OFL.txt` | License of the Liberation fonts used for running text in the social templates |
-| `scripts/` | `build-logos.mjs` (SVGs and PNGs), `vectorize-wordmark.mjs` and its output `wordmark-paths.json` (the lettering), `contrast.mjs` |
+| `scripts/` | `build-logos.mjs` (SVGs and PNGs), `vectorize-wordmark.mjs` and its output `wordmark-paths.json` (the lettering), `measure-mark.mjs` and its output `mark-geometry.json` (the mark), `contrast.mjs` |
 
 Color suffixes: `black` (letters, blocks and bar in `#0f1115`) is for light backgrounds, `white` (all `#ffffff`) for dark ones. There are no other colorways.
 
@@ -31,7 +32,7 @@ Color suffixes: `black` (letters, blocks and bar in `#0f1115`) is for light back
 
 ## Clear space
 
-Keep free space of 2x on all four sides, where x is the width of the bar (one block). In the horizontal logo `x` is one fifth of the mark's height.
+Keep free space of 2x on all four sides, where x is the width of the bar (one block).
 
 ## Minimum size
 
@@ -46,7 +47,7 @@ Below these sizes the lightest blocks blur together and the letters close up. Fo
 ## What not to do
 
 - Don't redraw, re-space or re-color the letters, and don't type the name in another font next to the mark.
-- Don't recolor the grey blocks. They are the logo color at 14% to 92% opacity, so they fade the same way on any background.
+- Don't recolor the grey blocks. They are the logo color at 14% to 87% opacity (the block that touches the middle of the bar is solid), so they fade the same way on any background.
 - Don't add outlines, shadows, glow or gradients.
 - Don't color the logo, or the bar alone, blue or any other color. The logo is black or white only.
 - Don't stretch, rotate or crop the logo.
@@ -55,7 +56,7 @@ Below these sizes the lightest blocks blur together and the letters close up. Fo
 
 ## Colors and fonts
 
-Everything is in `tokens.css` (`tokens.json` has the same values). `marketing/social/templates/brand.css` imports it, so the social templates and the OG image change when the tokens change. The app doesn't import it yet.
+Everything is in `tokens.css` (`tokens.json` has the same values, with the spacing and type scale as `[px at 360 wide, px at 1920 wide]`). `marketing/social/templates/brand.css` imports it, so the social templates and the OG image change when the tokens change. The app doesn't import it yet.
 
 | Token | Value | Role |
 | --- | --- | --- |
@@ -71,19 +72,29 @@ Everything is in `tokens.css` (`tokens.json` has the same values). `marketing/so
 
 There are two blues because `#7cc4ff` has only 1.87:1 against white and `#0d62b8` has 6.07:1 (ratios rounded down, as in `contrast.md`). Neither is a logo color.
 
-The only fonts are Liberation Sans (headlines and text) and Liberation Mono (labels). Contrast ratios are in `contrast.md`; regenerate it with `node brand/scripts/contrast.mjs`.
+The site uses the system font stack (`--font-ui`, `--font-ui-mono`): no web font is loaded. The social templates and the OG image use Liberation Sans (headlines and text) and Liberation Mono (labels).
+
+The site's spacing (`--space-1` to `--space-8`, `--gutter`) and type sizes (`--step--1` to `--step-3`) grow linearly from 360 to 1920 px wide with `clamp()`. `home-direction.md` lists the value of each at 360, 390, 768, 1024, 1366 and 1920 px. Contrast ratios are in `contrast.md`; regenerate it with `node brand/scripts/contrast.mjs`.
 
 ## Lettering, mark and fonts
 
 The lettering of "Blur My Image" is the maintainer's own, vectorized from his raw PNGs (`logo-horizontal.png` for the horizontal logo, `logo-stacked.png` for the stacked one, kept in `brand/source/` and never committed). The SVGs contain only paths: no raster image, no text and no font.
 
-The mark is redrawn as plain rectangles: 5 x 5 equal blocks, 14 grey blocks and the solid bar. It sits in the same place and at the same size relative to the lettering as in the original files. The horizontal original draws the mark slightly wider than tall; here it is square, as in the stacked original.
+The mark is redrawn as plain rectangles on a 5 x 5 grid: 14 blocks and the bar, which is one block wide and four blocks tall. `measure-mark.mjs` reads it from the raw PNGs, so the block size, the position next to the lettering and the opacity of every block are the original's:
+
+- Horizontal: blocks 44.1 x 39.6 (slightly wider than tall, as drawn), 35.8 units of space between the bar and the B.
+- Stacked: blocks 59.4 x 57. The original draws these five columns 63, 62, 59, 57 and 54 px wide; the redraw keeps them equal, like the horizontal original.
+- The block next to the middle of the bar is solid in both originals, so the bar reads as a cross with the darkest row.
+- The mark alone uses the stacked drawing.
+
+`favicon.svg` and the icon tiles keep their own 4 x 4 drawing for small sizes.
 
 Liberation Sans and Liberation Mono (2.1.5, SIL Open Font License 1.1, `OFL.txt`) are used only as live text in the social templates and the OG image. The font files are not in the repository. Rendering those templates needs `fonts-liberation` installed (Debian and Ubuntu); without it the browser falls back to Arimo, Arial or Helvetica and the layout changes slightly.
 
 ## Regenerating
 
 - `node brand/scripts/build-logos.mjs` rewrites every SVG in `logos/` and `favicon/` and the PNGs in `favicon/` from `scripts/wordmark-paths.json`. It needs Playwright for the PNGs and no font.
+- `measure-mark.mjs` reads the mark from the raw PNGs into `mark-geometry.json`: the outer edges of the grid are set in the script, and it samples the middle of each block for its opacity. Run it before `build-logos.mjs` when the raw PNGs change. It needs Playwright and `brand/source/`.
 - `vectorize-wordmark.mjs` turns the raw PNGs into `wordmark-paths.json`. It loads the `potrace` npm package (2.1.8, GPL-2.0) from a folder outside the repository; it is not a dependency, and its license covers the tool, not the paths it produces. Run it with `npm install potrace@2.1.8` in a folder outside the repository, then `TRACE_MODULES=<that folder>/node_modules node brand/scripts/vectorize-wordmark.mjs`. It also needs `brand/source/` and `jimp`, which `potrace` installs.
   - Potrace runs on a 4x upscale of the PNG with a light blur. The script then re-fits straight edges as exact vertical, horizontal or diagonal lines, aligns baselines and cap lines, rebuilds sharp corners, refits the curves (cubic fit, 0.35 px tolerance) and winds the holes of B, a, g and e opposite to the outlines, so the paths fill correctly without `fill-rule`.
   - Checked at source size against the raw PNGs: no pixel of the SVG is more than 1 px from the original outline. Also compared side by side at 80, 120, 200 and 500 px wide (horizontal) and 80, 200 and 320 px wide (stacked); the holes of B, a, g and e are open in both colors.

@@ -20,12 +20,10 @@ const SOURCES = {
   horizontal: {
     file: "logo-horizontal.png",
     crop: [380, 250, 1870, 520],
-    mark: { right: 354, top: 280, size: 198 },
   },
   stacked: {
     file: "logo-stacked.png",
     crop: [450, 340, 1160, 940],
-    mark: { right: 432, top: 376, size: 285 },
   },
 };
 
@@ -662,9 +660,8 @@ for (const [name, cfg] of Object.entries(SOURCES)) {
     d,
     width: Math.ceil(maxX) - ox,
     height: Math.ceil(maxY) - oy,
-    markRightFromOrigin: cfg.mark.right - ox,
-    markTopFromOrigin: cfg.mark.top - oy,
-    markSize: cfg.mark.size,
+    originX: ox,
+    originY: oy,
   };
   console.log(
     name,
