@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/icaromol/blur-my-image-online-and-free/compare/v0.2.0...v0.3.0) (2026-11-24)
+
+
+### Features
+
+* **ui:** add the brand favicon, apple-touch icon and new OG image ([#25](https://github.com/icaromol/blur-my-image-online-and-free/issues/25)) ([1dddcd2](https://github.com/icaromol/blur-my-image-online-and-free/commit/1dddcd274fb1a3358e8c3d0d8513349ab1395fcd))
+* **ui:** use the brand kit palette in the light and dark themes ([#22](https://github.com/icaromol/blur-my-image-online-and-free/issues/22)) ([a548bcd](https://github.com/icaromol/blur-my-image-online-and-free/commit/a548bcd7b4f4789dd915307ce22ea9d022bc8235))
+
 ## [0.2.0](https://github.com/icaromol/blur-my-image-online-and-free/compare/v0.1.0...v0.2.0) (2026-11-24)
 
 
