@@ -1,0 +1,442 @@
+<!doctype html>
+<!--
+  Static mock of the editor layout in brand/editor-direction.md. Not app code: Dev UI builds it in src/ui/.
+  brand/scripts/render-editor-proposal.mjs fills the icon, logo and GitHub placeholders and sets the state
+  (theme, tool, effect, tooltip, annotations) before each screenshot.
+  Colors are the app's tokens from src/ui/style.css (themselves the values of brand/tokens.css).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blur My Image editor layout proposal</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #eceef2;
+    --surface: #ffffff;
+    --text: #0f1115;
+    --text-muted: #454c5c;
+    --line: color-mix(in srgb, var(--text) 13%, transparent);
+    --border-strong: #454c5c;
+    --accent: #0d62b8;
+    --accent-text: #ffffff;
+    --selected-bg: color-mix(in srgb, var(--accent) 11%, var(--surface));
+    --warning-text: #7a4b00;
+    --tip-bg: #0f1115;
+    --tip-text: #f2f3f5;
+    --radius: 8px;
+    --radius-card: 12px;
+    --font: var(--font-ui);
+  }
+  :root.dark {
+    color-scheme: dark;
+    --bg: #0f1115;
+    --surface: #181b21;
+    --text: #f2f3f5;
+    --text-muted: #9aa1ad;
+    --line: color-mix(in srgb, var(--text) 14%, transparent);
+    --border-strong: #9aa1ad;
+    --accent: #7cc4ff;
+    --accent-text: #0f1115;
+    --selected-bg: color-mix(in srgb, var(--accent) 14%, var(--surface));
+    --warning-text: #f2c470;
+    --tip-bg: #f2f3f5;
+    --tip-text: #0f1115;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: var(--step--1)/1.4 var(--font); }
+  button, input, select { font: inherit; color: inherit; }
+  svg.i { width: 20px; height: 20px; flex: none; }
+
+  /* Header */
+  .top {
+    display: flex; align-items: center; gap: 8px;
+    height: 64px; padding: 0 var(--gutter);
+    background: var(--surface); border-bottom: 1px solid var(--line);
+  }
+  .top .logo { height: 22px; width: auto; color: var(--text); margin-right: auto; }
+  .icon-btn {
+    display: inline-grid; place-items: center;
+    flex: none; width: 40px; height: 40px; padding: 0;
+    border: 1px solid transparent; border-radius: var(--radius);
+    background: transparent; color: var(--text); cursor: pointer;
+  }
+  .icon-btn:hover { background: var(--bg); }
+  .icon-btn:disabled { color: var(--text-muted); opacity: .55; cursor: not-allowed; }
+  .select {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 40px; padding: 0 10px 0 12px;
+    border: 1px solid var(--border-strong); border-radius: var(--radius); background: var(--surface);
+  }
+  .select .chev { width: 16px; height: 16px; color: var(--text-muted); }
+  .lang select { appearance: none; border: 0; padding: 0; background: transparent; }
+  .github svg { width: 20px; height: 20px; fill: currentColor; }
+
+  /* Editor grid: rail | stage | panel */
+  .editor {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr) 320px;
+    grid-template-areas: "rail stage panel";
+    min-height: calc(100vh - 64px);
+  }
+
+  /* Left rail of cards */
+  .rail {
+    grid-area: rail;
+    display: grid; align-content: start; gap: var(--space-4);
+    padding: var(--space-4) var(--space-2);
+    background: var(--surface); border-right: 1px solid var(--line);
+  }
+  .group { display: grid; gap: 6px; min-width: 0; }
+  fieldset.group { margin: 0; padding: 0; border: 0; }
+  .group + .group { padding-top: var(--space-4); border-top: 1px solid var(--line); }
+  .caption {
+    margin: 0 0 2px; text-align: center;
+    font-size: 10.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .cards { display: grid; gap: 6px; }
+  .card {
+    position: relative;
+    display: grid; justify-items: center; align-content: center; gap: 5px;
+    min-height: 72px; padding: 8px 4px;
+    border: 1px solid transparent; border-radius: 10px;
+    background: transparent; color: var(--text); cursor: pointer;
+    font-size: 12px; line-height: 1.15; text-align: center;
+  }
+  .card svg.i { width: 22px; height: 22px; }
+  .card:hover { background: var(--bg); }
+  .card input { position: absolute; opacity: 0; pointer-events: none; }
+  .card[aria-pressed="true"], .card:has(input:checked) {
+    background: var(--selected-bg);
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 0.5px var(--accent);
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .card kbd {
+    position: absolute; top: 4px; right: 5px;
+    font: 600 9.5px/1 var(--font); color: var(--text-muted);
+  }
+  .card[aria-pressed="true"] kbd { color: var(--accent); }
+
+  /* Stage: messages, image, bar under the image */
+  .stage {
+    grid-area: stage;
+    display: grid; align-content: start; justify-items: center; gap: var(--space-3);
+    padding: var(--space-5) var(--space-5) var(--space-4); min-width: 0;
+  }
+  .frame { position: relative; width: 100%; max-width: calc((100vh - 64px - var(--space-5) - var(--space-4) - 64px) * 1.5); line-height: 0; }
+  .frame canvas { width: 100%; height: auto; border-radius: var(--radius-card); display: block; }
+  .brush-cursor {
+    position: absolute; border: 1px solid #fff; border-radius: 50%;
+    box-shadow: 0 0 0 1px #000; transform: translate(-50%, -50%); pointer-events: none;
+  }
+  .under {
+    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px;
+    width: 100%; max-width: inherit;
+  }
+  .frame, .under { max-width: calc((100vh - 64px - var(--space-5) - var(--space-4) - 64px) * 1.5); }
+  .history {
+    display: inline-flex; gap: 2px; padding: 2px;
+    border: 1px solid var(--border-strong); border-radius: 10px; background: var(--surface);
+  }
+  .reserved { height: 40px; }
+  .reserved.preview { justify-self: center; width: 168px; }
+  .reserved.zoom { width: 132px; }
+
+  .tip-anchor { position: relative; display: inline-grid; }
+  .tooltip {
+    position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%);
+    padding: 5px 8px; border-radius: 6px; white-space: nowrap;
+    background: var(--tip-bg); color: var(--tip-text); font-size: 12.5px; line-height: 1.2;
+    display: none;
+  }
+  .tooltip::after {
+    content: ""; position: absolute; left: 50%; top: 100%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: var(--tip-bg);
+  }
+  .show-tip .tooltip { display: block; }
+  .show-tip .icon-btn { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Right panel */
+  .panel {
+    grid-area: panel;
+    display: grid; align-content: start; gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--surface); border-left: 1px solid var(--line);
+  }
+  .panel > .col { display: grid; gap: var(--space-3); }
+  .box { display: grid; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--line); border-radius: var(--radius-card); background: var(--surface); }
+  .field { display: grid; gap: 8px; }
+  .field[hidden] { display: none; }
+  .field-head { display: flex; align-items: center; gap: 8px; }
+  .field-head .label { font-weight: 600; }
+  .field-head output { margin-left: auto; font-variant-numeric: tabular-nums; color: var(--text); }
+  .field-head svg.i { width: 18px; height: 18px; color: var(--text-muted); }
+  .range { position: relative; height: 24px; }
+  .range .track { position: absolute; left: 0; right: 0; top: 10px; height: 4px; border-radius: 2px; background: var(--border-strong); opacity: .55; }
+  .range .fill { position: absolute; left: 0; top: 10px; height: 4px; border-radius: 2px; background: var(--accent); }
+  .range .thumb {
+    position: absolute; top: 3px; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 0 3px var(--surface), 0 1px 3px 3px rgb(0 0 0 / .12);
+  }
+  .warning { display: flex; gap: 8px; margin: 0; color: var(--warning-text); font-size: 12.5px; line-height: 1.4; }
+  .warning svg.i { width: 16px; height: 16px; margin-top: 1px; }
+
+  .export { display: grid; gap: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--line); }
+  .export .field-head .select { margin-left: auto; height: 36px; gap: 18px; font-weight: 600; }
+  .download {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    height: 48px; border: 0; border-radius: 10px;
+    background: var(--accent); color: var(--accent-text); font-size: 15.5px; font-weight: 700; cursor: pointer;
+  }
+  .download svg.i { width: 20px; height: 20px; }
+  .hint { margin: 0; color: var(--text-muted); font-size: 12.5px; }
+
+  .open { display: grid; gap: var(--space-2); padding-top: var(--space-3); border-top: 1px solid var(--line); }
+  .secondary {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    height: 40px; border: 1px solid var(--border-strong); border-radius: var(--radius);
+    background: var(--surface); font-weight: 600; cursor: pointer;
+  }
+  .url { display: flex; gap: 6px; }
+  .url .input {
+    flex: 1; display: flex; align-items: center; gap: 8px; min-width: 0;
+    height: 40px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: var(--radius);
+    color: var(--text-muted);
+  }
+  .url .input svg.i { width: 18px; height: 18px; }
+  .url .icon-btn { border-color: var(--border-strong); }
+
+  /* Annotation overlay for the reserved places */
+  .annotate .reserved { border: 1.5px dashed var(--accent); border-radius: 10px; position: relative; }
+  .annotate .reserved::after {
+    position: absolute; inset: 0; display: grid; place-items: center; padding: 0 6px;
+    font-size: 11px; line-height: 1.2; text-align: center; color: var(--accent); white-space: pre-line;
+  }
+  .annotate .reserved.preview::after { content: "Reserved: preview toggle\A BMI-127, after v1"; }
+  .annotate .reserved.zoom::after { content: "Reserved: zoom\A BMI-129, after v1"; }
+
+  /* Tablet: rail on the left, panel under the image in two columns */
+  @media (max-width: 1099px) {
+    .editor {
+      grid-template-columns: 88px minmax(0, 1fr);
+      grid-template-areas: "rail stage" "rail panel";
+      grid-template-rows: auto 1fr;
+    }
+    .rail { padding: 16px 8px; }
+    .frame, .under { max-width: none; }
+    /* Touch screens: every target is at least 44 px. */
+    .icon-btn { width: 44px; height: 44px; }
+    .select, .secondary, .url .input, .export .field-head .select, .reserved { height: 44px; }
+    .stage { padding: var(--space-4) var(--space-4) var(--space-2); }
+    .panel {
+      grid-template-columns: 1fr 1fr; align-items: start;
+      padding: var(--space-2) var(--space-4) var(--space-5); background: none; border: 0;
+    }
+    .export, .open { padding: var(--space-4); border: 1px solid var(--line); border-radius: var(--radius-card); background: var(--surface); }
+  }
+
+  /* Phone: rail becomes two rows of cards above the image; panel stacks under it */
+  @media (max-width: 719px) {
+    .top { height: 56px; padding: 0 var(--space-2) 0 var(--space-4); gap: var(--space-1); }
+    .top .logo { height: 17px; }
+    /* The language select keeps its native list; closed, it shows only the globe. */
+    .lang { width: 44px; padding: 0; justify-content: center; border-color: transparent; }
+    .lang .lang-name, .lang .chev { display: none; }
+    .editor { grid-template-columns: minmax(0, 1fr); grid-template-areas: "rail" "stage" "panel"; grid-template-rows: none; min-height: 0; }
+    .rail { padding: var(--space-3) var(--space-4); gap: var(--space-3); border-right: 0; border-bottom: 1px solid var(--line); }
+    .group { grid-template-columns: 58px 1fr; align-items: center; gap: 8px; }
+    .group + .group { padding-top: var(--space-3); }
+    .caption { text-align: left; margin: 0; font-size: 10px; }
+    .cards { grid-template-columns: repeat(3, 1fr); }
+    .card { min-height: 56px; padding: 6px 2px; font-size: 11.5px; gap: 4px; }
+    .card svg.i { width: 20px; height: 20px; }
+    .stage { padding: var(--space-4) var(--space-4) var(--space-1); }
+    .reserved.preview, .reserved.zoom { width: 44px; height: 44px; }
+    .annotate .reserved::after { font-size: 9px; padding: 0 2px; }
+    .annotate .reserved.preview::after { content: "BMI-127"; }
+    .annotate .reserved.zoom::after { content: "BMI-129"; }
+    .panel { grid-template-columns: minmax(0, 1fr); padding: var(--space-2) var(--space-4) var(--space-5); }
+    .download { height: 52px; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  {{logo}}
+  <button type="button" class="icon-btn" aria-label="Theme" aria-haspopup="menu"><span class="sun">{{icon:theme-light}}</span><span class="moon" hidden>{{icon:theme-dark}}</span></button>
+  <label class="select lang">{{icon:language}}<select class="lang-name" aria-label="Language"><option>English</option></select><span class="chev">{{icon:chevron-down}}</span></label>
+  <a class="icon-btn github" href="https://github.com/icaromol/blur-my-image-online-and-free" aria-label="Blur My Image on GitHub">{{github}}</a>
+</header>
+
+<main class="editor">
+  <nav class="rail" aria-label="Editor tools">
+    <fieldset class="group" aria-labelledby="rail-apply">
+      <p class="caption" id="rail-apply">Apply</p>
+      <div class="cards">
+        <button type="button" class="card" data-tool="brush" aria-pressed="true" aria-keyshortcuts="B" title="Brush (B)"><kbd>B</kbd>{{icon:tool-brush}}<span>Brush</span></button>
+        <button type="button" class="card" data-tool="eraser" aria-pressed="false" aria-keyshortcuts="E" title="Eraser (E)"><kbd>E</kbd>{{icon:tool-eraser}}<span>Eraser</span></button>
+        <button type="button" class="card" aria-label="Blur entire image" title="Blur entire image">{{icon:blur-entire}}<span>Entire image</span></button>
+      </div>
+    </fieldset>
+    <div class="group" role="radiogroup" aria-labelledby="rail-effect" aria-describedby="effects-warning">
+      <p class="caption" id="rail-effect">Effect</p>
+      <div class="cards">
+        <label class="card" data-effect="gaussian"><input type="radio" name="effect" value="gaussian">{{icon:effect-gaussian}}<span>Gaussian</span></label>
+        <label class="card" data-effect="pixelate"><input type="radio" name="effect" value="pixelate" checked>{{icon:effect-pixelate}}<span>Pixelate</span></label>
+        <label class="card" data-effect="motion"><input type="radio" name="effect" value="motion">{{icon:effect-motion}}<span>Motion</span></label>
+      </div>
+    </div>
+  </nav>
+
+  <section class="stage">
+    <div class="frame"><canvas id="image" width="1500" height="1000" aria-label="Image"></canvas><div class="brush-cursor" id="cursor"></div></div>
+    <div class="under">
+      <div class="history">
+        <span class="tip-anchor" id="undo-anchor"><button type="button" class="icon-btn" aria-label="Undo" aria-keyshortcuts="Control+Z Meta+Z">{{icon:undo}}</button><span class="tooltip" role="tooltip">Undo (Ctrl+Z)</span></span>
+        <span class="tip-anchor"><button type="button" class="icon-btn" id="redo" aria-label="Redo" aria-keyshortcuts="Control+Shift+Z Meta+Shift+Z">{{icon:redo}}</button><span class="tooltip" role="tooltip">Redo (Ctrl+Shift+Z)</span></span>
+      </div>
+      <div class="reserved preview" aria-hidden="true"></div>
+      <div class="reserved zoom" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <aside class="panel">
+    <div class="col">
+      <div class="box">
+        <div class="field">
+          <div class="field-head">{{icon:intensity}}<span class="label">Intensity</span><output id="intensity-value">60</output></div>
+          <div class="range"><div class="track"></div><div class="fill" style="width:60%"></div><div class="thumb" style="left:60%"></div></div>
+        </div>
+        <div class="field" id="angle-field" hidden>
+          <div class="field-head">{{icon:angle}}<span class="label">Angle</span><output>30°</output></div>
+          <div class="range"><div class="track"></div><div class="fill" style="width:16.7%"></div><div class="thumb" style="left:16.7%"></div></div>
+        </div>
+        <p class="warning" id="effects-warning">{{icon:warning}}<span>Blur and pixelate don't reliably hide text. For anything secret, cover it with a solid box in another editor, or leave it out.</span></p>
+      </div>
+      <div class="box">
+        <div class="field">
+          <div class="field-head">{{icon:brush-size}}<span class="label">Brush size</span><output>40 px</output></div>
+          <div class="range"><div class="track"></div><div class="fill" style="width:9%"></div><div class="thumb" style="left:9%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="export">
+        <div class="field-head">{{icon:format}}<span class="label">Format</span><span class="select">PNG<span class="chev">{{icon:chevron-down}}</span></span></div>
+        <button type="button" class="download">{{icon:download}}Download</button>
+        <p class="hint">Original resolution. No metadata, no watermark.</p>
+      </div>
+      <div class="open">
+        <button type="button" class="secondary">{{icon:open-image}}Open another image</button>
+        <form class="url" onsubmit="return false">
+          <span class="input">{{icon:link}}<span>Paste an image link</span></span>
+          <span class="tip-anchor"><button type="submit" class="icon-btn" aria-label="Load">{{icon:load}}</button><span class="tooltip" role="tooltip">Load</span></span>
+        </form>
+        <p class="hint">Links are fetched through our server. Files you open, drop or paste never leave your browser.</p>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<script>
+  // Demo image: an illustrated lake with a moored boat whose name gets painted over. No people, plates or personal data.
+  function scene(ctx, W, H) {
+    const sky = ctx.createLinearGradient(0, 0, 0, H * 0.5);
+    sky.addColorStop(0, "#6fa3d2"); sky.addColorStop(1, "#d6e6ef");
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+    const ridge = (base, amp, seed, color, step) => {
+      ctx.beginPath(); ctx.moveTo(0, H);
+      for (let x = 0; x <= W + step; x += step) {
+        const y = base - amp * (0.55 + 0.45 * Math.sin(x / (W / 3.1) + seed)) - amp * 0.35 * Math.sin(x / 57 + seed * 3) * Math.cos(x / 131);
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(W, H); ctx.closePath(); ctx.fillStyle = color; ctx.fill();
+    };
+    ridge(H * 0.47, 190, 1.2, "#9fb3c6", 24);
+    ridge(H * 0.53, 150, 4.1, "#6f8a9d", 18);
+    ridge(H * 0.56, 70, 2.3, "#4f6a5a", 12);
+    const lake = ctx.createLinearGradient(0, H * 0.56, 0, H);
+    lake.addColorStop(0, "#5f8fae"); lake.addColorStop(1, "#2f5a77");
+    ctx.fillStyle = lake; ctx.fillRect(0, H * 0.56, W, H * 0.44);
+    ctx.strokeStyle = "rgba(255,255,255,.22)"; ctx.lineWidth = 3;
+    for (let i = 0; i < 70; i++) {
+      const y = H * 0.6 + ((i * 37) % 380), x = (i * 211) % W, w = 30 + ((i * 53) % 90);
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + w, y); ctx.stroke();
+    }
+    // Shore and pier on the right
+    ctx.fillStyle = "#3e5a33";
+    ctx.beginPath(); ctx.moveTo(W * 0.78, H); ctx.quadraticCurveTo(W * 0.86, H * 0.7, W, H * 0.66); ctx.lineTo(W, H); ctx.fill();
+    ctx.fillStyle = "#7a5a3c"; ctx.fillRect(W * 0.7, H * 0.735, W * 0.2, 16);
+    for (let x = W * 0.71; x < W * 0.9; x += 46) { ctx.fillStyle = "#5b412b"; ctx.fillRect(x, H * 0.735, 9, 70); }
+    // Boat
+    const bx = W * 0.47, by = H * 0.7;
+    ctx.fillStyle = "#f4f1ea";
+    ctx.beginPath(); ctx.moveTo(bx - 210, by); ctx.lineTo(bx + 230, by); ctx.lineTo(bx + 175, by + 92); ctx.lineTo(bx - 170, by + 92); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#b8442f"; ctx.fillRect(bx - 182, by + 70, 362, 22);
+    ctx.fillStyle = "#e8e2d4"; ctx.fillRect(bx - 70, by - 70, 150, 70);
+    ctx.fillStyle = "#86a4b8"; ctx.fillRect(bx - 52, by - 56, 46, 34); ctx.fillRect(bx + 10, by - 56, 52, 34);
+    ctx.fillStyle = "#1d2b3a"; ctx.font = "bold 46px Liberation Sans, sans-serif"; ctx.fillText("ALBA 27", bx - 120, by + 52);
+    ctx.fillStyle = "rgba(0,0,0,.18)"; ctx.fillRect(bx - 170, by + 92, 345, 10);
+  }
+
+  const stroke = { x1: 0.47 * 1500 - 150, x2: 0.47 * 1500 + 95, y: 0.7 * 1000 + 36, r: 52 };
+  function inStroke(x, y) {
+    const cx = Math.max(stroke.x1, Math.min(stroke.x2, x));
+    return Math.hypot(x - cx, y - stroke.y) <= stroke.r;
+  }
+
+  function pixelate(ctx) {
+    const B = 22, img = ctx.getImageData(0, 0, 1500, 1000).data;
+    for (let y = 0; y < 1000; y += B) for (let x = 0; x < 1500; x += B) {
+      if (!inStroke(x + B / 2, y + B / 2)) continue;
+      let r = 0, g = 0, b = 0, n = 0;
+      for (let yy = y; yy < y + B; yy++) for (let xx = x; xx < x + B; xx++) { const i = (yy * 1500 + xx) * 4; r += img[i]; g += img[i + 1]; b += img[i + 2]; n++; }
+      ctx.fillStyle = `rgb(${r / n | 0},${g / n | 0},${b / n | 0})`; ctx.fillRect(x, y, B, B);
+    }
+  }
+
+  function motion(ctx, angle) {
+    const src = document.createElement("canvas"); src.width = 1500; src.height = 1000;
+    src.getContext("2d").drawImage(ctx.canvas, 0, 0);
+    const out = document.createElement("canvas"); out.width = 1500; out.height = 1000;
+    const o = out.getContext("2d"), a = (angle * Math.PI) / 180, n = 40, len = 80;
+    for (let k = 0; k < n; k++) {
+      const t = (k / (n - 1) - 0.5) * len;
+      o.globalAlpha = 1 / (k + 1);
+      o.drawImage(src, Math.cos(a) * t, -Math.sin(a) * t);
+    }
+    ctx.save(); ctx.beginPath();
+    ctx.arc(stroke.x1, stroke.y, stroke.r, Math.PI / 2, Math.PI * 1.5);
+    ctx.arc(stroke.x2, stroke.y, stroke.r, -Math.PI / 2, Math.PI / 2);
+    ctx.closePath(); ctx.clip(); ctx.drawImage(out, 0, 0); ctx.restore();
+  }
+
+  window.applyState = (s) => {
+    document.documentElement.classList.toggle("dark", s.theme === "dark");
+    document.querySelector(".sun").hidden = s.theme === "dark";
+    document.querySelector(".moon").hidden = s.theme !== "dark";
+    document.body.classList.toggle("annotate", !!s.annotate);
+    for (const el of document.querySelectorAll("[data-tool]")) el.setAttribute("aria-pressed", String(el.dataset.tool === s.tool));
+    for (const el of document.querySelectorAll("[data-effect] input")) el.checked = el.value === s.effect;
+    document.getElementById("angle-field").hidden = s.effect !== "motion";
+    document.getElementById("redo").disabled = !s.canRedo;
+    document.getElementById("undo-anchor").classList.toggle("show-tip", !!s.tip);
+    const canvas = document.getElementById("image"), ctx = canvas.getContext("2d");
+    scene(ctx, 1500, 1000);
+    if (s.effect === "pixelate") pixelate(ctx); else if (s.effect === "motion") motion(ctx, 30);
+    const rect = canvas.getBoundingClientRect(), k = rect.width / 1500;
+    const cursor = document.getElementById("cursor");
+    cursor.style.display = s.cursor ? "block" : "none";
+    cursor.style.width = cursor.style.height = "40px";
+    cursor.style.left = `${(stroke.x2 + 40) * k}px`;
+    cursor.style.top = `${(stroke.y - 6) * k}px`;
+  };
+</script>
+</body>
+</html>
