@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/icaromol/blur-my-image-online-and-free/compare/v0.1.0...v0.2.0) (2026-11-24)
+
+
+### Features
+
+* **ui:** add a light, dark and system theme selector ([#18](https://github.com/icaromol/blur-my-image-online-and-free/issues/18)) ([98870a4](https://github.com/icaromol/blur-my-image-online-and-free/commit/98870a4a36ba3c68264741e436c4e294b45cc22b))
+
 ## 0.1.0 (2026-11-23)
 
 
