@@ -53,7 +53,7 @@
     {
       "name": "Initial JS",
       "path": "dist/assets/index-*.js",
-      "limit": "45 kB"
+      "limit": "50 kB"
     },
     {
       "name": "All JS except the WebP encoder",
@@ -61,7 +61,7 @@
         "dist/assets/*.js",
         "!dist/assets/webp_enc*.js"
       ],
-      "limit": "195 kB"
+      "limit": "199 kB"
     }
   ]
 }

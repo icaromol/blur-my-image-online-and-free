@@ -2,6 +2,8 @@
 import { ref, useTemplateRef } from "vue";
 import { useTranslation } from "../i18n";
 import { parseImageUrl } from "../input/url";
+import AppIcon from "./AppIcon.vue";
+import { link as linkIcon, load as loadIcon, openImage } from "./icons";
 
 defineProps<{ compact: boolean; loading: boolean }>();
 const emit = defineEmits<{ file: [file: File]; url: [url: URL]; invalid: [code: string] }>();
@@ -29,8 +31,9 @@ function onSubmit() {
 </script>
 
 <template>
-  <section class="input" :class="{ compact }"   :aria-label="t('input.region')">
+  <section class="input" :class="{ compact }" :aria-label="t('input.region')">
     <button type="button" class="drop-zone" @click="picker?.click()">
+      <AppIcon v-if="compact" :icon="openImage" />
       <span class="drop-title">{{ compact ? t("input.chooseAnother") : t("input.choose") }}</span>
       <span v-if="!compact" class="drop-hint">{{ t("input.hint") }}</span>
     </button>
@@ -46,17 +49,29 @@ function onSubmit() {
 
     <form class="url-form" @submit.prevent="onSubmit">
       <label class="visually-hidden" for="image-url">{{ t("input.urlLabel") }}</label>
-      <input
-        id="image-url"
-        v-model="link"
-        type="url"
-        inputmode="url"
-        :placeholder="t('input.urlPlaceholder')"
-        autocomplete="off"
-        :disabled="loading"
-        aria-describedby="image-url-notice"
-      />
-      <button type="submit" :disabled="loading || !link.trim()">{{ loading ? t("input.loading") : t("input.load") }}</button>
+      <span class="url-field">
+        <AppIcon v-if="compact" :icon="linkIcon" class="link-icon" />
+        <input
+          id="image-url"
+          v-model="link"
+          type="url"
+          inputmode="url"
+          :placeholder="t('input.urlPlaceholder')"
+          autocomplete="off"
+          :disabled="loading"
+          aria-describedby="image-url-notice"
+        />
+      </span>
+      <button
+        type="submit"
+        :disabled="loading || !link.trim()"
+        :aria-label="loading ? t('input.loading') : t('input.load')"
+        :data-tip="compact ? t('input.load') : undefined"
+      >
+        <template v-if="!compact">{{ loading ? t("input.loading") : t("input.load") }}</template>
+        <span v-else-if="loading" class="spinner" />
+        <AppIcon v-else :icon="loadIcon" />
+      </button>
     </form>
     <p id="image-url-notice" class="url-notice">{{ t("input.linkNotice") }}</p>
   </section>
@@ -65,6 +80,7 @@ function onSubmit() {
 <style scoped>
 .input {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
 }
 
@@ -107,9 +123,58 @@ function onSubmit() {
   gap: 8px;
 }
 
-.url-form input {
+.url-field {
+  position: relative;
+  display: flex;
   flex: 1;
   min-width: 0;
+}
+
+.url-field input {
+  flex: 1;
+  min-width: 0;
+}
+
+.link-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  transform: translateY(-50%);
+}
+
+.link-icon + input {
+  padding-left: 36px;
+}
+
+.compact .drop-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 3s;
+  }
 }
 
 .url-notice {

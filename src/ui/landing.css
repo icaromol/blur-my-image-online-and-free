@@ -157,6 +157,23 @@
   color: var(--kit-white);
 }
 
+/* With an image open the editor's own header carries the logo, so the hero steps out of the flow and stays for assistive technology. */
+.hero-grid:has(.layout.editing) {
+  padding-top: var(--space-4);
+}
+
+.hero-grid:has(.layout.editing) .hero {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.hero-grid:has(.layout.editing) .hero .logo {
+  display: none;
+}
+
 .hero h1 {
   max-width: 17ch;
   font-size: var(--step-3);
@@ -171,36 +188,32 @@
   line-height: 1.5;
 }
 
-#app .layout {
-  max-width: none;
-  padding: 0;
-}
-
-#app .preferences {
-  top: var(--space-4);
-  right: var(--gutter);
-}
-
-/* The empty app's height per width, with the canvas mounted, longest locale (pt-BR wraps most); kept so the copy doesn't jump when the app mounts. */
+/* The empty app's height per width, with the canvas mounted, taller of the two locales (pt-BR wraps most), measured at every pixel from 320 to 1100; kept so the copy doesn't jump when the app mounts. */
 #app {
-  min-height: 27.5rem;
+  min-height: 29.7rem;
 }
 
-@media (min-width: 29.5rem) {
+@media (min-width: 20.8125rem) {
   #app {
-    min-height: 25rem;
+    min-height: 27rem;
   }
 }
 
-@media (min-width: 54.5rem) {
+@media (min-width: 29.125rem) {
   #app {
-    min-height: 22.25rem;
+    min-height: 24.4rem;
+  }
+}
+
+@media (min-width: 53.8125rem) {
+  #app {
+    min-height: 22.6rem;
   }
 }
 
 @media (min-width: 64rem) {
   #app {
-    min-height: 25rem;
+    min-height: 23.9rem;
   }
 }
 
@@ -769,14 +782,8 @@
     grid-column: 7 / -1;
   }
 
-  .hero-grid:has(.layout.editing) {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-grid:has(.layout.editing) .hero,
   .hero-grid:has(.layout.editing) #app {
     grid-column: 1 / -1;
-    margin-top: 0;
   }
 
   .glance {
