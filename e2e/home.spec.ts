@@ -140,6 +140,8 @@ for (const [name, viewport, locale] of [
   ["a tall window, with the copy in view", { width: 1366, height: 1600 }, "en"],
   ["a phone", phone, "en"],
   ["a phone in Portuguese", phone, "pt-BR"],
+  ["the narrowest phone", { width: 320, height: 640 }, "en"],
+  ["the narrowest phone in Portuguese", { width: 320, height: 640 }, "pt-BR"],
   ["a narrow phone in Portuguese", { width: 385, height: 844 }, "pt-BR"],
   ["a wide phone in Portuguese", { width: 430, height: 932 }, "pt-BR"],
 ] as const) {
@@ -172,6 +174,32 @@ for (const [name, viewport, locale] of [
       () => (window as unknown as { shift: number }).shift,
     );
     expect(shift).toBe(0);
+  });
+}
+
+// The app's own minimum width in Portuguese (url form, drop zone) is 350 px wide: BMI-098 owns that.
+for (const [name, width, locale, appFits] of [
+  ["320 px", 320, "en", true],
+  ["320 px in Portuguese", 320, "pt-BR", false],
+  ["340 px in Portuguese", 340, "pt-BR", false],
+  ["390 px in Portuguese", 390, "pt-BR", true],
+] as const) {
+  // The page clips overflow-x, so scrollWidth can't see cut content: compare each box's right edge.
+  test(`nothing runs past the right edge at ${name}`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 700 });
+    await page.addInitScript((l) => localStorage.setItem("locale", l), locale);
+    await page.goto("/");
+    await expect(page.locator("#app [lang] button").first()).toBeVisible();
+    const past = (selector: string) =>
+      page.evaluate(
+        (s) =>
+          [...document.querySelectorAll(s)]
+            .filter((el) => el.getBoundingClientRect().right > innerWidth + 0.5)
+            .map((el) => `${el.tagName.toLowerCase()}.${el.className}`),
+        selector,
+      );
+    expect(await past(".hero, .hero *")).toEqual([]);
+    if (appFits) expect(await past("#app, #app *")).toEqual([]);
   });
 }
 
@@ -413,7 +441,7 @@ test("the logo follows the app's theme class, not the system alone", async ({
 }) => {
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/");
-  const logo = page.locator(".logo");
+  const logo = page.locator(".hero .logo");
 
   await page.evaluate(() => localStorage.setItem("theme", "dark"));
   await page.reload();
