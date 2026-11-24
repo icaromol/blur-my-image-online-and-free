@@ -43,8 +43,6 @@ export async function setLocale(locale: Locale): Promise<boolean> {
   }
   if (selection !== latestSelection) return false;
   i18n.global.locale.value = locale;
-  document.documentElement.lang = locale;
-  document.title = i18n.global.t("app.title");
   return true;
 }
 

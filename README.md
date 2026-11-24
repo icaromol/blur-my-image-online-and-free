@@ -25,6 +25,8 @@ Accepted formats are whatever your browser can decode: PNG, JPEG, WebP, GIF (fir
 - **Brush** paints the effect onto only the areas you drag over.
 - **Eraser** removes the effect from an area and brings back the original pixels.
 
+The tools and the three effects sit in a column of cards on the left of the image, with the undo and redo arrows under it. The intensity, angle, brush size, format, Download and a way to open another image are in a panel: on the right on a wide screen, under the image in two columns on a tablet, and under the image in one column on a phone, where the cards become two rows above the image.
+
 Each stroke uses the effect type and intensity selected at the moment you paint it, so one image can have a light gaussian blur on the background and pixelation on a face.
 
 **3. Export it** at the original resolution, or at the downscaled size if the image was larger than the GPU limit (see [Large images](#how-it-works)). You choose the format from a list: PNG, JPG, JPEG or WebP. JPG and JPEG are the same format; the list sets the file extension. The file is named `<name>-blurred.<ext>`, where `<name>` is the original file name without its extension (for a link, the last part of the URL path; `image` if there is none).
@@ -55,7 +57,7 @@ Controls:
 
 - **Intensity** is a 1 to 100 slider. It maps to a radius (or block size, for Pixelate) proportional to the image's shorter side, so the same setting looks the same on a 600 px screenshot and a 6000 px photo.
 - **Angle** (Motion only) sets the streak direction, 0 to 180 degrees.
-- **Brush size** is adjustable from the toolbar or with `[` and `]`.
+- **Brush size** is adjustable from the right panel or with `[` and `]`.
 
 ### Blur is not redaction
 

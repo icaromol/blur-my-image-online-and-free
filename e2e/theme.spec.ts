@@ -169,10 +169,8 @@ test("switching the theme does not animate colors", async ({ page }) => {
   await page.evaluate(() => {
     document.documentElement.classList.remove("dark");
   });
-  await page.waitForTimeout(50);
-  const mid = await background(page);
-  expect(mid).not.toBe(LIGHT_BG);
-  expect(mid).not.toBe(DARK_BG);
+  await expect.poll(() => background(page)).not.toBe(DARK_BG);
+  expect(await background(page)).not.toBe(LIGHT_BG);
 });
 
 test("the menu works with the keyboard only", async ({ page }) => {

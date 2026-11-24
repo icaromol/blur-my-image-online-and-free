@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
 import { useTranslation } from "../i18n";
+import AppIcon from "./AppIcon.vue";
+import { themeDark, themeLight } from "./icons";
 import { applyTheme, chooseTheme, systemDark, type Theme, theme, themes } from "./theme";
 
 const { t } = useTranslation();
@@ -79,16 +81,13 @@ function onMenuKeydown(event: KeyboardEvent) {
       :aria-expanded="open"
       aria-controls="theme-menu"
       :aria-label="t('theme.label')"
+      :data-tip="t('theme.label')"
+      data-tip-below
       @click="onButtonClick"
       @keydown="onButtonKeydown"
     >
-      <svg class="sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="4" />
-        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-      </svg>
-      <svg class="moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-      </svg>
+      <AppIcon :icon="themeLight" class="sun" />
+      <AppIcon :icon="themeDark" class="moon" />
     </button>
     <div
       v-show="open"
@@ -124,6 +123,17 @@ function onMenuKeydown(event: KeyboardEvent) {
   place-items: center;
   width: 36px;
   padding: 0;
+}
+
+@media (pointer: coarse), (max-width: 719px) {
+  .trigger {
+    width: 44px;
+  }
+}
+
+.trigger[aria-expanded="true"]::after,
+.trigger[aria-expanded="true"]::before {
+  display: none;
 }
 
 .trigger .moon,
