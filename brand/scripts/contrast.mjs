@@ -19,22 +19,39 @@ const PAIRS = [
   [
     "grey-50",
     "grey-900",
-    "Text on the surface token (no template uses it yet)",
+    "Text on the surface token (home, dark theme: cards, drop zone, panels)",
   ],
   [
     "grey-400",
     "grey-900",
-    "Secondary text on the surface token (no template uses it yet)",
+    "Secondary text and borders on the surface token (home, dark theme)",
   ],
   [
     "blue-on-dark",
     "grey-900",
-    "Accent on the surface token (no template uses it yet)",
+    "Accent on the surface token (home, dark theme)",
   ],
-  ["black", "grey-100", "Sample card text (OG image)"],
+  [
+    "black",
+    "grey-100",
+    "Text on the page (home, light theme) and sample card text (OG image)",
+  ],
   ["grey-700", "grey-100", "Sample card labels (OG image)"],
   ["black", "white", "Black logo on white"],
   ["blue-on-light", "white", "Accent text and interface details on white"],
+  [
+    "grey-700",
+    "white",
+    "Secondary text and input borders on the surface (home, light theme)",
+  ],
+  [
+    "white",
+    "blue-on-light",
+    "Choose an image button label (home, light theme)",
+  ],
+  ["black", "blue-on-dark", "Choose an image button label (home, dark theme)"],
+  ["grey-100", "black", "Check it yourself counters (home, light theme)"],
+  ["black", "grey-50", "Check it yourself counters (home, dark theme)"],
   [
     "blue-on-light",
     "grey-100",
