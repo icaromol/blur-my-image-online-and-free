@@ -26,15 +26,19 @@ async function reveal() {
   root.value?.scrollIntoView({ block: "start" });
 }
 
+let opening = 0;
+
 async function openFile(file: File) {
+  const op = ++opening;
   await editor.open(file, file.name);
-  await reveal();
+  if (op === opening) await reveal();
 }
 
 async function openUrl(url: URL) {
+  const op = ++opening;
   await reveal();
   await editor.openUrl(url);
-  await reveal();
+  if (op === opening) await reveal();
 }
 
 function onPaste(event: ClipboardEvent) {

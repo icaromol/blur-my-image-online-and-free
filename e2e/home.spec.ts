@@ -318,6 +318,54 @@ test("pasting a link with the page scrolled to the bottom scrolls to the app bef
   await expect(page.getByRole("alert")).not.toBeVisible();
 });
 
+test("a link superseded by a file does not scroll the page when it finishes", async ({
+  page,
+}) => {
+  await page.setViewportSize(laptop);
+  await page.route("https://slow.test/**", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await route.abort();
+  });
+  await page.route("**/api/image?**", (route) =>
+    route.fulfill({ status: 403, json: { error: "blocked_address" } }),
+  );
+  await page.goto("/");
+  const png = (await makePng(page, "edge")).toString("base64");
+  await scrollToBottom(page);
+  const proxied = page.waitForResponse("**/api/image?**");
+  await page.evaluate(() => {
+    const data = new DataTransfer();
+    data.setData("text/plain", "https://slow.test/x.png");
+    const event = new Event("paste", { cancelable: true });
+    Object.defineProperty(event, "clipboardData", { value: data });
+    window.dispatchEvent(event);
+  });
+  await expect(page.getByLabel("Image URL")).toBeInViewport();
+  await page.evaluate((base64) => {
+    const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+    const data = new DataTransfer();
+    data.items.add(new File([bytes], "file.png", { type: "image/png" }));
+    document.body.dispatchEvent(
+      new DragEvent("drop", {
+        dataTransfer: data,
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+  }, png);
+  await expect(page.locator("canvas")).toBeInViewport();
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await proxied;
+  await page.evaluate(
+    () =>
+      new Promise((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve)),
+      ),
+  );
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  await expect(page.getByRole("alert")).not.toBeVisible();
+});
+
 test("the keyboard goes from the hero into the app without a trap", async ({
   page,
 }) => {
