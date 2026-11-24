@@ -36,11 +36,11 @@ test("a local image never leaves the page and the full flow stays within the CSP
   const afterLoad = requests.length;
 
   await openImage(page, "checker");
-  await page.getByText("Motion", { exact: true }).click();
+  await page.locator("#app").getByText("Motion", { exact: true }).click();
   await page.getByRole("button", { name: "Blur entire image" }).click();
   await page.getByRole("button", { name: "Eraser" }).click();
   await paint(page, [20, 50], [150, 60]);
-  await page.getByText("Pixelate", { exact: true }).click();
+  await page.locator("#app").getByText("Pixelate", { exact: true }).click();
   await page.getByRole("button", { name: "Brush" }).click();
   await paint(page, [20, 20], [150, 30]);
   for (const format of ["png", "jpg", "webp"]) {

@@ -1,0 +1,240 @@
+.page {
+  position: relative;
+}
+
+.hero {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 72px 16px 8px;
+  text-align: center;
+}
+
+.logo {
+  width: min(420px, 100%);
+  height: auto;
+  color: var(--kit-black);
+}
+
+:root.dark .logo {
+  color: var(--kit-white);
+}
+
+.hero h1 {
+  margin: 8px 0 0;
+  font-size: clamp(1.25rem, 3.2vw, 1.75rem);
+  line-height: 1.25;
+}
+
+.hero p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* The empty app is up to 472 px tall below 480 px wide (pt-BR wraps longest) and 430 px from there; the room is kept so the copy doesn't jump when the app mounts. */
+#app {
+  min-height: 29.5rem;
+}
+
+@media (min-width: 480px) {
+  #app {
+    min-height: 27rem;
+  }
+}
+
+.copy {
+  display: grid;
+  gap: 48px;
+  max-width: 1100px;
+  margin: 32px auto 0;
+  padding: 40px 16px 64px;
+  border-top: 1px solid var(--border-strong);
+}
+
+.copy h2 {
+  margin: 0 0 16px;
+  font-size: 1.4rem;
+}
+
+.copy h3 {
+  margin: 0 0 4px;
+  font-size: 1.05rem;
+}
+
+.copy p {
+  margin: 0 0 12px;
+}
+
+.copy a {
+  color: var(--accent);
+}
+
+.copy code,
+.copy kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--surface);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 32px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cards-3 {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.card {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.card h3,
+.card p {
+  margin: 0;
+}
+
+.card p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.card p span {
+  display: block;
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  margin-bottom: 4px;
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.stepper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin: 0 0 32px;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.stepper li {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  padding: 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  counter-increment: step;
+}
+
+.stepper li::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.stepper li:not(:last-child)::after {
+  content: "›" / "";
+  position: absolute;
+  top: 50%;
+  right: -22px;
+  translate: 0 -50%;
+  color: var(--text-muted);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.stepper strong {
+  font-size: 1.05rem;
+}
+
+.stepper li span {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.prose {
+  max-width: 46rem;
+}
+
+.prose h3 {
+  margin-top: 20px;
+}
+
+.prose ol {
+  margin: 0 0 12px;
+  padding-left: 1.4rem;
+}
+
+.prose li {
+  margin-bottom: 4px;
+}
+
+blockquote {
+  margin: 0 0 12px;
+  padding-left: 12px;
+  border-left: 3px solid var(--accent);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  text-align: left;
+  vertical-align: top;
+}
+
+thead th {
+  background: var(--surface);
+}
+
+.closing {
+  max-width: 46rem;
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  .stepper {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .stepper li:not(:last-child)::after {
+    top: auto;
+    right: 50%;
+    bottom: -26px;
+    translate: 50% 0;
+    rotate: 90deg;
+  }
+}

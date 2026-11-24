@@ -1,6 +1,5 @@
 {
   "app": {
-    "title": "Blur My Image",
     "tagline": "Desfoque a imagem inteira ou como quiser. Os arquivos de imagem nunca saem do seu navegador.",
     "dropOverlay": "Solte a imagem para abrir"
   },

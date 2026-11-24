@@ -24,7 +24,7 @@ test("start screen has no WCAG 2.2 AA violations", async ({ page }) => {
 test("editor has no WCAG 2.2 AA violations", async ({ page }) => {
   await openImage(page, "edge");
   // Motion shows every control, including the angle slider.
-  await page.getByText("Motion", { exact: true }).click();
+  await page.locator("#app").getByText("Motion", { exact: true }).click();
   await expectNoViolations(page);
 });
 
@@ -35,8 +35,10 @@ for (const scheme of ["light", "dark"] as const) {
     }) => {
       await page.emulateMedia({ colorScheme: scheme });
       await openImage(page, "edge");
-      await page.getByText(effect, { exact: true }).click();
-      await expect(page.getByText(/don't reliably hide text/)).toBeVisible();
+      await page.locator("#app").getByText(effect, { exact: true }).click();
+      await expect(
+        page.locator("#app").getByText(/don't reliably hide text/),
+      ).toBeVisible();
       await expectNoViolations(page);
     });
   }

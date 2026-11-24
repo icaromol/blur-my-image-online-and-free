@@ -34,7 +34,7 @@ test("the brush blurs only where you paint", async ({ page }) => {
 test("painting twice with the same setting doesn't compound", async ({
   page,
 }) => {
-  await page.getByText("Pixelate", { exact: true }).click();
+  await page.locator("#app").getByText("Pixelate", { exact: true }).click();
   await paint(page, [20, HEIGHT / 2], [80, HEIGHT / 2]);
   const once = await decode(page, await download(page));
   await paint(page, [80, HEIGHT / 2], [20, HEIGHT / 2]);

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, useTemplateRef } from "vue";
 import { errorKey, useTranslation } from "../i18n";
 import { readClipboard } from "../input/clipboard";
 import EditorCanvas from "./EditorCanvas.vue";
@@ -12,16 +12,29 @@ import { type Command, globalCommandFor } from "./shortcuts";
 import ThemeSelect from "./ThemeSelect.vue";
 import ToolControls from "./ToolControls.vue";
 
-const { t, n } = useTranslation();
+const { t, n, locale } = useTranslation();
 const editor = useEditor();
 const { settings, tool, brushSize, format, hasImage, loading, error, notice, canUndo, canRedo } = editor;
 const canvas = shallowRef<HTMLCanvasElement | null>(null);
+const root = useTemplateRef<HTMLElement>("root");
 const dragging = ref(false);
 const errorText = computed(() => (error.value ? t(errorKey(error.value)) : ""));
 let dragDepth = 0;
 
-function openFile(file: File) {
-  void editor.open(file, file.name);
+async function reveal() {
+  await nextTick();
+  root.value?.scrollIntoView({ block: "start" });
+}
+
+async function openFile(file: File) {
+  await editor.open(file, file.name);
+  await reveal();
+}
+
+async function openUrl(url: URL) {
+  await reveal();
+  await editor.openUrl(url);
+  await reveal();
 }
 
 function onPaste(event: ClipboardEvent) {
@@ -32,8 +45,8 @@ function onPaste(event: ClipboardEvent) {
   // A link pasted into the URL field stays there until the user presses Load.
   if (typing && input.kind === "url") return;
   event.preventDefault();
-  if (input.kind === "file") openFile(input.file);
-  else void editor.openUrl(input.url);
+  if (input.kind === "file") void openFile(input.file);
+  else void openUrl(input.url);
 }
 
 function runCommand(command: Command) {
@@ -90,8 +103,11 @@ function onDrop(event: DragEvent) {
   dragDepth = 0;
   dragging.value = false;
   const file = Array.from(event.dataTransfer?.files ?? []).find((f) => f.type.startsWith("image/"));
-  if (file) openFile(file);
-  else error.value = "file_not_image";
+  if (file) void openFile(file);
+  else {
+    error.value = "file_not_image";
+    void reveal();
+  }
 }
 
 onMounted(async () => {
@@ -116,24 +132,19 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="layout" :class="{ editing: hasImage }">
-    <header class="header">
-      <div class="title">
-        <h1>{{ t("app.title") }}</h1>
-        <div class="preferences">
-          <LanguageSelect />
-          <ThemeSelect />
-        </div>
-      </div>
-      <p class="tagline">{{ t("app.tagline") }}</p>
-    </header>
+  <div ref="root" class="layout" :class="{ editing: hasImage }" :lang="locale">
+    <div class="preferences">
+      <LanguageSelect />
+      <ThemeSelect />
+    </div>
+    <p class="tagline">{{ t("app.tagline") }}</p>
 
-    <aside class="controls">
+    <div class="controls">
       <ImageInput
         :compact="hasImage"
         :loading="loading"
         @file="openFile"
-        @url="editor.openUrl"
+        @url="openUrl"
         @invalid="error = $event"
       />
       <template v-if="hasImage">
@@ -154,9 +165,9 @@ onBeforeUnmount(() => {
         />
         <ExportControls v-model:format="format" :disabled="!hasImage" @download="editor.download" />
       </template>
-    </aside>
+    </div>
 
-    <main class="stage">
+    <div class="stage">
       <p v-if="error" role="alert" class="message error">{{ errorText }}</p>
       <p v-if="notice" role="status" class="message notice">
         {{
@@ -179,7 +190,7 @@ onBeforeUnmount(() => {
         @stroke-end="editor.endStroke"
         @command="runCommand"
       />
-    </main>
+    </div>
 
     <div v-if="dragging" class="drop-overlay" aria-hidden="true">{{ t("app.dropOverlay") }}</div>
   </div>
@@ -194,26 +205,17 @@ onBeforeUnmount(() => {
   padding: 16px;
 }
 
-.title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
 .preferences {
+  position: absolute;
+  top: 16px;
+  right: 16px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.header h1 {
-  margin: 0;
-  font-size: 1.4rem;
-}
-
 .tagline {
-  margin: 4px 0 0;
+  margin: 0;
   color: var(--text-muted);
 }
 
@@ -235,7 +237,7 @@ onBeforeUnmount(() => {
   display: none;
 }
 
-/* On narrow screens the image comes right after the header, above the controls. */
+/* On narrow screens the image comes right after the tagline, above the controls. */
 .layout.editing .stage {
   order: 1;
 }
@@ -280,7 +282,7 @@ onBeforeUnmount(() => {
     grid-template-rows: auto 1fr;
   }
 
-  .layout.editing .header {
+  .layout.editing .tagline {
     grid-column: 1 / -1;
   }
 

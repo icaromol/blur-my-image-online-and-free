@@ -1,6 +1,5 @@
 {
   "app": {
-    "title": "Blur My Image",
     "tagline": "Blur all of an image or just the parts you paint. Image files never leave your device.",
     "dropOverlay": "Drop the image to open it"
   },

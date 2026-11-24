@@ -1,14 +1,19 @@
 import { expect, test } from "@playwright/test";
 import { makePng } from "./helpers";
 
-const html = (page: import("@playwright/test").Page) => page.locator("html");
+type Page = import("@playwright/test").Page;
+
+// The static copy is English, so the document stays lang="en"; the app's region carries its own language.
+const html = (page: Page) => page.locator("html");
+const app = (page: Page) => page.locator("#app > [lang]");
 
 test.describe("browser in pt-BR", () => {
   test.use({ locale: "pt-BR" });
 
   test("shows the Portuguese UI with no saved choice", async ({ page }) => {
     await page.goto("/");
-    await expect(html(page)).toHaveAttribute("lang", "pt-BR");
+    await expect(app(page)).toHaveAttribute("lang", "pt-BR");
+    await expect(html(page)).toHaveAttribute("lang", "en");
     await expect(page.getByText("Escolher uma imagem")).toBeVisible();
     await expect(page.getByLabel("Idioma")).toHaveValue("pt-BR");
 
@@ -36,6 +41,7 @@ test.describe("browser in pt-BR", () => {
 
 test("the English browser gets English", async ({ page }) => {
   await page.goto("/");
+  await expect(app(page)).toHaveAttribute("lang", "en");
   await expect(html(page)).toHaveAttribute("lang", "en");
   await expect(page.getByText("Choose an image")).toBeVisible();
 });
@@ -45,18 +51,21 @@ test("a language chosen in the switcher survives a reload", async ({
 }) => {
   await page.goto("/");
   await page.getByLabel("Language").selectOption("pt-BR");
-  await expect(html(page)).toHaveAttribute("lang", "pt-BR");
+  await expect(app(page)).toHaveAttribute("lang", "pt-BR");
   await expect(page.getByText("Escolher uma imagem")).toBeVisible();
-  await expect(page).toHaveTitle("Blur My Image");
+  await expect(html(page)).toHaveAttribute("lang", "en");
+  await expect(page).toHaveTitle(
+    "Blur or Pixelate an Image Online, Free | Blur My Image",
+  );
 
   await page.reload();
-  await expect(html(page)).toHaveAttribute("lang", "pt-BR");
+  await expect(app(page)).toHaveAttribute("lang", "pt-BR");
   await expect(page.getByText("Escolher uma imagem")).toBeVisible();
   await expect(page.getByLabel("Idioma")).toHaveValue("pt-BR");
 
   await page.getByLabel("Idioma").selectOption("en");
   await page.reload();
-  await expect(html(page)).toHaveAttribute("lang", "en");
+  await expect(app(page)).toHaveAttribute("lang", "en");
 });
 
 test("the app still works when localStorage throws", async ({ page }) => {
@@ -81,6 +90,7 @@ test("a language file that fails to load leaves the page and the select as they 
   await page.getByLabel("Language").selectOption("pt-BR");
 
   await expect(page.getByLabel("Language")).toHaveValue("en");
+  await expect(app(page)).toHaveAttribute("lang", "en");
   await expect(html(page)).toHaveAttribute("lang", "en");
   await expect(page.getByText("Choose an image")).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem("locale"))).toBeNull();
@@ -116,6 +126,7 @@ test("a slower language choice that finishes after a newer one changes nothing",
   );
 
   await expect(select).toHaveValue("en");
+  await expect(app(page)).toHaveAttribute("lang", "en");
   await expect(html(page)).toHaveAttribute("lang", "en");
   await expect(page.getByText("Choose an image")).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem("locale"))).toBe("en");

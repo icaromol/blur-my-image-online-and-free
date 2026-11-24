@@ -11,7 +11,7 @@ test("the link field has a visible notice below it, tied to the field", async ({
 }) => {
   await page.goto("/");
   const field = page.getByLabel("Image URL");
-  const notice = page.getByText(EN);
+  const notice = page.locator("#app").getByText(EN);
 
   await expect(notice).toBeVisible();
   const fieldBox = await field.boundingBox();
@@ -33,11 +33,11 @@ test("the notice follows the language", async ({ page }) => {
 
   await page.getByLabel("Language").selectOption("pt-BR");
 
-  await expect(page.getByText(PT)).toBeVisible();
+  await expect(page.locator("#app").getByText(PT)).toBeVisible();
   await expect(page.getByLabel("URL da imagem")).toHaveAccessibleDescription(
     PT,
   );
-  await expect(page.getByText(EN)).toHaveCount(0);
+  await expect(page.locator("#app").getByText(EN)).toHaveCount(0);
 });
 
 for (const scheme of ["light", "dark"] as const) {
@@ -46,7 +46,7 @@ for (const scheme of ["light", "dark"] as const) {
   }) => {
     await page.emulateMedia({ colorScheme: scheme });
     await page.goto("/");
-    await expect(page.getByText(EN)).toBeVisible();
+    await expect(page.locator("#app").getByText(EN)).toBeVisible();
 
     const results = await new AxeBuilder({ page })
       .include("#image-url-notice")

@@ -49,17 +49,19 @@ for (const [locale, { text, effects }] of Object.entries(warnings)) {
     if (locale !== "en") await page.getByLabel("Language").selectOption(locale);
 
     for (const effect of effects) {
-      await page.getByText(effect, { exact: true }).click();
-      await expect(page.getByText(text)).toBeVisible();
+      await page.locator("#app").getByText(effect, { exact: true }).click();
+      await expect(page.locator("#app").getByText(text)).toBeVisible();
     }
   });
 }
 
 test("pixelate turns the checkerboard into flat blocks", async ({ page }) => {
   await openImage(page, "checker");
-  await page.getByText("Pixelate", { exact: true }).click();
+  await page.locator("#app").getByText("Pixelate", { exact: true }).click();
   await expect(
-    page.getByText(/Blur and pixelate don't reliably hide text/),
+    page
+      .locator("#app")
+      .getByText(/Blur and pixelate don't reliably hide text/),
   ).toBeVisible();
   await setIntensity(page, 100);
   await page.getByRole("button", { name: "Blur entire image" }).click();
@@ -74,7 +76,7 @@ test("motion blur streaks along the angle and keeps edges opaque", async ({
   page,
 }) => {
   await openImage(page, "edge");
-  await page.getByText("Motion", { exact: true }).click();
+  await page.locator("#app").getByText("Motion", { exact: true }).click();
   await setIntensity(page, 100);
   await page.getByRole("slider", { name: "Angle" }).fill("0");
   await page.getByRole("button", { name: "Blur entire image" }).click();
