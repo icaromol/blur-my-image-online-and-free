@@ -87,7 +87,7 @@ jobs:
             exit 0
           fi
           files=$(git diff --name-only --no-renames HEAD^1 HEAD)
-          if grep -qE '^(Dockerfile|\.dockerignore)$' <<<"$files"; then
+          if grep -qE '^(Dockerfile|\.dockerignore|package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml)$' <<<"$files"; then
             echo "docker=true" >> "$GITHUB_OUTPUT"
           else
             echo "docker=false" >> "$GITHUB_OUTPUT"
