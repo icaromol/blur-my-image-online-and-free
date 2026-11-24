@@ -24,10 +24,10 @@ A feature pull request with no accepted issue will probably be closed, and the t
 
 ## Setup
 
-You need Node.js 24, pnpm and [gitleaks](https://github.com/gitleaks/gitleaks). The pre-commit hook refuses to run without gitleaks.
+You need Node.js 26, pnpm and [gitleaks](https://github.com/gitleaks/gitleaks). The pre-commit hook refuses to run without gitleaks.
 
 ```bash
-corepack enable                 # picks the pnpm version pinned in package.json
+npm install --global pnpm       # pnpm then switches to the version pinned in package.json
 mise use -g gitleaks@8.30.1     # or: brew install gitleaks
 pnpm install                    # also installs the git hooks through husky
 pnpm exec playwright install chromium   # once, for the end-to-end tests

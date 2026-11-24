@@ -7,6 +7,12 @@
   "language": {
     "label": "Idioma"
   },
+  "theme": {
+    "label": "Tema",
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
+  },
   "input": {
     "region": "Abrir uma imagem",
     "choose": "Escolher uma imagem",

@@ -31,7 +31,7 @@ On a VPS, Coolify or Dokploy give a Vercel-like dashboard on top of Docker. Hetz
 
 Start on **Vercel Hobby**. It costs nothing, it pauses instead of billing, and the project fits its non-commercial rule today.
 
-Write the proxy so that leaving Vercel means swapping one entry file (see [Portable layout](#portable-layout)), and build the Docker image in CI (`ci.yml`, on `main`) from day one so the exit path is tested before it's needed.
+Write the proxy so that leaving Vercel means swapping one entry file (see [Portable layout](#portable-layout)), and build the Docker image in CI (`ci.yml`, on `main` and on PRs that change the `Dockerfile` or `.dockerignore`) from day one so the exit path is tested before it's needed.
 
 ## Vercel Hobby caveats
 
@@ -80,22 +80,22 @@ Rules:
 - **No Vercel-only products** (Blob, Marketplace KV, Image Optimization, Global Config). The app needs none of them.
 - **Security headers defined once.** `security-headers.ts` holds the CSP and the other page headers. `vite preview` serves them (so Playwright runs under the real CSP), `entries/node.ts` applies them to static files, and a unit test fails if `vercel.json` drifts from them. Cloudflare and Netlify would read a `_headers` file generated from the same source.
 - **SSRF in layers.** On Node, pin the connection to the IP that passed validation (custom `lookup` on the undici dispatcher) so DNS rebinding can't swap it. Workers can't pin, but there is no private network to reach from there.
-- **One test suite for every target.** Proxy unit tests run against bare `app.ts` (`app.request(...)` in Vitest). Playwright runs against the production build served by `vite preview` on every pull request; the Docker image gets a build and smoke test on `main`.
+- **One test suite for every target.** Proxy unit tests run against bare `app.ts` (`app.request(...)` in Vitest). Playwright runs against the production build served by `vite preview` on every pull request; the Docker image gets a build and smoke test on `main` and on PRs that change the `Dockerfile` or `.dockerignore`.
 
 ### Dockerfile sketch
 
-Serves the static build and the proxy from one process. The real `Dockerfile` also pins both stages to an image digest. The image has no rate limit: anyone exposing it, or running the Node entry directly, must put their own limit in front (a reverse proxy, a WAF or similar).
+Serves the static build and the proxy from one process. The real `Dockerfile` also pins both stages to an image digest and installs the exact pnpm version from `packageManager`. The image has no rate limit: anyone exposing it, or running the Node entry directly, must put their own limit in front (a reverse proxy, a WAF or similar).
 
 ```dockerfile
-FROM node:24-slim AS build
+FROM node:26-slim AS build
 WORKDIR /app
-RUN corepack enable
 COPY package.json pnpm-lock.yaml ./
+RUN npm install --global pnpm   # pnpm switches to the version pinned in package.json
 RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build && pnpm build:server
 
-FROM node:24-slim
+FROM node:26-slim
 WORKDIR /app
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/dist-server ./dist-server
