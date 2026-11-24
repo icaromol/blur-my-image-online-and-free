@@ -2,8 +2,8 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
-const LIGHT_BG = "rgb(246, 246, 244)";
-const DARK_BG = "rgb(22, 22, 21)";
+const LIGHT_BG = "rgb(236, 238, 242)";
+const DARK_BG = "rgb(15, 17, 21)";
 
 const html = (page: Page) => page.locator("html");
 const trigger = (page: Page) => page.getByRole("button", { name: "Theme" });
