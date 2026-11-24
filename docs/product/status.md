@@ -1,10 +1,10 @@
 # Status
 
-Updated: 2026-11-23
+Updated: 2026-11-24
 
 ## Milestone: v1
 
-48 of 54 `Must` done · 2 in review · 4 in progress · 0 ready · 0 blocked. On 2026-11-23 Ícaro merged PR #8 (`38e1103`), PR #6 (`41a3fb9`), PR #10 (`06594f2`) and PR #11 (`6f53c6f`), so BMI-094 (`Must`) and BMI-075, BMI-084 and BMI-135 (`Should`) are `Done`; then PR #13 (`8fa6b5e`, BMI-076, `Done`), PR #14 (`003e2d8`, BMI-090) and PR #12 (`b9c3892`, these docs). He turned on "Allow GitHub Actions to create and approve pull requests", and release-please opened **PR #15, `chore(main): release 0.1.0`**, open and waiting on him; no tag and no GitHub Release exist. In review: BMI-071 and BMI-090, held until PR #15 runs its checks and is merged. One `Should` item is `Blocked` on Ícaro (BMI-082). BMI-144, the light/dark toggle (D-041), is `Ready`. Ícaro's landing mockup is BMI-085's visual reference; the preview toggle and zoom stay after v1 (D-043). Full list in [backlog.md](backlog.md).
+50 of 54 `Must` done · 0 in review · 4 in progress · 0 ready · 0 blocked. On 2026-11-23 Ícaro merged PR #8 (`38e1103`), PR #6 (`41a3fb9`), PR #10 (`06594f2`) and PR #11 (`6f53c6f`), so BMI-094 (`Must`) and BMI-075, BMI-084 and BMI-135 (`Should`) are `Done`; then PR #13 (`8fa6b5e`, BMI-076, `Done`), PR #14 (`003e2d8`, BMI-090) and PR #12 (`b9c3892`, these docs). He turned on "Allow GitHub Actions to create and approve pull requests", and release-please opened **PR #15, `chore(main): release 0.1.0`**. On 2026-11-24 he reran its checks (all green) and merged it at 00:07:33Z (`e3b3811`); release-please published the tag and the GitHub Release **`v0.1.0`** at 00:07:46Z, so BMI-090 and BMI-071 are `Done`. Nothing is in review. BMI-093 is dispatched to Dev Quality. One `Should` item is `Blocked` on Ícaro (BMI-082). BMI-144, the light/dark toggle (D-041), is `Ready`. Ícaro's landing mockup is BMI-085's visual reference; the preview toggle and zoom stay after v1 (D-043). Full list in [backlog.md](backlog.md).
 
 ## Now
 
@@ -18,9 +18,9 @@ Order set by PM (D-039, open to Ícaro's veto). One writing agent at a time **in
 | 2 | BMI-089 | PR B: the WebP download preference, the paste test, `xvfb` in the CI, and the Firefox/WebKit job also on every PR that changes more than docs (D-040) | quality → Dev Quality | `Done` (`05645f8`, 2026-11-23) |
 | 3 | BMI-135 | The e2e never reuses a foreign server on port 4173 | quality → Dev Quality | `Done` (`06594f2`, 2026-11-23) |
 | 4 | BMI-094 | WebGL context loss after the start | ui → Dev UI | `Done` (`6f53c6f`, 2026-11-23) |
-| 5 | BMI-090 | release-please: the 0.1.0 config and the release sentence (criteria 1 and 4) | quality → Dev Quality | `Review`: merged in `003e2d8`; release PR #15 open, to be closed and reopened for its checks (D-025), then Ícaro's merge |
+| 5 | BMI-090 | release-please: the 0.1.0 config and the release sentence (criteria 1 and 4) | quality → Dev Quality | `Done` (`003e2d8`; release PR #15 merged as `e3b3811` and `v0.1.0` published, 2026-11-24) |
 | 6 | BMI-076 | The dependency-review and scorecard workflows, in one PR | quality → Dev Quality | `Done` (`8fa6b5e`, 2026-11-23) |
-| 7 | BMI-093 | Node 26 everywhere | quality and server | `Ready` (both dependencies merged) |
+| 7 | BMI-093 | Node 26 everywhere | quality → Dev Quality | `Ready`: dispatched to Dev Quality (Paperclip board, 2026-11-24); starts once Git moves the shared tree to `main` (`e3b3811`) |
 | 8 | BMI-144 | Light / Dark / System theme toggle, no flash on load, CSP not loosened (D-041) | ui → Dev UI | `Ready` |
 
 - **BMI-066** (`Must`, dated) takes the next free slot from **2026-11-28**, ahead of any `Should` still queued. Its gate includes a `pnpm install --frozen-lockfile` in a clean copy.
@@ -28,7 +28,7 @@ Order set by PM (D-039, open to Ícaro's veto). One writing agent at a time **in
 - BMI-075 is merged (`41a3fb9`, PR #6): the kit with the black and white logo (D-038) is on `main`.
 - **Marketing lane, in parallel (D-041):** BMI-084, the landing copy, is `Done`: PR #8 (`38e1103`) put the ten changes of D-042 and the copy for Ícaro's mockup (D-043) on `main`, and PM checked the criteria (see the item). Nothing is published. The marketing lane has no other eligible item; BMI-078 and BMI-085 are `Idea` and get groomed next ("Next").
 - BMI-094 is merged (`6f53c6f`). Dev UI is free; its next item is BMI-144 (position 8).
-- BMI-076 is merged (`8fa6b5e`) and BMI-090's commit is merged (`003e2d8`). Dev Quality's next item is BMI-093 (position 7). What is left of BMI-090 is not lane work: PR #15 is closed and reopened by hand so its checks run (D-025, Git or Ícaro), and Ícaro decides when to merge it.
+- BMI-076 (`8fa6b5e`) and BMI-090 (`003e2d8`, then the release PR #15 as `e3b3811`) are merged, and `v0.1.0` is published. **BMI-093 (position 7) is dispatched to Dev Quality** by the Orquestrador, in a task on the Paperclip board; the work starts after Git moves the shared tree to `main`, and its branch starts from `e3b3811`. It goes `In progress` when the lane starts.
 
 ## Next
 
@@ -57,11 +57,15 @@ Each item carries a recommendation and the default that holds if he doesn't answ
 10. **3 to 5 "good first issue" issues** (publishing an issue is outward-facing, BMI-050). Default: none is created.
 11. **Q-027 and Q-028** (the MCP domain and first delivery). They block nothing. Defaults: no purchase, the spec only.
 12. ~~The landing mockup~~. Resolved: Ícaro posted it in BLU-21 and answered the question card on the preview, the zoom and section 4 (D-043, 2026-11-23).
-13. **Merge the release PR #15, `chore(main): release 0.1.0`** (BMI-090, BMI-071, D-035). It sets the manifest and `package.json` to `0.1.0` and adds `CHANGELOG.md`; merging it is what creates the `v0.1.0` tag and the GitHub Release, so it is his call. Before that it is closed and reopened by hand so its checks run (D-025): today it has no check run and GitHub shows it `BLOCKED`. Recommendation: close and reopen it, and merge once Verify, E2E (Chromium) and the title check are green. Default: it stays open, nothing is published, and BMI-090 and BMI-071 stay `Review`.
+13. ~~Merge the release PR #15, `chore(main): release 0.1.0`~~. Resolved: Ícaro reran its checks (all green) and merged it on 2026-11-24 at 00:07:33Z (`e3b3811`, "15 mergeada já! pode prosseguir" in BLU-21); release-please published `v0.1.0`. BMI-090 and BMI-071 are `Done`.
 
 Decisions relayed by other sessions (D-004, D-006 to D-019, D-033 to D-037) stay in force unless Ícaro objects. D-039 and D-040 are PM's and open to his veto. D-041 is Ícaro's, read by PM in BLU-21; only its placement of BMI-144 and its reading of `main` are PM's. D-042 is Ícaro's, from his answers to the question card in BLU-21 read by PM; only its split of critique change 9 between BMI-084 and BMI-085 is PM's. D-043 is Ícaro's, from his comment and his answers to the question card in BLU-21 read by PM; only its readings named there (the section 3 heading, BMI-129's place among the post-v1 items, the list of controls kept) are PM's.
 
 ## Log
+
+### 2026-11-24
+
+- **The 0.1.0 release recorded (BLU-92, from BLU-21; Ícaro: "15 mergeada já! pode prosseguir").** PM read it with `gh`: PR #15's workflow runs on `d728daf` ran as attempt 2, which Ícaro triggered at 00:02Z, and every check passed (Verify, Changed paths, E2E (Chromium), E2E (Firefox, WebKit), the Conventional Commits title, Dependency review, CodeRabbit, Vercel; Docker skipped by its path filter). Ícaro merged PR #15 at 00:07:33Z, squash `e3b3811`, `chore(main): release 0.1.0`: the manifest and `package.json` read `0.1.0` and `CHANGELOG.md` is on `main`. release-please on `e3b3811` succeeded and published the tag `v0.1.0` (at `e3b3811`) and the GitHub Release `v0.1.0` (Latest, not a draft or a prerelease) at 00:07:46Z; nothing was published before his merge (D-035 point 2). CI and Scorecard on `e3b3811` are green. **BMI-090 → `Done` and BMI-071 → `Done`** (D-039 point 3). Criterion 2 of BMI-090 is met through a rerun of the PR's runs in place of D-025's close and reopen; recorded in the item and in D-035. "Blocked" 13 resolved. **BMI-093 (position 7) dispatched to Dev Quality** by the Orquestrador, on the Paperclip board; it starts after Git moves the shared tree to `main`. `Must`: 50 of 54, 0 in review, 4 in progress (BMI-003, 050, 066, 070), 0 ready.
 
 ### 2026-11-23
 
