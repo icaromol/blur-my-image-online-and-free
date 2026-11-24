@@ -27,7 +27,7 @@ jobs:
       - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 24
+          node-version: 26
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
@@ -50,7 +50,7 @@ jobs:
       - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 24
+          node-version: 26
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
@@ -69,6 +69,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       browsers: ${{ steps.scope.outputs.browsers }}
+      docker: ${{ steps.scope.outputs.docker }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -82,9 +83,15 @@ jobs:
         run: |
           if [ "$EVENT" = push ]; then
             echo "browsers=true" >> "$GITHUB_OUTPUT"
+            echo "docker=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           files=$(git diff --name-only --no-renames HEAD^1 HEAD)
+          if grep -qE '^(Dockerfile|\.dockerignore)$' <<<"$files"; then
+            echo "docker=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "docker=false" >> "$GITHUB_OUTPUT"
+          fi
           if grep -qvE '^(docs/|marketing/|brand/|\.claude/|LICENSE$)|\.md$' <<<"$files"; then
             echo "browsers=true" >> "$GITHUB_OUTPUT"
           else
@@ -104,7 +111,7 @@ jobs:
       - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 24
+          node-version: 26
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps firefox webkit
@@ -120,7 +127,8 @@ jobs:
 
   docker:
     name: Docker
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: changes
+    if: needs.changes.outputs.docker == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
