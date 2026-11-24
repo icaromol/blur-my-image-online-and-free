@@ -6,6 +6,12 @@ Newest first. Each decision says what was decided, why, who decided and what it 
 
 Each question carries a recommendation and the default in force, so work doesn't wait on an answer. Ícaro overrides by saying so; no reply needed to keep the default.
 
+### Q-029 — The initial JavaScript budget has 0.17 kB left: what happens when the landing's editor needs more?
+
+After BMI-144 the initial JS (`dist/assets/index-*.js`, the `size-limit` entry "Initial JS" in `package.json`) is 44.83 of 45 kB, per the Orquestrador's gate (BLU-103; PM didn't rerun it). BMI-097's copy is static HTML and doesn't count, but BMI-098 (the editor's layout) and BMI-099 (the pages) add Vue markup that likely does. BMI-144's rule is already in their criteria: the worker stops at the limit and brings the measured numbers; no control or section is dropped to fit.
+
+Recommendation: the worker first measures what moving the editor's panels into the lazy chunk (the one that already loads the engine after an image arrives) saves, since a visitor without an image doesn't need them; if that is not enough, raise "Initial JS" to the measured size plus 2 kB, in the same PR, with the numbers in its description. Default in force: **the budget stays at 45 kB**, and an item that doesn't fit stops as `Blocked` on this question with its numbers. Nothing is cut either way.
+
 ### Q-001 — Localized URLs for SEO?
 
 Default in force: **detection only** (built in BMI-041). `resolveLocale()` can take a URL source in front of it later.
@@ -51,6 +57,19 @@ Recommendation: before any Docker image is published or pulled by anyone else, a
 The URL is now `https://blurmyimage.vercel.app` (200), set by Ícaro as the project's main domain on 2026-11-22, per `-aa`; the earlier `https://blur-my-image.vercel.app` answers 307 to it (PM read both with a plain `GET`). The README, the repo website field and the bug form get it only when Ícaro says (D-016). Not blocking.
 
 ## Decisions
+
+### D-044 — The Docker filter's gap becomes BMI-095; BMI-085 is split in five; BMI-078 is groomed; the queue after BMI-144 (2026-11-24)
+
+**Decision**, PM's, in BLU-107 (from BLU-21, dispatched by the Orquestrador). PM read PRs #16, #17, #18 and #19 with `gh`, the code on `main` at `88728f5`, and the Revisor's verdicts in BLU-96 and BLU-103 on the Paperclip board.
+(1) **BMI-093 and BMI-144 are `Done`** (`42ee42a`, PR #17; `98870a4`, PR #18); each criterion checked in the item. No before-and-after screenshot was attached to PR #18, and Ícaro didn't ask for one; the visual items groomed today ask for screenshots in their PR.
+(2) **BMI-095, new, `Should`, v1, quality lane.** The Revisor's finding 1 on BMI-093 (BLU-96): the Docker job's PR filter covers only `Dockerfile` and `.dockerignore`, while the build reads `package.json`, `pnpm-lock.yaml` and `pnpm-workspace.yaml`; with the pre-existing finding 5 (the `docs/hosting.md` sketch leaves out `pnpm-workspace.yaml`). The Orquestrador put it to Ícaro with "a new item" as the default and he didn't answer, so the default holds as **relayed** and stays open to his veto. It sits in v1 because it completes BMI-093's criterion 3 (the image proven before the merge) rather than adding a feature, and it goes first in the code queue because BMI-066 (from 2026-11-28) changes `pnpm-workspace.yaml`.
+(3) **BMI-085 is split** along the cuts it named: BMI-096 (the kit's palette in both themes, `S`), BMI-097 (the home's static copy and sections 1 to 4, `M`), BMI-098 (the editor's layout, `M`), BMI-099 (the three use-case pages, `M`), and BMI-085 itself keeps what needs the public host (canonical and `og:url` per page, `sitemap.xml`, the `WebApplication` block, the deployed JSON-LD and Core Web Vitals, `S`), `Blocked` on Q-022, whose default builds no canonical and no sitemap. Every criterion is kept; the mapping table is in BMI-085's details. Two criteria were added, not removed: the Revisor's nit 3 on BMI-144 (BLU-100: the live `prefers-color-scheme` listener sits in `ThemeSelect.vue`, so the theme stops following the system wherever the header isn't mounted) in BMI-098 and BMI-099, and BMI-084's carried condition (run "Check it yourself" on a deployed build before it goes out) in BMI-097, met on the PR's Vercel preview because the merge is the go-live.
+(4) **BMI-078 is `Ready`:** the Designer (marketing lane) renders the new OG image from `og.html`, and Dev UI puts the icons and the image in `public/` and the tags in `index.html`, in one PR. A `favicon.ico` and a web app manifest are not added; the worker may propose them, and PM takes them to Ícaro.
+(5) **The code queue after BMI-144** (one writing agent at a time, D-039): 9 BMI-095, 10 BMI-096, 11 BMI-078, 12 BMI-097, 13 BMI-098, 14 BMI-099, then BMI-085 when Q-022 is answered. BMI-066 still takes the next free slot from 2026-11-28, ahead of any `Should`. BMI-078 sits between BMI-096 and BMI-097 because it and BMI-097 both write `index.html`. The Designer's render for BMI-078 starts now in the marketing lane (D-041 point 1).
+(6) **Q-029 opened:** the initial JS has 0.17 kB left, which BMI-098 and BMI-099 will likely pass.
+**Why:** the code queue had nothing `Ready` until BMI-066; BMI-085 was `L` and its inputs (BMI-084's copy, BMI-144, the mockup) are in.
+**Decided by:** PM, from facts read with `gh` and `git`. Point (2) rests on a default relayed by the Orquestrador, not a direct answer from Ícaro. The order in (5) and the split in (3) are open to his veto. Nothing cut: every criterion of BMI-085 sits in one of the five items, and every item keeps its milestone and priority.
+**Affects:** BMI-078, BMI-085, BMI-093, BMI-095 (new), BMI-096 to BMI-099 (new), BMI-144, Q-022 (now blocks only BMI-085's last piece), Q-029 (new), `status.md` "Now", "Next" and "Blocked".
 
 ### D-043 — Ícaro's mockup is BMI-085's visual reference; preview and zoom come after v1; section 4 "Use it your way" has three cards (2026-11-23)
 
