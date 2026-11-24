@@ -1,5 +1,6 @@
 {
   "app": {
+    "github": "Blur My Image no GitHub",
     "tagline": "Desfoque a imagem inteira ou como quiser. Os arquivos de imagem nunca saem do seu navegador.",
     "dropOverlay": "Solte a imagem para abrir"
   },
@@ -29,6 +30,7 @@
     "intensity": "Intensidade",
     "angle": "Ângulo",
     "apply": "Aplicar",
+    "blurEntireShort": "Imagem inteira",
     "blurEntire": "Desfocar a imagem inteira",
     "brush": "Pincel",
     "brushTitle": "Pincel ({key})",

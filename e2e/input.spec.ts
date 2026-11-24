@@ -1,7 +1,7 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 import { makePng } from "./helpers";
 
-const blurButton = (page: import("@playwright/test").Page) =>
+const blurButton = (page: Page) =>
   page.getByRole("button", { name: "Blur entire image" });
 
 test.beforeEach(async ({ page }) => {
@@ -127,4 +127,43 @@ test("reject a file that isn't an image", async ({ page }) => {
     buffer: Buffer.from("hello"),
   });
   await expect(page.getByRole("alert")).toContainText("isn't an image");
+});
+
+const focusIsInsideApp = (page: Page) =>
+  page.evaluate(
+    () =>
+      document.querySelector("#app")?.contains(document.activeElement) ?? false,
+  );
+
+test("opening a file from the home keeps the focus in the app, on the image", async ({
+  page,
+}) => {
+  await page.getByRole("button", { name: "Choose an image" }).focus();
+  await page.getByLabel("Image file").setInputFiles({
+    name: "edge.png",
+    mimeType: "image/png",
+    buffer: await makePng(page, "edge"),
+  });
+  await expect(blurButton(page)).toBeVisible();
+  await expect(page.getByRole("application")).toBeFocused();
+  expect(await focusIsInsideApp(page)).toBe(true);
+});
+
+test("opening a link from the home keeps the focus in the app, on the image", async ({
+  page,
+}) => {
+  const png = await makePng(page, "edge");
+  await page.route("https://images.test/focus.png", (route) =>
+    route.fulfill({
+      body: png,
+      contentType: "image/png",
+      headers: { "access-control-allow-origin": "*" },
+    }),
+  );
+  const field = page.getByLabel("Image URL");
+  await field.fill("https://images.test/focus.png");
+  await field.press("Enter");
+  await expect(blurButton(page)).toBeVisible();
+  await expect(page.getByRole("application")).toBeFocused();
+  expect(await focusIsInsideApp(page)).toBe(true);
 });

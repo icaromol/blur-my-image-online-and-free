@@ -2,28 +2,36 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, useTemplateRef } from "vue";
 import { errorKey, useTranslation } from "../i18n";
 import { readClipboard } from "../input/clipboard";
-import EditorCanvas from "./EditorCanvas.vue";
-import EffectControls from "./EffectControls.vue";
-import ExportControls from "./ExportControls.vue";
+import EditorHeader from "./EditorHeader.vue";
+import EditorMessages from "./EditorMessages.vue";
+import EditorWorkspace from "./EditorWorkspace.vue";
 import { useEditor } from "./editor";
 import ImageInput from "./ImageInput.vue";
 import LanguageSelect from "./LanguageSelect.vue";
 import { type Command, globalCommandFor } from "./shortcuts";
 import ThemeSelect from "./ThemeSelect.vue";
-import ToolControls from "./ToolControls.vue";
 
-const { t, n, locale } = useTranslation();
+const { t, locale } = useTranslation();
 const editor = useEditor();
-const { settings, tool, brushSize, format, hasImage, loading, error, notice, canUndo, canRedo } = editor;
+const { tool, hasImage, loading, error, notice } = editor;
 const canvas = shallowRef<HTMLCanvasElement | null>(null);
 const root = useTemplateRef<HTMLElement>("root");
 const dragging = ref(false);
 const errorText = computed(() => (error.value ? t(errorKey(error.value)) : ""));
 let dragDepth = 0;
 
+// Escape closes a tooltip that is showing; moving the pointer or the focus brings tooltips back (WCAG 1.4.13).
+const tipsOff = ref(false);
+const showTips = () => {
+  tipsOff.value = false;
+};
+
 async function reveal() {
   await nextTick();
   root.value?.scrollIntoView({ block: "start" });
+  // Opening swaps the home's controls for the editor's, which drops focus on the body.
+  if (!root.value?.contains(document.activeElement))
+    root.value?.querySelector<HTMLElement>('[role="application"]')?.focus({ preventScroll: true });
 }
 
 let opening = 0;
@@ -75,6 +83,7 @@ function runCommand(command: Command) {
 }
 
 function onKeydown(event: KeyboardEvent) {
+  if (event.key === "Escape") tipsOff.value = true;
   const command = globalCommandFor(event);
   if (!command) return;
   event.preventDefault();
@@ -117,6 +126,8 @@ function onDrop(event: DragEvent) {
 onMounted(async () => {
   window.addEventListener("paste", onPaste);
   window.addEventListener("keydown", onKeydown);
+  window.addEventListener("pointermove", showTips);
+  window.addEventListener("focusin", showTips);
   window.addEventListener("dragenter", onDragEnter);
   window.addEventListener("dragleave", onDragLeave);
   window.addEventListener("dragover", onDragOver);
@@ -127,6 +138,8 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   window.removeEventListener("paste", onPaste);
   window.removeEventListener("keydown", onKeydown);
+  window.removeEventListener("pointermove", showTips);
+  window.removeEventListener("focusin", showTips);
   window.removeEventListener("dragenter", onDragEnter);
   window.removeEventListener("dragleave", onDragLeave);
   window.removeEventListener("dragover", onDragOver);
@@ -136,65 +149,28 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="root" class="layout" :class="{ editing: hasImage }" :lang="locale">
-    <div class="preferences">
-      <LanguageSelect />
-      <ThemeSelect />
+  <div ref="root" class="layout" :class="{ editing: hasImage, 'tips-off': tipsOff }" :lang="locale">
+    <div v-if="!hasImage" class="topbar">
+      <p class="tagline">{{ t("app.tagline") }}</p>
+      <div class="preferences">
+        <LanguageSelect />
+        <ThemeSelect />
+      </div>
     </div>
-    <p class="tagline">{{ t("app.tagline") }}</p>
+    <EditorHeader v-else />
 
-    <div class="controls">
-      <ImageInput
-        :compact="hasImage"
-        :loading="loading"
-        @file="openFile"
-        @url="openUrl"
-        @invalid="error = $event"
-      />
-      <template v-if="hasImage">
-        <EffectControls
-          v-model:effect="settings.effect"
-          v-model:intensity="settings.intensity"
-          v-model:angle="settings.angle"
-        />
-        <ToolControls
-          v-model:tool="tool"
-          v-model:brush-size="brushSize"
-          :disabled="!hasImage"
-          :can-undo="canUndo"
-          :can-redo="canRedo"
-          @blur-entire="editor.blurEntireImage"
-          @undo="editor.undo"
-          @redo="editor.redo"
-        />
-        <ExportControls v-model:format="format" :disabled="!hasImage" @download="editor.download" />
+    <ImageInput v-if="!hasImage" :compact="false" :loading="loading" @file="openFile" @url="openUrl" @invalid="error = $event" />
+
+    <EditorMessages v-if="!(hasImage && canvas)" :error="errorText" :notice="notice" />
+
+    <EditorWorkspace v-if="hasImage && canvas" :editor="editor" :canvas="canvas" @command="runCommand">
+      <template #messages>
+        <EditorMessages :error="errorText" :notice="notice" />
       </template>
-    </div>
-
-    <div class="stage">
-      <p v-if="error" role="alert" class="message error">{{ errorText }}</p>
-      <p v-if="notice" role="status" class="message notice">
-        {{
-          t("notice.downscaled", {
-            width: n(notice.original.width),
-            height: n(notice.original.height),
-            max: n(notice.max),
-            scaledWidth: n(notice.scaled.width),
-            scaledHeight: n(notice.scaled.height),
-          })
-        }}
-      </p>
-      <EditorCanvas
-        v-if="canvas"
-        v-show="hasImage"
-        :canvas="canvas"
-        :brush-size="brushSize"
-        @stroke-start="editor.beginStroke"
-        @stroke-move="editor.extendStroke"
-        @stroke-end="editor.endStroke"
-        @command="runCommand"
-      />
-    </div>
+      <template #input>
+        <ImageInput compact :loading="loading" @file="openFile" @url="openUrl" @invalid="error = $event" />
+      </template>
+    </EditorWorkspace>
 
     <div v-if="dragging" class="drop-overlay" aria-hidden="true">{{ t("app.dropOverlay") }}</div>
   </div>
@@ -203,16 +179,18 @@ onBeforeUnmount(() => {
 <style scoped>
 .layout {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 16px;
+}
+
+.topbar {
+  display: contents;
 }
 
 .preferences {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: var(--space-4);
+  right: var(--gutter);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -221,50 +199,6 @@ onBeforeUnmount(() => {
 .tagline {
   margin: 0;
   color: var(--text-muted);
-}
-
-.controls {
-  display: grid;
-  gap: 16px;
-  align-content: start;
-}
-
-.stage {
-  display: grid;
-  gap: 12px;
-  justify-items: center;
-  align-content: start;
-  min-width: 0;
-}
-
-.layout:not(.editing) .stage:empty {
-  display: none;
-}
-
-/* On narrow screens the image comes right after the tagline, above the controls. */
-.layout.editing .stage {
-  order: 1;
-}
-
-.layout.editing .controls {
-  order: 2;
-}
-
-.message {
-  justify-self: stretch;
-  margin: 0;
-  padding: 10px 12px;
-  border-radius: var(--radius);
-}
-
-.error {
-  background: var(--error-bg);
-  color: var(--error-text);
-}
-
-.notice {
-  background: var(--notice-bg);
-  color: var(--text);
 }
 
 .drop-overlay {
@@ -278,30 +212,5 @@ onBeforeUnmount(() => {
   font-size: 1.5rem;
   font-weight: 600;
   pointer-events: none;
-}
-
-@media (min-width: 900px) {
-  .layout.editing {
-    grid-template-columns: 300px 1fr;
-    grid-template-rows: auto 1fr;
-  }
-
-  .layout.editing .tagline {
-    grid-column: 1 / -1;
-  }
-
-  .layout.editing .controls {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .layout.editing .stage {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  .layout:not(.editing) {
-    max-width: 640px;
-  }
 }
 </style>

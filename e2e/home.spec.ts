@@ -144,6 +144,10 @@ for (const [name, viewport, locale] of [
   ["the narrowest phone in Portuguese", { width: 320, height: 640 }, "pt-BR"],
   ["a narrow phone in Portuguese", { width: 385, height: 844 }, "pt-BR"],
   ["a wide phone in Portuguese", { width: 430, height: 932 }, "pt-BR"],
+  ["a tablet", { width: 820, height: 1180 }, "en"],
+  ["a tablet in Portuguese", { width: 820, height: 1180 }, "pt-BR"],
+  ["a narrow laptop", { width: 960, height: 700 }, "en"],
+  ["a narrow laptop in Portuguese", { width: 960, height: 700 }, "pt-BR"],
 ] as const) {
   test(`loading the page and the app shifts nothing on ${name}`, async ({
     page,
@@ -177,12 +181,11 @@ for (const [name, viewport, locale] of [
   });
 }
 
-// The app's own minimum width in Portuguese (url form, drop zone) is 350 px wide: BMI-098 owns that.
-for (const [name, width, locale, appFits] of [
-  ["320 px", 320, "en", true],
-  ["320 px in Portuguese", 320, "pt-BR", false],
-  ["340 px in Portuguese", 340, "pt-BR", false],
-  ["390 px in Portuguese", 390, "pt-BR", true],
+for (const [name, width, locale] of [
+  ["320 px", 320, "en"],
+  ["320 px in Portuguese", 320, "pt-BR"],
+  ["340 px in Portuguese", 340, "pt-BR"],
+  ["390 px in Portuguese", 390, "pt-BR"],
 ] as const) {
   // The page clips overflow-x, so scrollWidth can't see cut content: compare each box's right edge.
   test(`nothing runs past the right edge at ${name}`, async ({ page }) => {
@@ -199,7 +202,7 @@ for (const [name, width, locale, appFits] of [
         selector,
       );
     expect(await past(".hero, .hero *")).toEqual([]);
-    if (appFits) expect(await past("#app, #app *")).toEqual([]);
+    expect(await past("#app, #app *")).toEqual([]);
   });
 }
 

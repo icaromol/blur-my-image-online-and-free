@@ -112,7 +112,7 @@ test("the image can be reached with Tab and shows where focus is", async ({
   page,
 }) => {
   const canvas = editorCanvas(page);
-  await page.getByRole("button", { name: "Download" }).focus();
+  await page.getByRole("radio", { name: "Gaussian" }).focus();
   for (
     let i = 0;
     i < 20 &&
