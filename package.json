@@ -52,7 +52,7 @@
   "size-limit": [
     {
       "name": "Initial JS",
-      "path": "dist/assets/index-*.js",
+      "path": "dist/assets/main-*.js",
       "limit": "50 kB"
     },
     {

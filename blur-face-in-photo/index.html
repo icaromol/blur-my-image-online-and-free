@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Paint over faces to pixelate or blur them. No account, no watermark. Image files you open, drop or paste never leave your device." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Blur a Face in a Photo Online | Blur My Image" />
+    <meta property="og:description" content="Paint over faces to pixelate or blur them. No account, no watermark. Image files you open, drop or paste never leave your device." />
+    <meta property="og:image" content="https://blurmyimage.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A sample order sheet with its street and city blurred under a round brush" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>Blur a Face in a Photo Online | Blur My Image</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script src="/theme-init.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <div class="hero-grid wrap">
+        <header class="hero">
+          <a class="brand" href="/">Blur My Image</a>
+          <h1>Blur a face in a photo</h1>
+          <p class="lede">Paint over each face you want hidden, pixelate or blur it, and download the photo. No account, no watermark.</p>
+          <p class="note">You paint each face with the brush.</p>
+          <p class="note">Image files you open, drop or paste never leave your device.</p>
+        </header>
+        <div id="app"></div>
+      </div>
+
+      <div class="copy wrap">
+        <section class="ruled" aria-labelledby="how">
+          <div class="section-head"><h2 id="how">How to blur a face</h2></div>
+          <div class="prose">
+            <ol class="use-steps">
+              <li>Open the photo. Choose the file, drop it on the page or paste it with Ctrl+V (Cmd+V on a Mac).</li>
+              <li>Select the effect, Pixelate or Gaussian.</li>
+              <li>Select Brush, set its size from the toolbar (or with <kbd>[</kbd> and <kbd>]</kbd> while the photo has focus), and paint over the face.</li>
+              <li>Paint a little past the edge of the face. If you cover too much, the Eraser brings back the original pixels. Ctrl+Z (Cmd+Z) undoes.</li>
+              <li>Choose PNG, JPG, JPEG or WebP and download. The file is named <code>&lt;name&gt;-blurred.&lt;ext&gt;</code>.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="you-choose">
+          <div class="section-head"><h2 id="you-choose">You choose the faces</h2></div>
+          <div class="prose">
+            <p>The editor blurs the pixels under your brush, or the whole image if you pick <strong>Blur entire image</strong>. If you miss a face at the back of a group, it stays visible, so check the whole photo before you download.</p>
+            <p>A crowd takes a while to paint by hand; one face or a profile picture takes seconds.</p>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="which-effect">
+          <div class="section-head"><h2 id="which-effect">Which effect for a face</h2></div>
+          <div class="prose">
+            <p>Pick the effect that makes the face hard to recognize: Pixelate turns it into square blocks, Gaussian softens it evenly. We can't promise a blurred face is unrecognizable. People who know the person may still recognize them. The editor says the same kind of thing about text: with every effect, it warns that blur and pixelate don't reliably hide text.</p>
+            <p>If a person must not be identifiable at all, crop them out in another editor, or leave the photo out. Cropping removes the pixels, so there is nothing left to recover.</p>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="several">
+          <div class="section-head"><h2 id="several">Several faces in one photo</h2></div>
+          <div class="prose">
+            <p>Use one brush and as many strokes as you need. Every stroke keeps the effect and intensity selected when you painted it, so each face can get its own setting or all of them the same.</p>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="what-happens">
+          <div class="section-head"><h2 id="what-happens">What happens to the photo</h2></div>
+          <div class="prose">
+            <p>Your browser decodes, edits and exports the photo. There is no upload step and no server-side storage, so a photo of a child opened from a file, dropped on the page or pasted from the clipboard stays on your device.</p>
+            <p>The exported file has no EXIF metadata, so the GPS coordinates, timestamp and camera model of the original are dropped. No watermark. The picture still shows what is in it, such as a school sign or a team shirt.</p>
+            <p>Links are the exception: "Links are fetched through our server. Files you open, drop or paste never leave your browser." A photo loaded by link can pass once through our proxy, which doesn't keep a copy of the image. For a photo of a child, save it and open the file instead. <a href="/#check-it-yourself">Check it yourself</a>.</p>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="blur-is-not-redaction">
+          <div class="section-head"><h2 id="blur-is-not-redaction">Blur is not redaction</h2></div>
+          <div class="prose">
+            <p>The research on blur is about text, not faces: a <a href="https://crysp.petsymposium.org/popets/2016/popets-2016-0047.pdf">2016 study</a> concluded that pixelation and blur are not viable ways to redact text, so this page cannot say how a blur holds up on a face. <a href="/#blur-is-not-redaction">More on this, with sources</a>.</p>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="questions">
+          <div class="faq">
+            <h2 id="questions">Questions</h2>
+            <div class="faq-list">
+              <details open><summary><h3>How do I blur several faces?</h3></summary><p>Paint each one. A stroke keeps the effect and intensity you had selected when you painted it, and you can give each face its own.</p></details>
+              <details><summary><h3>Can a blurred face still be recognized?</h3></summary><p>It can be, and nothing here guarantees otherwise. Cropping the person out in another editor removes the pixels.</p></details>
+              <details><summary><h3>Should I pixelate or blur a face?</h3></summary><p>Pixelate. It is the effect meant for obscuring faces. Gaussian softens evenly, which suits backgrounds.</p></details>
+              <details><summary><h3>Is the photo uploaded?</h3></summary><p>Not a file you open, drop or paste. A link to the photo is the exception, explained above.</p></details>
+              <details><summary><h3>Does it remove location data?</h3></summary><p>From the file, yes: the export drops EXIF metadata, which includes GPS coordinates. It does not hide anything visible in the picture.</p></details>
+              <details><summary><h3>Does it work on video?</h3></summary><p>No. It works on images.</p></details>
+              <details><summary><h3>Can I undo a stroke or bring back a face I covered by mistake?</h3></summary><p>Yes. The Eraser removes the effect where you drag and brings back the original pixels, and Ctrl+Z (Cmd+Z) undoes.</p></details>
+            </div>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="other-things">
+          <div class="section-head"><h2 id="other-things">Other things people hide</h2></div>
+          <div class="prose"><p><a href="/blur-license-plate/">Blur a license plate in a photo</a> for a car listing. <a href="/blur-text-in-screenshot/">Pixelate a name or number in a screenshot</a> for a chat or an order page. Back to <a href="/">Blur My Image</a>.</p></div>
+        </section>
+
+        <div class="closing"><p>Open the photo, paint each face, download.</p></div>
+      </div>
+    </main>
+    <footer class="site-footer wrap">
+      <nav aria-label="Use cases">
+        <ul>
+          <li><a href="/blur-license-plate/">Blur a license plate in a photo</a></li>
+          <li><a href="/blur-text-in-screenshot/">Blur or pixelate text in a screenshot</a></li>
+          <li><a href="/blur-face-in-photo/">Blur a face in a photo</a></li>
+        </ul>
+      </nav>
+    </footer>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

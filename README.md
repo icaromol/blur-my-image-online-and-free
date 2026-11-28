@@ -31,6 +31,8 @@ Each stroke uses the effect type and intensity selected at the moment you paint 
 
 **3. Export it** at the original resolution, or at the downscaled size if the image was larger than the GPU limit (see [Large images](#how-it-works)). You choose the format from a list: PNG, JPG, JPEG or WebP. JPG and JPEG are the same format; the list sets the file extension. The file is named `<name>-blurred.<ext>`, where `<name>` is the original file name without its extension (for a link, the last part of the URL path; `image` if there is none).
 
+Three pages cover the most common jobs, each with the same editor on it: [blur a license plate](https://blurmyimage.vercel.app/blur-license-plate/), [blur text in a screenshot](https://blurmyimage.vercel.app/blur-text-in-screenshot/) and [blur a face](https://blurmyimage.vercel.app/blur-face-in-photo/). They are static HTML entries of the Vite build (`blur-license-plate/index.html` and its two siblings), and the home links them from "What people hide with it" and from its footer. `404.html` is the not-found page and `public/robots.txt` keeps crawlers off `/api/`.
+
 That is the whole product. Features that don't serve those three steps go to the [backlog](#backlog) or get dropped.
 
 ## Languages

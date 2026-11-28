@@ -140,7 +140,7 @@ test("with Dark stored, the first paint is already dark, before the app mounts",
   const gate = new Promise<void>((resolve) => {
     release = resolve;
   });
-  await page.route("**/assets/index-*.js", async (route) => {
+  await page.route("**/assets/main-*.js", async (route) => {
     await gate;
     await route.continue();
   });

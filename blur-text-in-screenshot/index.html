@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Paste a screenshot, paint over a name or number and pixelate it. No account, no watermark. Image files you open, drop or paste never leave your device." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Blur or Pixelate Text in a Screenshot | Blur My Image" />
+    <meta property="og:description" content="Paste a screenshot, paint over a name or number and pixelate it. No account, no watermark. Image files you open, drop or paste never leave your device." />
+    <meta property="og:image" content="https://blurmyimage.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A sample order sheet with its street and city blurred under a round brush" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>Blur or Pixelate Text in a Screenshot | Blur My Image</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script src="/theme-init.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <div class="hero-grid wrap">
+        <header class="hero">
+          <a class="brand" href="/">Blur My Image</a>
+          <h1>Blur or pixelate text in a screenshot</h1>
+          <p class="lede">Copy the screenshot, press Ctrl+V (Cmd+V on a Mac) in the editor, paint over the name, email address or number, and download it. No account, no watermark.</p>
+          <p class="note">Image files you open, drop or paste never leave your device.</p>
+        </header>
+        <div id="app"></div>
+      </div>
+
+      <div class="copy wrap">
+        <section class="ruled" aria-labelledby="how">
+          <div class="section-head"><h2 id="how">Paste, paint, download</h2></div>
+          <div class="prose">
+            <ol class="use-steps">
+              <li>Copy the screenshot to your clipboard.</li>
+              <li>Press Ctrl+V (Cmd+V on a Mac). The screenshot opens.</li>
+              <li>Select Pixelate.</li>
+              <li>Select Brush and drag over the name, email address or number. The Eraser puts back the original pixels where you painted too much, and Ctrl+Z (Cmd+Z) undoes.</li>
+              <li>Choose PNG, JPG, JPEG or WebP and download. The file is named <code>&lt;name&gt;-blurred.&lt;ext&gt;</code>.</li>
+            </ol>
+            <p>If the screenshot is already a file, drop it anywhere on the page or choose it from the drop zone.</p>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="hide-value">
+          <div class="section-head"><h2 id="hide-value">Hide an email address, a name or a number</h2></div>
+          <div class="prose">
+            <p>Paint over the whole value and a little past its edges, so no letters stick out at the ends. Then look at the rest of the screenshot. Names turn up in places you stopped seeing: a browser tab, an avatar, the address bar, a line in the footer.</p>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="when-pixelated-text-can-still-be-read">
+          <div class="section-head"><h2 id="when-pixelated-text-can-still-be-read">When pixelated text can still be read</h2></div>
+          <div class="prose">
+            <p>A <a href="https://crysp.petsymposium.org/popets/2016/popets-2016-0047.pdf">2016 study</a> recovered pixelated and blurred text across typefaces, font sizes, grid sizes and noise levels; its authors concluded that pixelation and blur are not viable ways to redact text. Pixelation makes text harder to read; for anything that must stay secret, cover it with a solid box in another editor, or leave it out. <a href="/#blur-is-not-redaction">More on this, with sources</a>.</p>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="pixelate-or-gaussian">
+          <div class="section-head"><h2 id="pixelate-or-gaussian">Pixelate or Gaussian for text</h2></div>
+          <div class="prose">
+            <p>Pixelate replaces the text with square blocks of averaged color. Gaussian smooths it. Pixelate is the effect for hiding screen content, and Gaussian is the one for backgrounds and soft focus. Neither effect guarantees that the text cannot be read again.</p>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="what-happens">
+          <div class="section-head"><h2 id="what-happens">What happens to the screenshot</h2></div>
+          <div class="prose">
+            <p>Image files you open, drop or paste never leave your device. A screenshot pasted from your clipboard is decoded, edited and exported by your browser. The exported file has no EXIF metadata and no watermark.</p>
+            <p>Loading by link is the exception: "Links are fetched through our server. Files you open, drop or paste never leave your browser." An http:// link always goes through our proxy, and so does an https link whose server refuses direct access. The proxy doesn't keep a copy of the image. To keep the screenshot off our server, paste it or open the file instead.</p>
+            <p>To see it for yourself, open your browser's developer tools in a private window, select the Network tab, and paste a screenshot. No request should carry the image. The steps and their limits are on the home page under <a href="/#check-it-yourself">Check it yourself</a>.</p>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="questions">
+          <div class="faq">
+            <h2 id="questions">Questions</h2>
+            <div class="faq-list">
+              <details open><summary><h3>How do I blur text in a screenshot?</h3></summary><p>Paste it into the editor with Ctrl+V (Cmd+V on a Mac), select Pixelate, paint over the text with the Brush and download. The steps are above.</p></details>
+              <details><summary><h3>How do I blur a screenshot on Windows or Mac?</h3></summary><p>The same way on both: copy the screenshot and press Ctrl+V on Windows or Cmd+V on a Mac, or drop the screenshot file on the page.</p></details>
+              <details><summary><h3>Can I paste a screenshot directly?</h3></summary><p>Yes. Ctrl+V or Cmd+V with the screenshot on the clipboard. You can also drop a file anywhere on the page.</p></details>
+              <details><summary><h3>Is a pixelated screenshot safe to share?</h3></summary><p>Not for anything that must stay secret. Cover that with a solid box in another editor, or leave it out. The study in the section above is the reason.</p></details>
+              <details><summary><h3>Can pixelated text be read again?</h3></summary><p>Sometimes. The study above recovered pixelated and blurred text across typefaces, font sizes, grid sizes and noise levels. Tools such as <a href="https://bishopfox.com/blog/unredacter-tool-never-pixelation">Unredacter</a> do it by rendering guesses in the same font and comparing them.</p></details>
+              <details><summary><h3>What is the difference between blur and redaction?</h3></summary><p>Blur and pixelation change how text looks and can sometimes be reversed. Redaction means the information is gone. A solid box is the closest to that, and the editor does not have one.</p></details>
+              <details><summary><h3>Does the screenshot get uploaded?</h3></summary><p>Not when you paste it, drop it or open it as a file. Links are the exception: see "What happens to the screenshot" above.</p></details>
+              <details><summary><h3>Which formats can I save?</h3></summary><p>PNG, JPG, JPEG or WebP. JPG and JPEG are the same format; the choice sets the file extension.</p></details>
+              <details><summary><h3>Does it find the text for me?</h3></summary><p>No. You paint the area yourself; the editor doesn't pick it for you. It blurs what you paint, or the whole image if you choose <strong>Blur entire image</strong>.</p></details>
+            </div>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="other-things">
+          <div class="section-head"><h2 id="other-things">Other things people hide</h2></div>
+          <div class="prose"><p><a href="/blur-license-plate/">Blur a license plate in a photo</a> for a car listing. <a href="/blur-face-in-photo/">Blur a face</a> for a group photo. Back to <a href="/">Blur My Image</a>.</p></div>
+        </section>
+
+        <div class="closing"><p>Paste the screenshot, pixelate the name, download.</p></div>
+      </div>
+    </main>
+    <footer class="site-footer wrap">
+      <nav aria-label="Use cases">
+        <ul>
+          <li><a href="/blur-license-plate/">Blur a license plate in a photo</a></li>
+          <li><a href="/blur-text-in-screenshot/">Blur or pixelate text in a screenshot</a></li>
+          <li><a href="/blur-face-in-photo/">Blur a face in a photo</a></li>
+        </ul>
+      </nav>
+    </footer>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

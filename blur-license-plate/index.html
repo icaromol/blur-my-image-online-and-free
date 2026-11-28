@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Paint over a license plate to pixelate or blur it. No account, no watermark. Image files you open, drop or paste never leave your device." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Blur a License Plate in a Photo Online | Blur My Image" />
+    <meta property="og:description" content="Paint over a license plate to pixelate or blur it. No account, no watermark. Image files you open, drop or paste never leave your device." />
+    <meta property="og:image" content="https://blurmyimage.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A sample order sheet with its street and city blurred under a round brush" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>Blur a License Plate in a Photo Online | Blur My Image</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script src="/theme-init.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <div class="hero-grid wrap">
+        <header class="hero">
+          <a class="brand" href="/">Blur My Image</a>
+          <h1>Blur a license plate in a photo</h1>
+          <p class="lede">Paint over the plate with the brush, pixelate it or blur it, and download the photo at its original resolution. No account, no watermark.</p>
+          <p class="note">Image files you open, drop or paste never leave your device.</p>
+        </header>
+        <div id="app"></div>
+      </div>
+
+      <div class="copy wrap">
+        <section class="ruled" aria-labelledby="how">
+          <div class="section-head"><h2 id="how">How to blur a license plate</h2></div>
+          <div class="prose">
+            <ol class="use-steps">
+              <li>Open the photo. Choose the file, drop it on the page or paste it with Ctrl+V (Cmd+V on a Mac).</li>
+              <li>Select Pixelate.</li>
+              <li>Select Brush. Set its size from the toolbar, or with <kbd>[</kbd> and <kbd>]</kbd> while the photo has focus, and drag over the plate.</li>
+              <li>If you paint outside the plate, the Eraser brings back the original pixels. Ctrl+Z (Cmd+Z) undoes.</li>
+              <li>Choose PNG, JPG, JPEG or WebP and download. The file is named <code>&lt;name&gt;-blurred.&lt;ext&gt;</code>, so a photo called <code>car.jpg</code> downloads as <code>car-blurred.jpg</code>.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="pixelate-or-blur">
+          <div class="section-head"><h2 id="pixelate-or-blur">Pixelate or blur for a plate</h2></div>
+          <div class="prose">
+            <p>Pixelate turns the plate into square blocks of averaged color. Gaussian softens it evenly. Pixelate is the effect meant for hiding plates. Neither effect guarantees that the plate cannot be read again.</p>
+            <p>Intensity is scaled to the photo's shorter side, so a setting that works on a 600 px photo gives the same look on a 6000 px one.</p>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="several">
+          <div class="section-head"><h2 id="several">Several plates in one photo</h2></div>
+          <div class="prose">
+            <p>Paint each plate. Every stroke uses the effect and intensity selected at the moment you paint it, so the plates get one effect and the rest of the photo stays as it was. A parking lot photo with six plates has six plates to paint.</p>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="marketplace">
+          <div class="section-head"><h2 id="marketplace">A marketplace that blurs plates</h2></div>
+          <div class="prose">
+            <p>carsales, an Australian marketplace, <a href="https://business.carsales.com.au/insights/auto-industry-news/carsales-innovation-tackles-number-plate-cloning/">blurs number plates in listing photos automatically</a> to make cloning harder.</p>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="what-happens">
+          <div class="section-head"><h2 id="what-happens">What happens to your photo</h2></div>
+          <div class="prose">
+            <p>Image files you open, drop or paste never leave your device. Your browser does the blurring and the export, and the exported file has no EXIF metadata: the GPS coordinates, timestamp and camera model of the original are gone. It carries no watermark.</p>
+            <p>A photo loaded from a link is the exception: "Links are fetched through our server. Files you open, drop or paste never leave your browser." The image can pass once through a proxy that doesn't keep a copy of the image. To keep the photo off our server, save it and open the file. <a href="/#check-it-yourself">Check it yourself</a>.</p>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="blur-is-not-redaction">
+          <div class="section-head"><h2 id="blur-is-not-redaction">Blur is not redaction</h2></div>
+          <div class="prose">
+            <p>A plate is text, and a <a href="https://crysp.petsymposium.org/popets/2016/popets-2016-0047.pdf">2016 study</a> recovered pixelated and blurred text across typefaces, font sizes, grid sizes and noise levels, and its authors concluded that pixelation and blur are not viable ways to redact text. If a plate must not be read, crop it out or cover it with a solid box in another editor. <a href="/#blur-is-not-redaction">More on this, with sources</a>.</p>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="questions">
+          <div class="faq">
+            <h2 id="questions">Questions</h2>
+            <div class="faq-list">
+              <details open><summary><h3>Does it find the plate by itself?</h3></summary><p>No. You paint the area yourself; the editor doesn't pick it for you. It blurs what you paint, or the whole image if you choose <strong>Blur entire image</strong>.</p></details>
+              <details><summary><h3>Can I blur more than one plate?</h3></summary><p>Yes. Paint each plate with the brush, and use the eraser if a stroke goes wrong. Different plates can get different settings.</p></details>
+              <details><summary><h3>Should I pixelate or blur a plate?</h3></summary><p>Pixelate. It is the effect meant for hiding plates.</p></details>
+              <details><summary><h3>Can someone undo the blur?</h3></summary><p>Sometimes: the 2016 study linked above recovered pixelated and blurred text. Cropping the plate out in another editor removes it.</p></details>
+              <details><summary><h3>Is the photo uploaded?</h3></summary><p>Not a file you open, drop or paste. A link to the photo is the exception, explained above.</p></details>
+              <details><summary><h3>Does the file keep the GPS location?</h3></summary><p>No. The export drops EXIF metadata, which includes GPS coordinates, timestamps and the camera model. The picture itself still shows whatever is in it, such as a street sign or a house number.</p></details>
+              <details><summary><h3>Does it work on video?</h3></summary><p>No. It works on images.</p></details>
+              <details><summary><h3>Will it shrink my photo?</h3></summary><p>No, unless the photo is larger than your graphics card can handle. Then the editor tells you before you start and the download is the scaled size.</p></details>
+            </div>
+          </div>
+        </section>
+
+        <section class="ruled" aria-labelledby="other-things">
+          <div class="section-head"><h2 id="other-things">Other things people hide</h2></div>
+          <div class="prose"><p><a href="/blur-face-in-photo/">Blur a face</a> if the photo shows a person. <a href="/blur-text-in-screenshot/">Pixelate a name or number in a screenshot</a> for a chat, an order page or a bug report. Back to <a href="/">Blur My Image</a>.</p></div>
+        </section>
+
+        <div class="closing"><p>Open the photo, pixelate the plate, download.</p></div>
+      </div>
+    </main>
+    <footer class="site-footer wrap">
+      <nav aria-label="Use cases">
+        <ul>
+          <li><a href="/blur-license-plate/">Blur a license plate in a photo</a></li>
+          <li><a href="/blur-text-in-screenshot/">Blur or pixelate text in a screenshot</a></li>
+          <li><a href="/blur-face-in-photo/">Blur a face in a photo</a></li>
+        </ul>
+      </nav>
+    </footer>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
