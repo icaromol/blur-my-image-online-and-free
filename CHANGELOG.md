@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.0](https://github.com/icaromol/blur-my-image-online-and-free/compare/v0.3.0...v0.4.0) (2026-11-24)
+
+
+### Features
+
+* **brand:** rebuild the mark from the reference, add the home and editor design direction ([#28](https://github.com/icaromol/blur-my-image-online-and-free/issues/28)) ([8eff44d](https://github.com/icaromol/blur-my-image-online-and-free/commit/8eff44dd92ba6255f58e264bbf7afaf74d331503))
+* **ui:** add the home's static copy, the stepper and the use-it-your-way cards ([#27](https://github.com/icaromol/blur-my-image-online-and-free/issues/27)) ([6c4968c](https://github.com/icaromol/blur-my-image-online-and-free/commit/6c4968cf9776198c7d6076de9ff1c7a549d2630b))
+
 ## [0.3.0](https://github.com/icaromol/blur-my-image-online-and-free/compare/v0.2.0...v0.3.0) (2026-11-24)
 
 
