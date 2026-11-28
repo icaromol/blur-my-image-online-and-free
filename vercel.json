@@ -1,7 +1,23 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/blur-license-plate",
+      "destination": "/blur-license-plate/",
+      "permanent": true
+    },
+    {
+      "source": "/blur-text-in-screenshot",
+      "destination": "/blur-text-in-screenshot/",
+      "permanent": true
+    },
+    {
+      "source": "/blur-face-in-photo",
+      "destination": "/blur-face-in-photo/",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/((?!api/).*)",
