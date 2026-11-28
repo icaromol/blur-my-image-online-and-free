@@ -23,7 +23,18 @@ export default defineConfig({
   optimizeDeps: { exclude: ["@jsquash/webp"] },
   // Playwright runs against `vite preview`, so e2e tests run under the real CSP.
   preview: { headers: { ...pageHeaders } },
-  build: { license: { fileName: "licenses.md" } },
+  build: {
+    license: { fileName: "licenses.md" },
+    rollupOptions: {
+      input: [
+        "index.html",
+        "404.html",
+        "blur-license-plate/index.html",
+        "blur-text-in-screenshot/index.html",
+        "blur-face-in-photo/index.html",
+      ],
+    },
+  },
   test: {
     include: ["src/**/*.test.ts", "server/**/*.test.ts", "*.test.ts"],
     coverage: {
