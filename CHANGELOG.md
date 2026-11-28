@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/icaromol/blur-my-image-online-and-free/compare/v0.4.0...v0.5.0) (2026-11-28)
+
+
+### Features
+
+* **ui:** add the three use-case pages with the editor, robots.txt and a real 404 ([#31](https://github.com/icaromol/blur-my-image-online-and-free/issues/31)) ([f629021](https://github.com/icaromol/blur-my-image-online-and-free/commit/f6290218d6b8bb98c8d6a0891b1d4d7c85afb6ef))
+
 ## [0.4.0](https://github.com/icaromol/blur-my-image-online-and-free/compare/v0.3.0...v0.4.0) (2026-11-24)
 
 
