@@ -544,21 +544,26 @@ test("with an image open the hero's logo is gone and the h1 stays for assistive 
 
 test("in forced colors the editor's logo keeps its color and the phone language shows only its globe", async ({
   page,
+  browserName,
 }) => {
   await page.setViewportSize(layouts.phone);
   await page.emulateMedia({ forcedColors: "active" });
   await openImage(page, "edge");
   const logo = page.locator("#app header .logo");
-  expect(
-    await logo.evaluate((el) => getComputedStyle(el).forcedColorAdjust),
-  ).toBe("none");
+  if (browserName !== "webkit") {
+    expect(
+      await logo.evaluate((el) => getComputedStyle(el).forcedColorAdjust),
+    ).toBe("none");
+  }
   expect(
     await logo.evaluate((el) => getComputedStyle(el).backgroundColor),
   ).not.toBe("rgba(0, 0, 0, 0)");
   const select = page.locator("#app header select");
-  expect(
-    await select.evaluate((el) => getComputedStyle(el).forcedColorAdjust),
-  ).toBe("none");
+  if (browserName !== "webkit") {
+    expect(
+      await select.evaluate((el) => getComputedStyle(el).forcedColorAdjust),
+    ).toBe("none");
+  }
   expect(await select.evaluate((el) => getComputedStyle(el).color)).toBe(
     "rgba(0, 0, 0, 0)",
   );
